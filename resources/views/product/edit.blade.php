@@ -291,7 +291,7 @@
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('expiry_date', __('Expiry Date'), ['class' => 'form-label']) }}<x-required></x-required>
-                                        {{ Form::date('expiry_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Expiry Date'), 'min' => date('Y-m-d')]) }}<x-required></x-required>
+                                        {{ Form::date('expiry_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Expiry Date'), 'min' => date('Y-m-d')]) }}
                                     </div>
                                     <div class="form-group">
                                         <label for="attachment" class="form-label"
