@@ -1542,6 +1542,7 @@
   "Your cart is currently empty. Return to our shop and check out the latest offers. We have some great items that are waiting for you": "حاليًا، عربتك فارغة. عُد إلى متجرنا واستعرض أحدث العروض. لدينا العديد من المنتجات الرائعة في انتظارك!",
   "Scan": "امسح الباركود",
   "Barcode detected": "تم مسح الباركود: ",
+  "The product is expired": "المنتج منتهي الصلاحية",
   "Scanning... Please wait":"جارٍ المسح... الرجاء الانتظار",
   "Camera access denied. Please allow camera permissions to use the scanner": "تم رفض الوصول إلى الكاميرا. يرجى السماح بإذن الكاميرا لاستخدام الماسح الضوئي",
   "Error initializing scanner. Please check your camera settings": "حدث خطأ أثناء تهيئة الماسح الضوئي. يرجى التحقق من إعدادات الكاميرا الخاصة بك",

@@ -1540,6 +1540,7 @@
     "Zero Price": "Zero Price",
     "Scan": "Scan",
     "Barcode detected": "Barcode detected: ",
+    "The product is expired":"The product is expired",
     "Scanning... Please wait": "Scanning... Please wait",
     "Camera access denied. Please allow camera permissions to use the scanner": "Camera access denied. Please allow camera permissions to use the scanner",
     "Error initializing scanner. Please check your camera settings": "Error initializing scanner. Please check your camera settings",
