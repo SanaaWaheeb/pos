@@ -43,6 +43,7 @@ use App\Exports\CustomerExport;
 use App\Models\CustomDomainRequest;
 use App\Models\ReferralTransaction;
 use Spatie\Permission\Models\Role;
+use Carbon\Carbon;
 
 class StoreController extends Controller
 {
@@ -1656,6 +1657,20 @@ class StoreController extends Controller
                         'code' => 404,
                         'status' => 'Error', 
                         'error' => __('Product not found'), 
+                    ]
+                ); 
+            }
+
+            $currentDate = Carbon::now();
+            $expiryDate = Carbon::parse($product->expiry_date);
+            // Check if the expiry date is in the past
+            if ($expiryDate->isPast()) {
+                // If expired, return false or an error message
+                return response()->json(
+                    [ 
+                        'code' => 404,
+                        'status' => 'Error', 
+                        'error' => __('The product is expired'), 
                     ]
                 ); 
             }
