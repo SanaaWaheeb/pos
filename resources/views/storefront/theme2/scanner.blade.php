@@ -16,7 +16,7 @@
         <div class="container"> 
             <div class="row justify-content-center"> 
                 <div class="col-lg-12 text-center mb-4"> 
-                    <h2 class="fw-bold">{{ __('Scan Your Product') }}</h2> 
+                    <h2 class="fw-bold">{{ __('Scan Your Product sannaa') }}</h2> 
                     <p class="text-muted">{{ __('Use your camera to scan a barcode and add the product to your cart') }}</p> 
                 </div> 
             </div> 
