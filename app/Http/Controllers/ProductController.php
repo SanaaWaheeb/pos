@@ -489,6 +489,10 @@ class ProductController extends Controller
                 $request->all(),
                 [
                     'name' => 'required|max:120',
+                    'SKU' => 'required',
+                    'price' => 'required|numeric',
+                    'quantity' => 'required|integer',
+                    'expiry_date' => 'required|date',
                 ]
             );
             if ($request->enable_product_variant == '') {
@@ -752,6 +756,9 @@ class ProductController extends Controller
                 $product['product_tax'] = implode(',', $request->product_tax);
             } else {
                 $product['product_tax'] = $request->product_tax;
+            }
+            if (!empty($request->expiry_date)) {
+                $product['expiry_date'] = !empty($request->expiry_date)? $request->expiry_date : '';
             }
 
             $product['custom_field_1'] = $request->custom_field_1;
