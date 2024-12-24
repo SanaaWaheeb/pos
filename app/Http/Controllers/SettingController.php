@@ -715,10 +715,6 @@ class SettingController extends Controller
         if ($request->has('edfapay_merchant_key')) {
             $store['edfapay_merchant_key'] = $request->edfapay_merchant_key;
         }
-        
-        if ($request->has('edfapay_callback_url')) {
-            $store['edfapay_callback_url'] = $request->edfapay_callback_url;
-        }
 
         $store->update();
 
@@ -1188,13 +1184,11 @@ class SettingController extends Controller
                 [
                     'edfapay_password'=>'required|string',
                     'edfapay_merchant_key' => 'required|string',
-                    'edfapay_callback_url' => 'required|string',
                 ]
             );
             $post['is_edfapay_enabled'] = $request->is_edfapay_enabled;
             $post['edfapay_password'] = $request->edfapay_password;
             $post['edfapay_merchant_key'] = $request->edfapay_merchant_key;
-            $post['edfapay_callback_url'] = $request->edfapay_callback_url;
         }
         else
         {
@@ -1759,13 +1753,11 @@ class SettingController extends Controller
                 [
                     'edfapay_password'=>'required|string',
                     'edfapay_merchant_key' => 'required|string',
-                    'edfapay_callback_url' => 'required|string',
                 ]
             );
             $post['is_edfapay_enabled'] = $request->is_edfapay_enabled;
             $post['edfapay_password'] = $request->edfapay_password;
             $post['edfapay_merchant_key'] = $request->edfapay_merchant_key;
-            $post['edfapay_callback_url'] = $request->edfapay_callback_url;
         }
         else
         {

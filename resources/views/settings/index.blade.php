@@ -1598,22 +1598,6 @@
                                                                 @endif
                                                             </div>
 
-                                                            {{-- Callback URL --}}
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label for="edfapay_callback_url"
-                                                                        class="col-form-label">{{ __('Callback URL') }}</label>
-                                                                    <input type="text" name="edfapay_callback_url"
-                                                                        id="edfapay_callback_url" class="form-control"
-                                                                        value="{{ isset($store_payment_setting['edfapay_callback_url']) ? $store_payment_setting['edfapay_callback_url'] : '' }}"
-                                                                        placeholder="{{ __('Callback URL') }}">
-                                                                </div>
-                                                                @if ($errors->has('edfapay_callback_url'))
-                                                                    <span class="invalid-feedback d-block">
-                                                                        {{ $errors->first('edfapay_callback_url') }}
-                                                                    </span>
-                                                                @endif
-                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -6876,23 +6860,6 @@
                                                                 @if ($errors->has('edfapay_merchant_key'))
                                                                     <span class="invalid-feedback d-block">
                                                                         {{ $errors->first('edfapay_merchant_key') }}
-                                                                    </span>
-                                                                @endif
-                                                            </div>
-
-                                                            {{-- Callback URL --}}
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label for="edfapay_callback_url"
-                                                                        class="col-form-label">{{ __('Callback URL') }}</label>
-                                                                    <input type="text" name="edfapay_callback_url"
-                                                                        id="edfapay_callback_url" class="form-control"
-                                                                        value="{{ isset($store_payment_setting['edfapay_callback_url']) ? $store_payment_setting['edfapay_callback_url'] : '' }}"
-                                                                        placeholder="{{ __('Callback URL') }}">
-                                                                </div>
-                                                                @if ($errors->has('edfapay_callback_url'))
-                                                                    <span class="invalid-feedback d-block">
-                                                                        {{ $errors->first('edfapay_callback_url') }}
                                                                     </span>
                                                                 @endif
                                                             </div>
