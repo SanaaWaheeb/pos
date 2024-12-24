@@ -63,13 +63,13 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                     <div class="tabs-container" id="myTabContent">
                         @foreach ($products as $key => $items)
                             <div id="tab-{!! preg_replace('/[^A-Za-z0-9\-]/', '_', $key) !!}" class="tab-content {{ $key == 'Start shopping' ? 'active' : '' }}">
-                                <div class="row">
+                                <div class="row products-grid">
                                     @if ($items->count() > 0)
                                         @foreach ($items as $product)
                                             <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                                                 <div class="product-card">
                                                     <div class="card-img">
-                                                        <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}">
+                                                        <a>
                                                             @if (!empty($product->is_cover) )
                                                                 <img src="{{ $productImg . $product->is_cover }}">
                                                             @else
@@ -109,7 +109,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                                             @if ($product->enable_product_variant == 'on')
                                                                 <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn"><i class="fas fa-shopping-basket"></i></a>
                                                             @else
-                                                                <a class="cart-btn add_to_cart" data-id="{{ $product->id }}"><i class="fas fa-shopping-basket"></i></a>
+                                                                <a class="cart-btn add_to_cart" data-id="{{ $product->id }}"> {{ __('ADD') }} <i class="fas fa-shopping-basket"></i></a>
                                                             @endif
                                                             {{-- @if (Auth::guard('customers')->check())
                                                                 @if (!empty($wishlist) && isset($wishlist[$product->id]['product_id']))

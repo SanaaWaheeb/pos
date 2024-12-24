@@ -2488,33 +2488,51 @@ button, input {
 .bestseller-section ul li.active{
     color: var(--third-color);
 }
+.products-grid{ /*********** ADDED *************/
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
 .product-card{
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center; /*********** ADDED *************/
     height: 100%;
     text-align: center;
     color: var(--third-color);
 }
-.product-card .card-img {
+/* .product-card .card-img {
     position: relative;
     transition: all ease-in-out 0.6s;
     -webkit-transition: all ease-in-out 0.6s;
     -moz-transition: all ease-in-out 0.6s;
     -ms-transition: all ease-in-out 0.6s;
     -o-transition: all ease-in-out 0.6s;
+} */
+
+.product-card .card-img { /*********** ADDED *************/
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 8rem;
+    height: -webkit-fill-available;
+    overflow: hidden;
+    transition: all ease-in-out 0.6s;
 }
+
 .product-card .card-img a{
     position: relative;
     display: block;
-    padding-top: 90%;
+    /* padding-top: 90%; */
     transition: all ease-in-out 0.6s;
     -webkit-transition: all ease-in-out 0.6s;
     -moz-transition: all ease-in-out 0.6s;
     -ms-transition: all ease-in-out 0.6s;
     -o-transition: all ease-in-out 0.6s;
 }
-.product-card .card-img a img {
+/* .product-card .card-img a img {
     position: absolute;
     top: 0;
     left: 0;
@@ -2527,13 +2545,24 @@ button, input {
     -moz-transition: all ease-in-out 0.6s;
     -ms-transition: all ease-in-out 0.6s;
     -o-transition: all ease-in-out 0.6s;
+} */
+
+.product-card .card-img a img { /*********** ADDED *************/
+    position: static;
+    max-width: 100%; 
+    max-height: 100%;
+    object-fit: contain;
+    margin: auto; /* Centers the image */
+    display: block;
+    transition: all ease-in-out 0.6s;
 }
 .product-card .card-content{
     margin-top: 15px;
+    width: 100%; /*********** ADDED *************/
 }
 .product-card .card-content h6 {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 15px; /*********** 20px -> CHANGED *************/
     line-height: 22px;
     letter-spacing: 1px;
     margin-bottom: 10px;
@@ -2550,6 +2579,9 @@ button, input {
 .last-btn .cart-btn{
     padding: 9px 22px;
     font-size: 15px;
+    width: 100%; /*********** ADDED *************/
+    max-width: 8rem; /*********** ADDED *************/
+    border-radius: 0.5rem;
 }
 .last-btn .cart-btn:hover{
     color: var(--third-color);

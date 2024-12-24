@@ -29,11 +29,11 @@
         $themeImg = \App\Models\Utility::get_file('uploads/store_theme/');
         @endphp
         @if(\Auth::user()->type !== 'super admin')
-            {{-- <div class="form-group">
+            <div class="form-group">
                 {{Form::label('store_name',__('Store Theme'),array('class'=>'form-label'))}}<x-required></x-required>
-            </div> --}}
+            </div>
             {{ Form::hidden('themefile', null, ['id' => 'themefile1']) }} {{-- --------- Added -------- --}}
-            {{-- <div class="border border-primary rounded p-3">
+            <div class="border border-primary rounded p-3">
                 <div class="row gy-4 ">
                     {{ Form::hidden('themefile', null, ['id' => 'themefile1']) }}
                     @foreach (\App\Models\Utility::themeOne() as $key => $v)
@@ -72,7 +72,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div> --}}
+            </div>
         @endif
     </div>
     @if(\Auth::user()->type == 'super admin')
