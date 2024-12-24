@@ -1,5 +1,5 @@
 {{Form::open(array('url'=>'store-resource','method'=>'post', 'class'=>'needs-validation', 'novalidate'))}}
-<div class="d-flex justify-content-end">
+{{-- <div class="d-flex justify-content-end">
     @php
         $plan = \App\Models\Plan::find(\Auth::user()->plan);
         $settings = \App\Models\Utility::settings();
@@ -17,7 +17,7 @@
             </a>
         @endif
     @endif
-</div>
+</div> --}}
 <div class="row">
     <div class="col-12">
         <div class="form-group">
@@ -29,10 +29,11 @@
         $themeImg = \App\Models\Utility::get_file('uploads/store_theme/');
         @endphp
         @if(\Auth::user()->type !== 'super admin')
-            <div class="form-group">
+            {{-- <div class="form-group">
                 {{Form::label('store_name',__('Store Theme'),array('class'=>'form-label'))}}<x-required></x-required>
-            </div>
-            <div class="border border-primary rounded p-3">
+            </div> --}}
+            {{ Form::hidden('themefile', null, ['id' => 'themefile1']) }} {{-- --------- Added -------- --}}
+            {{-- <div class="border border-primary rounded p-3">
                 <div class="row gy-4 ">
                     {{ Form::hidden('themefile', null, ['id' => 'themefile1']) }}
                     @foreach (\App\Models\Utility::themeOne() as $key => $v)
@@ -71,7 +72,7 @@
                         </div>
                     @endforeach
                 </div>
-            </div>
+            </div> --}}
         @endif
     </div>
     @if(\Auth::user()->type == 'super admin')
@@ -121,9 +122,16 @@
         });
         $('body').ready(function() {
             setTimeout(function(e) {
-                var checked = $("input[type=radio][name='theme_color']:checked");
-                $('#themefile1').val(checked.attr('data-theme'));
-                $('.' + checked.attr('data-theme') + '_img').attr('src', checked.attr('data-imgpath'));
+                // var checked = $("input[type=radio][name='theme_color'][data-theme='theme2']");
+                // $('#themefile1').val(checked.attr('data-theme'));
+                // $('.' + checked.attr('data-theme') + '_img').attr('src', checked.attr('data-imgpath'));
+
+                var theme2Radio = $("input[type=radio][name='theme_color'][data-theme='theme2']");
+                theme2Radio.prop('checked', true).trigger('click');
+                $('#themefile1').val('theme2');
+                $('.theme2_img').attr('src', theme2Radio.attr('data-imgpath'));
+                // Disable other radio buttons
+                $("input[type=radio][name='theme_color']").not(theme2Radio).prop('disabled', true);
             }, 300);
         });
         $(".color").click(function() {

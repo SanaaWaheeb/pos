@@ -70,7 +70,10 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
  */
-Route::get('/', [DashboardController::class, 'index'])->name(name: 'start')->middleware(['XSS']);
+// Route::get('/', [DashboardController::class, 'index'])->name(name: 'start')->middleware(['XSS']);
+Route::get('/', function() {
+    return redirect()->route('login');
+})->name('start')->middleware(['XSS']);
 
 Route::get('login/{lang?}', function () {
 
