@@ -34,7 +34,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
         @foreach ($pixelScript as $script)
             <?= $script; ?>
         @endforeach
-        @if($getStoreThemeSetting[0]['section_enable'] == 'on')
+        {{-- @if($getStoreThemeSetting[0]['section_enable'] == 'on')
             <section class="home-banner-section" style="background-image: url({{ $imgpath. (!empty($homepage_header_bckground_Image) ? $homepage_header_bckground_Image : 'home-banner1.png') }});">
                 <div class="banner-text">
                     <h2>{{ !empty($homepage_header_title) ? $homepage_header_title : 'Home Accessories' }}
@@ -45,7 +45,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                     </a>
                 </div>
             </section>
-        @endif
+        @endif --}}
         @if ($products['Start shopping']->count() > 0)
             <section class="bestseller-section tabs-wrapper" id="pro_items">
                 <div class="container">
@@ -79,7 +79,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                                     </div>
                                                     <div class="card-content">
                                                         <h6><a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}">{{ $product->name }}</a></h6>
-                                                        <div class="rating">
+                                                        {{-- <div class="rating">
                                                             @if ($store->enable_rating == 'on')
                                                                 @for ($i = 1; $i <= 5; $i++)
                                                                     @php
@@ -96,7 +96,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                                                     <i class="star fas {{ $icon . ' ' . $color }}"></i>
                                                                 @endfor
                                                             @endif
-                                                        </div>
+                                                        </div> --}}
                                                         <div class="price">
                                                             @if ($product->enable_product_variant == 'on')
                                                                 <ins>{{ __('In variant') }}</ins>
@@ -104,14 +104,14 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                                                 <ins>{{ \App\Models\Utility::priceFormat($product->price) }}</ins>
                                                             @endif
                                                         </div>
-                                                        <p>{{__('Category')}}: {{$product->product_category()}}</p>
+                                                        {{-- <p>{{__('Category')}}: {{$product->product_category()}}</p> --}}
                                                         <div class="last-btn">
                                                             @if ($product->enable_product_variant == 'on')
-                                                                <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn">{{ __('Add to cart') }} <i class="fas fa-shopping-basket"></i></a>
+                                                                <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn"><i class="fas fa-shopping-basket"></i></a>
                                                             @else
-                                                                <a class="cart-btn add_to_cart" data-id="{{ $product->id }}">{{ __('Add to cart') }} <i class="fas fa-shopping-basket"></i></a>
+                                                                <a class="cart-btn add_to_cart" data-id="{{ $product->id }}"><i class="fas fa-shopping-basket"></i></a>
                                                             @endif
-                                                            @if (Auth::guard('customers')->check())
+                                                            {{-- @if (Auth::guard('customers')->check())
                                                                 @if (!empty($wishlist) && isset($wishlist[$product->id]['product_id']))
                                                                     @if ($wishlist[$product->id]['product_id'] != $product->id)
                                                                         <a class="heart-btn add_to_wishlist wishlist_{{ $product->id }}" data-id="{{ $product->id }}"><i class="far fa-heart"></i></a>
@@ -123,7 +123,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                                                 @endif
                                                             @else
                                                                 <a class="heart-btn add_to_wishlist wishlist_{{ $product->id }}" data-id="{{ $product->id }}"><i class="far fa-heart"></i></a>
-                                                            @endif
+                                                            @endif --}}
                                                            
                                                         </div>
                                                     </div>
@@ -144,7 +144,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                 </div>    
             </section>
         @endif
-        @foreach ($getStoreThemeSetting as $storethemesetting)
+        {{-- @foreach ($getStoreThemeSetting as $storethemesetting)
             @if (isset($storethemesetting['section_name']) && $storethemesetting['section_name'] == 'Home-Categories' && $storethemesetting['section_enable'] == 'on' && !empty($pro_categories))
                 @php
                 // dd($storethemesetting);
@@ -191,9 +191,9 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                     </div>
                 </section>
             @endif
-        @endforeach
+        @endforeach --}}
 
-        @foreach ($getStoreThemeSetting as $storethemesetting)
+        {{-- @foreach ($getStoreThemeSetting as $storethemesetting)
             @if (isset($storethemesetting['section_name']) && $storethemesetting['section_name'] == 'Home-Email-Subscriber' && $storethemesetting['section_enable'] == 'on')
                 @php
                     $emailsubs_img_key = array_search('Subscriber Background Image', array_column($storethemesetting['inner-list'], 'field_name'));
@@ -232,8 +232,8 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                     </div>
                 </section>
             @endif
-        @endforeach
-        @if (count($topRatedProducts) > 0)
+        @endforeach --}}
+        {{-- @if (count($topRatedProducts) > 0)
             <section class="total-rated-product">
                 <div class="container">
                     <div class="section-title d-flex align-items-center justify-content-between">
@@ -316,8 +316,8 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                     </div>
                 </div>
             </section>
-        @endif
-        @if($getStoreThemeSetting[4]['section_enable'] == 'on')
+        @endif --}}
+        {{-- @if($getStoreThemeSetting[4]['section_enable'] == 'on')
             <section class="testimonial-section">
                 <div class="container">
                     <div class="testimonial-title">
@@ -475,7 +475,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                 </div>
             </section>
         @endif
-     </div>
+     </div> --}}
     
 @endsection
 @push('script-page')
