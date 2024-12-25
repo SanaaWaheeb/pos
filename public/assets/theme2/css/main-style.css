@@ -3177,6 +3177,9 @@ table tr td img {
     color: var(--theme-color);
     cursor: pointer;
 }
+.remove_item svg path {
+    fill: red;
+}
 
 @media (max-width: 768px) {
     table tr {

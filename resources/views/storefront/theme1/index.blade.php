@@ -125,7 +125,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                     @endif
                                                 </a>
                                                 {{--  {{--  <div class="heart-icon">    --}}
-                                                    @if (Auth::guard('customers')->check())
+                                                    {{-- @if (Auth::guard('customers')->check())
                                                         @if (!empty($wishlist) && isset($wishlist[$product->id]['product_id']))
                                                             @if ($wishlist[$product->id]['product_id'] != $product->id)
                                                                 <a
@@ -152,11 +152,11 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                             data-id="{{ $product->id }}">
                                                             <i class="far fa-heart"></i>
                                                         </a>
-                                                    @endif
+                                                    @endif --}}
                                                 {{--  </div>  --}}
                                             </div>
                                             <div class="card-content">
-                                                <div class="rating">
+                                                {{-- <div class="rating">
                                                     @if ($store->enable_rating == 'on')
                                                         @for ($i = 1; $i <= 5; $i++)
                                                             @php
@@ -173,11 +173,11 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                             <i class="star fas {{ $icon . ' ' . $color }}"></i>
                                                         @endfor
                                                     @endif
-                                                </div>
+                                                </div> --}}
                                                 <h6>
                                                     <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}">{{ $product->name }}</a>
                                                 </h6>
-                                            <p><span class="td-gray">{{ __('Category') }}:</span>{{ $product->product_category() }}</p>
+                                            {{-- <p><span class="td-gray">{{ __('Category') }}:</span>{{ $product->product_category() }}</p> --}}
 
                                                 <div class="last-btn">
                                                     <div class="price">
@@ -269,7 +269,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                     @endif
                                 </a>
                                 {{--  <div class="heart-icon">  --}}
-                                    @if (Auth::guard('customers')->check())
+                                    {{-- @if (Auth::guard('customers')->check())
                                         @if (!empty($wishlist) && isset($wishlist[$topRatedProduct->product->id]['product_id']))
                                             @if ($wishlist[$topRatedProduct->product->id]['product_id'] != $topRatedProduct->product->id)
                                                 <a
@@ -296,13 +296,13 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                             data-id="{{ $topRatedProduct->product->id }}">
                                             <i class="far fa-heart"></i>
                                         </a>
-                                    @endif
+                                    @endif --}}
                                 {{--  </div>  --}}
                             </div>
                             <div class="card-content">
-                                <div class="rating">
+                                {{-- <div class="rating"> --}}
 
-                                    @if ($store->enable_rating == 'on')
+                                    {{-- @if ($store->enable_rating == 'on')
                                         @for ($i = 1; $i <= 5; $i++)
                                             @php
                                                 $icon = 'fa-star';
@@ -320,8 +320,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
 
                                         <i class="star fas {{ $icon . ' ' . $color }}"></i>
                                         @endfor
-                                    @endif
-                                </div>
+                                    @endif --}}
+                                {{-- </div> --}}
                                 <h6>
                                     <a href="#">{{ $topRatedProduct->product->name }}</a>
                                 </h6>
@@ -396,7 +396,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
     @endif
 @endforeach
 
-@if($getStoreThemeSetting[4]['section_enable'] == 'on')
+{{-- @if($getStoreThemeSetting[4]['section_enable'] == 'on')
 <section class="testimonial-section padding-bottom">
     <div class="container">
         <div class="main-title">
@@ -422,7 +422,11 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                             @if($storethemesetting['homepage-testimonial-card-enable'][$i] == 'on')
                                 <div class="testimonial-card">
                                     <div class="testimonial-card-inner">
-                                        <p>{{ $storethemesetting['homepage-testimonial-card-description'][$i] }}</p>
+                                        <@if(isset($storethemesetting['homepage-promotions-description'][$i])) 
+                                                <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p> 
+                                            @else 
+                                                <p>Default promotion description</p> 
+                                            @endif
                                     <div class="testi-info">
                                         <div class="avtar-img">
                                             <img alt="" src="{{ $imgpath . (!empty($storethemesetting['homepage-testimonial-card-image'][$i]['field_prev_text']) ? $storethemesetting['homepage-testimonial-card-image'][$i]['field_prev_text'] : 'avatar.png') }}">
@@ -459,8 +463,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         </div>
     </div>
 </section>
-@endif
-    <section class="client-logo">
+@endif --}}
+    {{-- <section class="client-logo">
         <div class="container">
             <div class="client-logo-slider">
 
@@ -520,7 +524,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         </div>
     </section>
  </div>
-@endsection
+@endsection --}}
 
 @push('script-page')
     <script>

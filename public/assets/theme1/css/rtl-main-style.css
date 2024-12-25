@@ -1911,6 +1911,7 @@ body.no-scroll {
     left: 0;
     top: 0;
     z-index: 3;
+    padding: 15px 0; /****** added *********/
     -webkit-transition: all ease-in-out 0.5s;
     -moz-transition: all ease-in-out 0.5s;
     -ms-transition: all ease-in-out 0.5s;
@@ -1956,6 +1957,7 @@ body.no-scroll {
 .right-side-header{
     display: flex;
     align-items: center;
+    justify-content: end; /****** added *********/
     flex-wrap: wrap;
     flex: 1;
     padding-right: 25px;
@@ -3218,7 +3220,7 @@ button, input {
 .cart-btns a:not(:last-child){
     margin-left: 15px;
 }
-/* .cart-tble{
+.cart-tble{
     margin: 50px 0 30px;
 }
 table {
@@ -3247,6 +3249,7 @@ table tr {
 .qty-spinner {
     border: 1px solid var(--border-color);
     display: flex;
+    justify-self: center; /******** added **********/
     max-width: 100px;
     height: 30px;
     width: 100%;
@@ -3298,13 +3301,14 @@ table tr th {
     border-bottom: 1px solid var(--border-color);
     font-weight: 700;
     text-transform: uppercase;
-} */
+}
 .pro-img-cart {
     max-width: 100px;
 }
 .remove-btn {
     display: inline-block;
     position: absolute;
+    font-size: 16px;  /******** added **********/
     left: 0;
     height: 24px;
     width: 24px;
@@ -3497,6 +3501,15 @@ margin-bottom: 15px;
     flex: 1;
     width: 100%;
     padding-right: 15px;
+}
+.mini-cart-details-cart {
+    flex: 1;
+    width: 100%;
+    display: flex; /******** added **********/
+    align-items: center; /******** added **********/
+    justify-content: space-between; /******** added **********/
+    text-align: center; /******** added **********/
+    padding: 10px; /******** added **********/
 }
 .mini-cart-title {
     margin-bottom: 8px;
@@ -4330,4 +4343,71 @@ table tr:last-of-type {
     position: absolute;
     right: 0px;
     top: -65px;
+}
+
+/* ------------------- Added Styles ------------------- */
+.help-btn {
+    border: none;
+    background-color: transparent;
+}
+
+.help-btn i {
+    font-size: 1.2rem;
+    color: var(--black);
+}
+
+/* ADDED */ 
+.payment-success .details { 
+    background-color: #ffffff; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    padding: 20px; 
+    width: 100%; 
+    max-width: 400px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+} 
+ 
+.payment-success .details p { 
+    margin: 10px 0; 
+    font-size: 14px; 
+    color: #333; 
+} 
+ 
+.payment-success .details strong { 
+    font-weight: bold; 
+    color: #000; 
+} 
+ 
+.payment-success .button { 
+    margin-top: 20px; 
+} 
+ 
+.payment-success .button a { 
+    background-color: #ee7878; 
+    color: #ffffff; 
+    text-decoration: none; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    font-size: 14px; 
+} 
+ 
+.payment-success .button a:hover { 
+    background-color: #fa0505; 
+}
+
+.cart-item-decr {
+    height: 100%; 
+    justify-content: space-between; 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    text-align: right;
+}
+
+.mini-cart-details-cart .mini-cart-image{
+    margin-left: 0.5rem;
+}
+
+.price-bar * {
+    color: black !important; /* Force black color on all child elements */
 }
