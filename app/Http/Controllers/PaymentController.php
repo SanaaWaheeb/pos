@@ -3179,9 +3179,30 @@ class PaymentController extends Controller
         $currentDate = Carbon::now()->format('d-m-Y, H:i:s'); 
     
         if ($code == 200) { 
-            $cart['products'] = [];
-            $cart['cart_item_count'] = 0;
-            session()->put($slug, $cart);
+            $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
+            // Reduce products quantity in DB
+            try {
+                foreach($cart['products'] as $key => $item) {
+                    $product = Product::find($item['product_id']);
+                    if ($product) {
+                        $newQty = $product->quantity - $item['quantity'];
+                        $product->quantity = $newQty < 0? 0 : $newQty;
+                        // Save the updated stock quantity
+                        $product->save();
+                    }
+
+                    // Clear the cart
+                    $cart['products'] = [];
+                    $cart['cart_item_count'] = 0;
+                    session()->put($slug, $cart);
+                }
+            } catch (\Exception $e) {
+                return redirect()->route('payment.status', [
+                    'slug' => $slug,
+                    'order_id' => $order_id,
+                    'code' => 500,
+                ])->with('error', $e->getMessage());
+            }
         }
     
         return view('storefront.' . $store->theme_dir . '.status', compact(
