@@ -111,8 +111,9 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
             <div class="tabs-container">
                 @foreach ($products as $key => $items)
                     <div class="tab-content {{ $key == 'Start shopping' ? 'active show' : '' }}" id="tab-{!! preg_replace('/[^A-Za-z0-9\-]/', '_', $key) !!}">
+
                         @if ($items->count() > 0)
-                            <div class="row">
+                            <div class="row products-grid">
                                 @foreach ($items as $product)
                                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                                         <div class="product-card">

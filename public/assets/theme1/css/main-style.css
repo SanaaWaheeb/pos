@@ -3020,10 +3020,12 @@ input {
     margin-top: 30px;
 }
 
+
 .product-card {
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center; /*********** ADDED *************/
     color: var(--third-color);
     box-shadow: 0px 2px 145px rgba(0, 0, 0, 0.05);
     border-radius: 8px;
@@ -3040,13 +3042,24 @@ input {
     margin-bottom: 30px;
 }
 
-.product-card .card-img {
+/* .product-card .card-img {
     position: relative;
     transition: all ease-in-out 0.6s;
     -webkit-transition: all ease-in-out 0.6s;
     -moz-transition: all ease-in-out 0.6s;
     -ms-transition: all ease-in-out 0.6s;
     -o-transition: all ease-in-out 0.6s;
+} */
+
+.product-card .card-img { /*********** ADDED *************/
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 8rem;
+    height: -webkit-fill-available;
+    overflow: hidden;
+    transition: all ease-in-out 0.6s;
 }
 
 .product-card .card-img a:not(.wishlist-icon) {
