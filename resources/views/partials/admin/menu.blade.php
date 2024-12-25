@@ -159,7 +159,7 @@
                             @endcan
                         </ul>
                     </li>
-                    {{-- @can('Manage Themes')
+                    @can('Manage Themes')
                         <li class="dash-item {{ Request::segment(1) == 'themes' ? ' active' : 'collapsed' }}">
                             <a href="{{ route('themes.theme') }}"
                                 class="dash-link {{ request()->is('themes') ? 'active' : '' }}">
@@ -169,7 +169,7 @@
                                 <span class="dash-mtext">{{ __('Themes') }}</span>
                             </a>
                         </li>
-                    @endcan --}}
+                    @endcan
                     <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'users' || Request::segment(1) == 'roles' ? ' active dash-trigger' : 'collapsed' }}">
                         <a href="#!" class="dash-link ">
                             <span class="dash-micon">
