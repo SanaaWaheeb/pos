@@ -66,7 +66,11 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                 <div class="store-promotions-box">
                                 {!! $storethemesetting['homepage-promotions-font-icon'][$i] !!}
                                     <h4>{{ $storethemesetting['homepage-promotions-title'][$i] }}</h4>
-                                    <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>
+                                    <@if(isset($storethemesetting['homepage-promotions-description'][$i]))  
+                                        <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>  
+                                    @else  
+                                        <p>Default promotion description</p>  
+                                    @endif
                                 </div>
                             </div>
                         @endfor
@@ -76,7 +80,11 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                 <div class="store-promotions-box">
                                     {!! $storethemesetting['inner-list'][0]['field_default_text'] !!}
                                     <h4>{{ $storethemesetting['inner-list'][1]['field_default_text'] }}</h4>
-                                    <p>{{ $storethemesetting['inner-list'][2]['field_default_text'] }}</p>
+                                    <@if(isset($storethemesetting['homepage-promotions-description'][$i]))  
+                                        <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>  
+                                    @else  
+                                        <p>Default promotion description</p>  
+                                    @endif
                                 </div>
                             </div>
                         @endfor
