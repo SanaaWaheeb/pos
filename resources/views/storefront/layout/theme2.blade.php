@@ -151,6 +151,7 @@
     @stack('css-page')
 </head>
 
+
 <body class="{{ !empty($themeClass) ? $themeClass : 'theme2-v1' }}" style="display: flex; flex-direction: column">
     @php
         if (!empty(session()->get('lang'))) {

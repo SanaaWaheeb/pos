@@ -137,167 +137,119 @@
             $currantLang = $store->lang;
         }
         $languages = \App\Models\Utility::languages();
+        $specific_langs = [
+            "ar" => "Arabic",
+            "en" => "English",
+        ];
         $langName = \App\Models\Languages::where('code',$currantLang)->first();
         $storethemesetting = \App\Models\Utility::demoStoreThemeSetting($store->id, $store->theme_dir);
         
     @endphp
     <!--header start here-->
     <header class="site-header">
-        @if ($storethemesetting['enable_top_bar'] == 'on')
-            <div class="header-top">
-                <div class="container">
-                    <div class="header-top-info">
-                        <div class="header-top-left">
-                            <p><i class="fas fa-bell"></i>
-                                {{ !empty($storethemesetting['top_bar_title']) ? $storethemesetting['top_bar_title'] : '' }}
-                            </p>
-                        </div>
-                        <div class="header-top-right">
-                            <ul>
-                                <li>
-                                    <a
-                                        href="tel:{{ !empty($storethemesetting['top_bar_number']) ? $storethemesetting['top_bar_number'] : '2123081220' }}">
-                                        <i class="fas fa-phone-volume"></i>
-                                        <b>{{ !empty($storethemesetting['top_bar_number']) ? $storethemesetting['top_bar_number'] : '(212) 308-1220' }}</b>
-                                        {{ __('Request a call') }}</a>
-                                </li>
-                                @if (!empty($storethemesetting['top_bar_whatsapp']))
-                                    <li>
-                                        <a href="https://wa.me/{{ $storethemesetting['top_bar_whatsapp'] }}"
-                                            target="_blank">
-                                            <i class="fab fa-whatsapp"></i>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (!empty($storethemesetting['top_bar_instagram']))
-                                    <li>
-                                        <a href="{{ $storethemesetting['top_bar_instagram'] }}" target="_blank">
-                                            <i class="fab fa-instagram"></i>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (!empty($storethemesetting['top_bar_twitter']))
-                                    <li>
-                                        <a href="{{ $storethemesetting['top_bar_twitter'] }}" target="_blank">
-                                            <i class="fab fa-twitter-square"></i>
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (!empty($storethemesetting['top_bar_messenger']))
-                                    <li>
-                                        <a href="{{ $storethemesetting['top_bar_messenger'] }}" target="_blank">
-                                            <i class="far fa-envelope"></i>
-                                        </a>
-                                    </li>
-                                @endif
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-        <div class="container" id="navbar-main">
+        <div class="container">
             <div class="main-navigationbar">
                 <div class="logo-col">
-                    <a href="{{ route('store.slug', $store->slug) }}">
-                        <img src="{{ $s_logo . (!empty($store->logo) ? $store->logo : 'logo.png') . '?timestamp='. time() }}"
-                            style="height: 40px;" id="navbar-logo">
+               
+
+                        <img src="{{ $s_logo . (!empty($store->logo) ? $store->logo : 'logo.png') . '?timestamp='. time() }}" alt="">
                     </a>
                 </div>
                 <div class="right-side-header">
-                    <div class="main-nav">
+                    {{-- <div class="main-nav">
                         <ul>
                             <li class="menu-link">
-                                <a href="{{ route('store.slug', $store->slug) }}">{{ ucfirst($store->name) }}</a>
+                                <a class="{{ route('store.slug') ?: 'text-dark' }} {{ Request::segment(1) == 'store-blog' ? 'text-dark' : '' }}"
+                                    href="{{ route('store.slug', $store->slug) }}">{{ ucfirst($store->name) }}</a>
                             </li>
                             @if (!empty($page_slug_urls))
                                 @foreach ($page_slug_urls as $k => $page_slug_url)
                                     @if ($page_slug_url->enable_page_header == 'on')
                                         <li class="menu-link">
-                                            <a
+                                            <a class="{{ route('store.slug') ?: 'text-dark' }} {{ Request::segment(1) == 'store-blog' ? 'text-dark' : '' }}"
                                                 href="{{ route('pageoption.slug', $page_slug_url->slug) }}">{{ ucfirst($page_slug_url->name) }}</a>
                                         </li>
                                     @endif
                                 @endforeach
                             @endif
-                            
                             @if ($store['blog_enable'] == 'on' && !empty($blog))
                                 <li class="menu-link">
-                                    <a href="{{ route('store.blog', $store->slug) }}">{{ __('Blog') }}</a>
+                                    <a class="{{ route('store.slug') ?: 'text-dark' }} {{ Request::segment(1) == 'store-blog' ? 'text-dark' : '' }}"
+                                        href="{{ route('store.blog', $store->slug) }}">{{ __('Blog') }}</a>
                                 </li>
                             @endif
                         </ul>
-                    </div>
-                    <div class="header-search">
-                        <form action="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}"
-                            method="get">
-                            @csrf
-                            <input type="text" name="search_data" placeholder="Type your product...">
-                            <button type="submit" class="search-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13"
-                                    viewBox="0 0 13 13" fill="none">
-                                    <path fill-rule="evenodd" clip-rule="evenodd"
-                                        d="M9.47487 10.5131C8.48031 11.2863 7.23058 11.7466 5.87332 11.7466C2.62957 11.7466 0 9.11706 0 5.87332C0 2.62957 2.62957 0 5.87332 0C9.11706 0 11.7466 2.62957 11.7466 5.87332C11.7466 7.23058 11.2863 8.48031 10.5131 9.47487L12.785 11.7465C13.0717 12.0332 13.0717 12.4981 12.785 12.7848C12.4983 13.0715 12.0334 13.0715 11.7467 12.7848L9.47487 10.5131ZM10.2783 5.87332C10.2783 8.30612 8.30612 10.2783 5.87332 10.2783C3.44051 10.2783 1.46833 8.30612 1.46833 5.87332C1.46833 3.44051 3.44051 1.46833 5.87332 1.46833C8.30612 1.46833 10.2783 3.44051 10.2783 5.87332Z"
-                                        fill="#545454"></path>
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
-                    <div class="main-menu-right">
-                        <ul class="menu-right d-flex  justify-content-end align-items-center">
+                    </div> --}}
+
+                    <div class="main-menu-right" style="display: flex; align-items: center; gap: 0.5rem">
+                      
+                        <!----------------- Select Language ------------------->
+                        <li class="language-header-2 set has-children has-item" style="border: none; margin: 0">
+                            <a href="javascript:void(0)" class="acnav-label" style="padding: 0">
+                                <i class="fas fa-language"></i>
+                                <span class="select">{{ ucFirst($langName->fullName) }}</span>
+                            </a>
+                            <div class="menu-dropdown acnav-list">
+                                <ul>
+                                    @foreach ($specific_langs as $code => $language)
+                                        <li><a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
+                                                class="dropdown-item @if ($language == $currantLang) active-language text-primary @endif">{{  ucFirst($language) }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </li>
+                        {{-- <ul class="menu-right d-flex  justify-content-end align-items-center">
                             <li class="search-header">
-                                <a href="javascript:;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13"
-                                        viewBox="0 0 13 13" fill="none">
-                                        <path fill-rule="evenodd" clip-rule="evenodd"
-                                            d="M9.47487 10.5131C8.48031 11.2863 7.23058 11.7466 5.87332 11.7466C2.62957 11.7466 0 9.11706 0 5.87332C0 2.62957 2.62957 0 5.87332 0C9.11706 0 11.7466 2.62957 11.7466 5.87332C11.7466 7.23058 11.2863 8.48031 10.5131 9.47487L12.785 11.7465C13.0717 12.0332 13.0717 12.4981 12.785 12.7848C12.4983 13.0715 12.0334 13.0715 11.7467 12.7848L9.47487 10.5131ZM10.2783 5.87332C10.2783 8.30612 8.30612 10.2783 5.87332 10.2783C3.44051 10.2783 1.46833 8.30612 1.46833 5.87332C1.46833 3.44051 3.44051 1.46833 5.87332 1.46833C8.30612 1.46833 10.2783 3.44051 10.2783 5.87332Z"
-                                            fill="#545454"></path>
-                                    </svg>
+                                <a href="#">
+                                    <i class="fas fa-search"></i>
                                 </a>
                             </li>
                             @if (Utility::CustomerAuthCheck($store->slug) == true)
                                 <li class="wishlist-btn">
-                                    <a href="{{ route('store.wishlist', $store->slug) }}">
+                                    <a href="{{ route('store.wishlist', $store->slug) }}" class="acnav-label">
                                         <i class="fas fa-heart"></i>
                                         <span
-                                            class="count wishlist_count">{{ !empty($wishlist) ? count($wishlist) : '0' }}</span>
+                                            class="cart-count wishlist_count">{{ !empty($wishlist) ? count($wishlist) : '0' }}</span>
                                     </a>
                                 </li>
                             @endif
-
-
-                            <li class="cart-header">
-                                <a href="{{ route('store.cart', $store->slug) }}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="count shoping_counts"
-                                        id="shoping_counts">{{ !empty($total_item) ? $total_item : '0' }}</span>
+                            <li class="language-header set has-children has-item">
+                                <a href="javascript:void(0)" class="acnav-label">
+                                    <i class="fas fa-language"></i>
+                                    <span class="select">{{ ucFirst($langName->fullName) }}</span>
                                 </a>
+                                <div class="menu-dropdown acnav-list">
+                                    <ul>
+                                        @foreach ($specific_langs as $code => $language)
+                                            <li><a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
+                                                    class="dropdown-item @if ($language == $currantLang) active-language text-primary @endif">{{  ucFirst($language) }}</a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                             </li>
-
                             @if (Utility::CustomerAuthCheck($store->slug) == true)
                                 <li class="login-btn-header set has-children">
-                                    <a class="acnav-label">
+                                    <a href="javascript:void(0)" class="acnav-label">
                                         <span class="login-text"
                                             style="display: block;">{{ ucFirst(Auth::guard('customers')->user()->name) }}</span>
                                     </a>
                                     <div class="menu-dropdown acnav-list">
                                         <ul>
-                                            <li data-name="profile">
-                                                <a
-                                                    href="{{ route('store.slug', $store->slug) }}">{{ __('My Dashboard') }}</a>
+                                            <li>
+                                                <a href="{{ route('store.slug', $store->slug) }}">
+                                                    {{ __('My Dashboard') }}</a>
                                             </li>
-                                            <li data-name="activity">
-                                                {{--  <a href="#" data-size="md" class="modal-target" data-modal="Myaccount" data-title="{{ __('Edit Profile') }}"  data-url="{{ route('customer.profile', [$store->slug, \Illuminate\Support\Facades\Crypt::encrypt(Auth::guard('customers')->user()->id)]) }}">{{ __('Edit Profile') }}</a>  --}}
+                                            <li>
                                                 <a href="#" data-size="lg"
                                                     data-url="{{ route('customer.profile', [$store->slug, \Illuminate\Support\Facades\Crypt::encrypt(Auth::guard('customers')->user()->id)]) }}"
                                                     data-ajax-popup="true" data-title="{{ __('Edit Profile') }}"
-                                                    data-toggle="modal">
-                                                    {{ __('My Profile') }}
-                                                </a>
+                                                    data-toggle="modal">{{ __('My Profile') }}</a>
                                             </li>
-                                            <li data-name="activity">
-                                                <a
-                                                    href="{{ route('customer.home', $store->slug) }}">{{ __('My Orders') }}</a>
+                                            <li>
+                                                <a href="{{ route('customer.home', $store->slug) }}">
+                                                    {{ __('My Orders') }}</a>
                                             </li>
                                             <li>
                                                 @if (Utility::CustomerAuthCheck($store->slug) == false)
@@ -306,10 +258,7 @@
                                                     </a>
                                                 @else
                                                     <a href="#"
-                                                        onclick="event.preventDefault(); document.getElementById('customer-frm-logout').submit();"
-                                                        class="nav-link">
-                                                        {{ __('Logout') }}
-                                                    </a>
+                                                        onclick="event.preventDefault(); document.getElementById('customer-frm-logout').submit();">{{ __('Logout') }}</a>
                                                     <form id="customer-frm-logout"
                                                         action="{{ route('customer.logout', $store->slug) }}"
                                                         method="POST" class="d-none">
@@ -322,62 +271,50 @@
                                 </li>
                             @else
                                 <li class="login-btn-header set has-children">
-                                    <a href="{{ route('customer.login', $store->slug) }}" class="acnav-label">
-                                        <span class="login-text" style="display: block;">{{ __('Log in') }}</span>
-                                    </a>
+                                    <a href="{{ route('customer.login', $store->slug) }}">{{ __('Log in') }}</a>
                                 </li>
                             @endif
-                            <li class="language-header set has-children has-item">
-                                <a href="#" class="acnav-label" data-toggle="dropdown" aria-haspopup="true"
-                                    aria-expanded="false">
-                                    <i class="fas fa-language"></i>
-                                    <span class="select">{{ ucFirst($langName->fullName) }}</span>
+                            <li class="cart-btn-header">
+                                <a href="{{ route('store.cart', $store->slug) }}">
+                                    <i class="fas fa-shopping-basket"></i>
+                                    <span class="cart-count shoping_counts" id="shoping_counts">
+                                        {{ !empty($total_item) ? $total_item : '0' }}</span>
                                 </a>
-                                <div class="menu-dropdown acnav-list">
-                                    <ul>
-                                        @foreach ($languages as $code => $language)
-                                            <li><a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
-                                                    class="@if ($code == $currantLang) active-language text-primary @endif">{{  ucFirst($language) }}</a>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
                             </li>
-                        </ul>
+                        </ul> --}}
                     </div>
                 </div>
-                <div class="mobile-menu mobile-only">
+                {{-- <div class="mobile-menu mobile-only">
                     <button class="mobile-menu-button" id="menu">
                         <div class="one"></div>
                         <div class="two"></div>
                         <div class="three"></div>
                     </button>
-                </div>
+                </div> --}}
             </div>
-
-            <div class="mobile-menu-bottom">
+            {{-- <div class="mobile-menu-bottom">
                 <ul>
                     @if (Utility::CustomerAuthCheck($store->slug) == true)
-                        <li class="login-btn-header set has-children login-btn-header-2">
+                        <li class="login-btn-header-2 set has-children">
                             <a href="javascript:void(0)" class="acnav-label">
                                 <span class="login-text"
                                     style="display: block;">{{ ucFirst(Auth::guard('customers')->user()->name) }}</span>
                             </a>
                             <div class="menu-dropdown acnav-list">
                                 <ul>
-                                    <li data-name="profile">
-                                        <a
-                                            href="{{ route('store.slug', $store->slug) }}">{{ __('My Dashboard') }}</a>
+                                    <li>
+                                        <a href="{{ route('store.slug', $store->slug) }}">
+                                            {{ __('My Dashboard') }}</a>
                                     </li>
-                                    <li data-name="activity">
-                                        <a href="#" data-ajax-popup="true"
-                                            data-title="{{ __('Edit Profile') }}" data-toggle="modal"
+                                    <li>
+                                        <a href="#" data-size="lg"
                                             data-url="{{ route('customer.profile', [$store->slug, \Illuminate\Support\Facades\Crypt::encrypt(Auth::guard('customers')->user()->id)]) }}"
-                                            class="modal-target" data-modal="Myaccount">{{ __('Edit Profile') }}</a>
+                                            data-ajax-popup="true" data-title="{{ __('Edit Profile') }}"
+                                            data-toggle="modal">{{ __('My Profile') }}</a>
                                     </li>
-                                    <li data-name="activity">
-                                        <a
-                                            href="{{ route('customer.home', $store->slug) }}">{{ __('My Orders') }}</a>
+                                    <li>
+                                        <a href="{{ route('customer.home', $store->slug) }}">
+                                            {{ __('My Orders') }}</a>
                                     </li>
                                     <li>
                                         @if (Utility::CustomerAuthCheck($store->slug) == false)
@@ -386,10 +323,7 @@
                                             </a>
                                         @else
                                             <a href="#"
-                                                onclick="event.preventDefault(); document.getElementById('customer-frm-logout').submit();"
-                                                class="nav-link">
-                                                {{ __('Logout') }}
-                                            </a>
+                                                onclick="event.preventDefault(); document.getElementById('customer-frm-logout').submit();">{{ __('Logout') }}</a>
                                             <form id="customer-frm-logout"
                                                 action="{{ route('customer.logout', $store->slug) }}" method="POST"
                                                 class="d-none">
@@ -401,10 +335,8 @@
                             </div>
                         </li>
                     @else
-                        <li class="login-btn-header set has-children login-btn-header-2">
-                            <a href="{{ route('customer.login', $store->slug) }}" class="acnav-label">
-                                <span class="login-text" style="display: block;">{{ __('Log in') }}</span>
-                            </a>
+                        <li class="login-btn-header-2 set has-children">
+                            <a href="{{ route('customer.login', $store->slug) }}" class="acnav-label">{{ __('Log in') }}</a>
                         </li>
                     @endif
                     <li class="language-header-2 set has-children has-item">
@@ -414,17 +346,16 @@
                         </a>
                         <div class="menu-dropdown acnav-list">
                             <ul>
-                                @foreach ($languages as $code => $language)
+                                @foreach ($specific_langs as $code => $language)
                                     <li><a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
-                                            class="@if ($language == $currantLang) active-language text-primary @endif">{{  ucFirst($language) }}</a>
+                                            class="dropdown-item @if ($language == $currantLang) active-language text-primary @endif">{{  ucFirst($language) }}</a>
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
                     </li>
                 </ul>
-            </div>
-
+            </div> --}}
         </div>
     </header>
 

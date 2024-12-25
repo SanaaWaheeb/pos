@@ -2330,7 +2330,7 @@ body.no-scroll {
     right: 0;
     top: 0;
     z-index: 3;
-    padding: 15px 0; /****** added *********/
+    padding: 20px 0;    
     -webkit-transition: all ease-in-out 0.5s;
     -moz-transition: all ease-in-out 0.5s;
     -ms-transition: all ease-in-out 0.5s;
@@ -3094,7 +3094,7 @@ input {
 
 .product-card .card-content h6 {
     font-weight: bold;
-    font-size: 20px;
+    font-size: 15px; /*********** 20px -> CHANGED *************/
     line-height: 22px;
     letter-spacing: 1px;
     margin-bottom: 10px;
@@ -4541,7 +4541,7 @@ del {
     width: 100%;
 }
 
-.set .acnav-label:after {
+/* .set .acnav-label:after {
     border-top: 2px solid var(--second-color);
     border-right: 2px solid var(--second-color);
     content: '';
@@ -4564,7 +4564,7 @@ del {
     -ms-transition: all ease-in-out 0.5s;
     -o-transition: all ease-in-out 0.5s;
     transition: all ease-in-out 0.5s;
-}
+} */
 
 .set .acnav-list {
     padding: 15px;
