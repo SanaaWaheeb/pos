@@ -2508,6 +2508,7 @@ button, input {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 90px; /***** Added *****/
 }
 .bestseller-title h2{
     color: var(--theme-color);
@@ -2618,6 +2619,7 @@ button, input {
 
 .product-card .card-content {
     padding: 15px;
+    width: 100%; /***** Added ******/
 }
 
 .product-card .card-content h6 {

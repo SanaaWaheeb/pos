@@ -3096,6 +3096,7 @@ input {
 
 .product-card .card-content {
     padding: 15px;
+    width: 100%; /***** Added ******/
 }
 
 .product-card .card-content h6 {
