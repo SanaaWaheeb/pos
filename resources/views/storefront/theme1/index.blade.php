@@ -104,22 +104,21 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         <div class="container">
             <div class="bestseller-title">
                 <h2>{{ __('Products') }}</h2>
-                <div class="tab-bar">
-                    <ul class="cat-tab tabs">
-                    @foreach ($categories as $key => $category)
-                        <li class="tab-link {{ $key == 0 ? 'active' : '' }}" data-tab="tab-{!! preg_replace('/[^A-Za-z0-9\-]/', '_', $category) !!}">
-                            <a href="##" >
-                                {{ __($category) }}
-                            </a>
-                        </li>
-                    @endforeach
-                    </ul>
-                </div>
+              <div class="tab-bar">
+                        <ul class="cat-tab tabs" id="myTab">
+                            @foreach ($categories as $key => $category)
+                            <li class="tab-link {{ $key == 0 ? 'active' : '' }}" data-tab="tab-{!! preg_replace('/[^A-Za-z0-9\-]/', '_', $category) !!}">
+                                <a href="##" >
+                                    {{ __($category) }}
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
             </div>
             <div class="tabs-container">
                 @foreach ($products as $key => $items)
-                    <div class="tab-content {{ $key == 'Start shopping' ? 'active show' : '' }}" id="tab-{!! preg_replace('/[^A-Za-z0-9\-]/', '_', $key) !!}">
-
+                <div id="tab-{!! preg_replace('/[^A-Za-z0-9\-]/', '_', $key) !!}" class="tab-content {{ $key == 'Start shopping' ? 'active' : '' }}">
                         @if ($items->count() > 0)
                             <div class="row products-grid">
                                 @foreach ($items as $product)
@@ -277,7 +276,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                         <img alt="Image placeholder" src="{{ asset(Storage::url('uploads/is_cover_image/default.jpg')) }}">
                                     @endif
                                 </a>
-                                 <div class="heart-icon"> 
+                                 {{-- <div class="heart-icon"> 
                                     @if (Auth::guard('customers')->check())
                                         @if (!empty($wishlist) && isset($wishlist[$topRatedProduct->product->id]['product_id']))
                                             @if ($wishlist[$topRatedProduct->product->id]['product_id'] != $topRatedProduct->product->id)
@@ -306,9 +305,9 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                             <i class="far fa-heart"></i>
                                         </a>
                                     @endif
-                                 </div> 
+                                 </div>  --}}
                             </div>
-                            <div class="card-content">
+                            {{-- <div class="card-content">
                                 <div class="rating">
 
                                     @if ($store->enable_rating == 'on')
@@ -330,7 +329,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                         <i class="star fas {{ $icon . ' ' . $color }}"></i>
                                         @endfor
                                     @endif
-                                </div>
+                                </div> --}}
                                 <h6>
                                     <a href="#">{{ $topRatedProduct->product->name }}</a>
                                 </h6>
@@ -598,6 +597,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                 error: function(result) {}
             });
         });
+
+        
         $(".productTab").click(function(e) {
             e.preventDefault();
             $('.productTab').removeClass('active')
