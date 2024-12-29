@@ -3945,7 +3945,7 @@ table tr td img {
 
 
 .checkout-box{
-    background-color: none;
+    background-color: none; /*changed*/
     padding: 20px;
     
 }
@@ -4156,7 +4156,7 @@ button.close span{
 .mini-cart-header {
     margin-bottom: 15px;
 }
-.mini-cart-item {
+.mini-cart-item { /*changed*/
     margin: 1rem 0;
     display: -webkit-box;
     display: -ms-flexbox;

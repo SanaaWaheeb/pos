@@ -27,7 +27,7 @@
         <p><strong>{{ __('Order Id') }}: </strong> {{ $order_id }}. </p>
     </div>
     <div class="checkout-btn" style="margin: 2rem 0;">
-        <a href="{{ url("/user-cart-item/{$store->slug}/scanner") }}"> {{ __('Return to Scanner') }} </a>
+        <a href="{{ url("/store/{$store->slug}") }}"> {{ __('Return to Store') }} </a>
     </div>
 </div>
 @endsection
