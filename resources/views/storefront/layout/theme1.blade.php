@@ -69,6 +69,7 @@
         href="{{ asset(Storage::url('uploads/logo/') . (!empty($setting->value) ? $setting->value : 'favicon.png' . '?timestamp='. time())) }}"
         type="image/png">
     <link rel="stylesheet" href="{{ asset('assets/theme1/fonts/fontawesome-free/css/all.min.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     @if (isset($data->value) && $data->value == 'on')
         <link rel="stylesheet" href="{{ asset('assets/theme1/css/rtl-main-style.css') }}">
@@ -361,7 +362,7 @@
 
     @yield('content')
 
-    <footer class="footer">
+    {{-- <footer class="footer">
         <div class="container">
             <div class="row footer-top">
 
@@ -622,7 +623,77 @@
                 </div>
             @endif
         </div>
+    </footer> --}}
+
+    @if (Route::currentRouteName() !== 'payment.status')
+    <footer class="footer" style="
+        width: 100%;
+        position: fixed;
+        bottom: 0;
+        padding: 0.8rem 0;
+        background-color: var(--white);
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+    ">
+        <style>
+            #tab-container {
+                width: 90%;
+                display: flex;
+                align-items: center;
+                background-color: #eeeeee;
+                border-radius: 1rem;
+                text-align: center;
+                margin: 0 auto;
+            }
+        
+            .tab {
+                flex: 1;
+                cursor: pointer;
+                padding: 0.5rem;
+                border-radius: 1rem;
+                background-color: #eeeeee;
+                color: #6c757d;
+                font-weight: bold;
+                transition: background-color 0.3s, color 0.3s;
+            }
+        
+            .active-tab {
+                color: #eeeeee;
+                background-color: var(--theme-color);
+            }
+        </style>
+        
+        <div id="tab-container">
+            {{-- Cart Button --}}
+            <div 
+                class="tab {{ Request::is("user-cart-item/{$store->slug}/cart") ? 'active-tab' : '' }}" 
+                data-tab="cart"
+                onclick="location.href='{{ url("user-cart-item/{$store->slug}/cart") }}'"
+            >
+                <div>
+                    <i class="fa-solid fa-shopping-cart" style="font-size: 1rem;"></i>
+                    <span>
+                        {{ __('Cart') }}
+                        <span id="cart-item-count" style="font-weight: 300">({{ $cart['cart_item_count'] ?? 0 }})</span>
+                    </span>
+                </div>
+            </div>
+        
+            {{-- Store Button --}}
+            <div 
+                class="tab {{ Request::is("store/{$store->slug}") ? 'active-tab' : '' }}" 
+                data-tab="store"
+                onclick="location.href='{{ url("store/{$store->slug}") }}'"
+            >
+                <div>
+                    <i class="fa-solid fa-house"></i>
+                    {{ __('Store') }}
+                </div>
+            </div>
+        </div> 
     </footer>
+    @endif
+
     @if ($getStoreThemeSetting[16]['section_enable'] == 'on')
         <script>
             {!! $getStoreThemeSetting[18]['inner-list'][0]['field_default_text'] !!}

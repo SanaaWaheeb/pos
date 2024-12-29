@@ -413,10 +413,19 @@
     @yield('content')
 
 
-    @if(Request::is("user-cart-item/{$store->slug}/cart") || Request::is("user-cart-item/{$store->slug}/scanner"))
-    <footer class="footer" style="margin: 1rem 5%; width: 90%; position: fixed; bottom: 0">
+    @if(Route::currentRouteName() !== 'payment.status')
+    <footer class="footer" style="
+        width: 100%; 
+        position: fixed; 
+        bottom: 0;
+        padding: 0.8rem 0;
+        background-color: var(--white);
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
+    ">
         <style>
             #tab-container {
+                width: 90%;
                 display: flex;
                 align-items: center;
                 background-color: #eeeeee;
