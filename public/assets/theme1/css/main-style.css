@@ -2975,6 +2975,7 @@ input {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 90px;
 }
 
 .bestseller-title h2 {
@@ -3031,6 +3032,7 @@ input {
     border-radius: 8px;
     border: 1px solid var(--border-color);
     overflow: hidden;
+    
 }
 
 .product-card:hover {
@@ -3065,7 +3067,7 @@ input {
 .product-card .card-img a:not(.wishlist-icon) {
     position: relative;
     display: block;
-    padding-top: 80%;
+   
     transition: all ease-in-out 0.6s;
     -webkit-transition: all ease-in-out 0.6s;
     -moz-transition: all ease-in-out 0.6s;
@@ -3074,23 +3076,14 @@ input {
 }
 
 .product-card .card-img a img {
-    position: absolute;
+   
     top: 0;
     left: 0;
     right: 15px;
     height: 100%;
     width: 100%;
     object-fit: contain;
-    transition: all ease-in-out 0.2s;
-    -webkit-transition: all ease-in-out 0.2s;
-    -moz-transition: all ease-in-out 0.2s;
-    -ms-transition: all ease-in-out 0.2s;
-    -o-transition: all ease-in-out 0.2s;
-    transform: scale(1);
-    -webkit-transform: scale(1);
-    -moz-transform: scale(1);
-    -ms-transform: scale(1);
-    -o-transform: scale(1);
+
 }
 
 .product-card:hover .card-img a img {

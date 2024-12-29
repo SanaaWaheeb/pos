@@ -15,7 +15,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
 
 @section('content')
 <div class="wrapper">
-    @foreach ($pixelScript as $script)
+    {{-- @foreach ($pixelScript as $script)
         <?= $script; ?>
     @endforeach
     @foreach($getStoreThemeSetting as $ThemeSetting )
@@ -52,9 +52,9 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         </div>
     </section>
     @endif
-    @endforeach
+    @endforeach --}}
 
-@if($getStoreThemeSetting[1]['section_enable'] == 'on')
+{{-- @if($getStoreThemeSetting[1]['section_enable'] == 'on')
 <section class="store-promotions padding-top padding-bottom">
     <div class="container">
         <div class="row">
@@ -94,7 +94,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         </div>
     </div>
 </section>
-@endif
+@endif --}}
 
 
 <!-- Products -->
@@ -133,8 +133,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                         <img alt="Image placeholder" src="{{ asset(Storage::url('uploads/is_cover_image/default.jpg')) }}" >
                                                     @endif
                                                 </a>
-                                                {{--  {{--  <div class="heart-icon">    --}}
-                                                    {{-- @if (Auth::guard('customers')->check())
+                                                  {{-- <div class="heart-icon">   
+                                                    @if (Auth::guard('customers')->check())
                                                         @if (!empty($wishlist) && isset($wishlist[$product->id]['product_id']))
                                                             @if ($wishlist[$product->id]['product_id'] != $product->id)
                                                                 <a
@@ -161,8 +161,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                             data-id="{{ $product->id }}">
                                                             <i class="far fa-heart"></i>
                                                         </a>
-                                                    @endif --}}
-                                                {{--  </div>  --}}
+                                                    @endif
+                                                 </div>  --}}
                                             </div>
                                             <div class="card-content">
                                                 {{-- <div class="rating">
@@ -225,7 +225,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
     </section>
     @endif
 
-@if($getStoreThemeSetting[2]['section_enable'] == 'on')
+{{-- @if($getStoreThemeSetting[2]['section_enable'] == 'on')
     @foreach ($getStoreThemeSetting as $storethemesetting)
         @if (isset($storethemesetting['section_name']) && $storethemesetting['section_name'] == 'Home-Email-Subscriber' && $storethemesetting['section_enable'] == 'on')
             @php
@@ -257,7 +257,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
             </section>
         @endif
     @endforeach
-@endif
+@endif --}}
 @if (count($topRatedProducts) > 0)
     <section class="top-product padding-bottom">
         <div class="container">
@@ -277,8 +277,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                         <img alt="Image placeholder" src="{{ asset(Storage::url('uploads/is_cover_image/default.jpg')) }}">
                                     @endif
                                 </a>
-                                {{--  <div class="heart-icon">  --}}
-                                    {{-- @if (Auth::guard('customers')->check())
+                                 <div class="heart-icon"> 
+                                    @if (Auth::guard('customers')->check())
                                         @if (!empty($wishlist) && isset($wishlist[$topRatedProduct->product->id]['product_id']))
                                             @if ($wishlist[$topRatedProduct->product->id]['product_id'] != $topRatedProduct->product->id)
                                                 <a
@@ -305,13 +305,13 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                             data-id="{{ $topRatedProduct->product->id }}">
                                             <i class="far fa-heart"></i>
                                         </a>
-                                    @endif --}}
-                                {{--  </div>  --}}
+                                    @endif
+                                 </div> 
                             </div>
                             <div class="card-content">
-                                {{-- <div class="rating"> --}}
+                                <div class="rating">
 
-                                    {{-- @if ($store->enable_rating == 'on')
+                                    @if ($store->enable_rating == 'on')
                                         @for ($i = 1; $i <= 5; $i++)
                                             @php
                                                 $icon = 'fa-star';
@@ -329,8 +329,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
 
                                         <i class="star fas {{ $icon . ' ' . $color }}"></i>
                                         @endfor
-                                    @endif --}}
-                                {{-- </div> --}}
+                                    @endif
+                                </div>
                                 <h6>
                                     <a href="#">{{ $topRatedProduct->product->name }}</a>
                                 </h6>
@@ -360,7 +360,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         </div>
     </section>
 @endif
-@foreach ($getStoreThemeSetting as $storethemesetting)
+{{-- @foreach ($getStoreThemeSetting as $storethemesetting)
     @if (isset($storethemesetting['section_name']) && $storethemesetting['section_name'] == 'Home-Categories' && $storethemesetting['section_enable'] == 'on' && !empty($pro_categories))
         @php
         $Titlekey = array_search('Title', array_column($storethemesetting['inner-list'], 'field_name'));
@@ -403,7 +403,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
             </div>
         </section>
     @endif
-@endforeach
+@endforeach --}}
 
 {{-- @if($getStoreThemeSetting[4]['section_enable'] == 'on')
 <section class="testimonial-section padding-bottom">

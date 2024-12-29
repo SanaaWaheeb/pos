@@ -172,7 +172,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                                                 </div>
         
                                                                 <div>
-                                                                    <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fa-solid fa-trash-can"></i></a>
+                                                                    <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fa s fa-trash"></i></a>
                                                                     {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
                                                                     {!! Form::close() !!}
                                                                 </div>
