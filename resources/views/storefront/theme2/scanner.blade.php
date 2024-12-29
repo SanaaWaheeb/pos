@@ -2,11 +2,12 @@
 @section('page-title') 
     {{ __('Scan and Add to Cart') }} 
 @endsection 
- 
+
 @php 
     $cart = session()->get($store->slug); 
     $imgpath = \App\Models\Utility::get_file('uploads/is_cover_image/'); 
 @endphp 
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
 @section('content') 
@@ -90,9 +91,8 @@
 @push('script-page')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
 
-
 <script>
-   document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     const scannerContainer = document.getElementById('scanner-container');
     const scanResult = document.getElementById('scan-result');
     const manualBarcodeButton = document.getElementById('manualBarcodeButton');
@@ -109,11 +109,13 @@
         accessDenied: @json(__('Camera access denied. Please allow camera permissions to use the scanner')),
     };
     
- 
-
     // Initialize Quagga barcode scanner
-    navigator.mediaDevices.getUserMedia({ video: true })
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
         .then(function (stream) {
+            const video = document.getElementById('scanner-preview');
+            video.srcObject = stream;
+            video.setAttribute("playsinline", true); // Required for iOS
+
             Quagga.init(
                 {
                     inputStream: {
@@ -155,28 +157,28 @@
                         'X-Requested-With': 'XMLHttpRequest',
                     },
                 })
-                    .then((response) => response.json())
-                    .then((result) => {
-                        if (result.status === 'success') {
-                            const cartItemsCountElements = document.getElementById('cart-item-count');
-                            if (cartItemsCountElements) {
-                                cartItemsCountElements.textContent = `(${result.cart_items})`
-                            }
-                            show_toastr('success', result.message, "success");
-                            console.log(result.cart);
-                        } else {
-                            show_toastr('Error', result.error, 'error');
+                .then((response) => response.json())
+                .then((result) => {
+                    if (result.status === 'success') {
+                        const cartItemsCountElements = document.getElementById('cart-item-count');
+                        if (cartItemsCountElements) {
+                            cartItemsCountElements.textContent = `(${result.cart_items})`
                         }
-                    })
-                    .catch((error) => {
-                        console.error("Error:", error);
-                    })
-                    .finally(() => {
-                        setTimeout(() => {
-                            isProcessing = true;
-                            scanResult.textContent = translations.scanning;
-                        }, 3000);
-                    });
+                        show_toastr('success', result.message, "success");
+                        console.log(result.cart);
+                    } else {
+                        show_toastr('Error', result.error, 'error');
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                })
+                .finally(() => {
+                    setTimeout(() => {
+                        isProcessing = true;
+                        scanResult.textContent = translations.scanning;
+                    }, 3000);
+                });
             });
         })
         .catch(function (error) {
@@ -211,25 +213,24 @@
                 'X-Requested-With': 'XMLHttpRequest',
             },
         })
-            .then((response) => response.json())
-            .then((result) => {
-                if (result.status === 'success') {
-                    const cartItemsCountElements = document.getElementById('cart-item-count');
-                    if (cartItemsCountElements) {
-                        cartItemsCountElements.textContent = `(${result.cart_items})`
-                    }
-                    show_toastr('success', result.message, "success");
-                    manualBarcodeModal.hide();
-                } else {
-                    show_toastr('Error', result.error, 'error');
+        .then((response) => response.json())
+        .then((result) => {
+            if (result.status === 'success') {
+                const cartItemsCountElements = document.getElementById('cart-item-count');
+                if (cartItemsCountElements) {
+                    cartItemsCountElements.textContent = `(${result.cart_items})`
                 }
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("An error occurred while processing the barcode.");
-            });
+                show_toastr('success', result.message, "success");
+                manualBarcodeModal.hide();
+            } else {
+                show_toastr('Error', result.error, 'error');
+            }
+        })
+        .catch((error) => {
+            console.error("Error:", error);
+            alert("An error occurred while processing the barcode.");
+        });
     });
 });
-
 </script>
 @endpush
