@@ -126,6 +126,36 @@
             right: auto !important;
         }
     }
+    /* ----------------------- Added ----------------------- */
+    @media screen and (max-width: 767px){
+            [dir="rtl"] .mobile-menu-bottom .profile-header-2 .menu-dropdown {
+                right: 0;
+                left: auto;
+            }
+        }
+        @media screen and (max-width: 767px){
+            [dir="rtl"] .mobile-menu-bottom .menu-dropdown ul {
+                display: block;
+            }
+        }
+        [dir="rtl"] .site-header .menu-dropdown ul>li:not(:last-of-type) {
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        [dir="rtl"] .site-header .menu-dropdown {
+            position: absolute;
+            top: 100%;
+            transform-origin: top;
+            background: var(--white);
+            min-width: 150px;
+            z-index: 2;
+            padding: 20px 20px 20px 10px !important;
+            border-top: 0;
+            opacity: 1;
+            visibility: visible;
+            transform: scaleY(1);
+        }
+        /* ------------------------------------------------- */
     </style>
     @stack('css-page')
 </head>
