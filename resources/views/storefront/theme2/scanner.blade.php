@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         target: scannerContainer,
                     },
                     decoder: {
-                        readers: ["upc_reader", "ean_reader", "code_128_reader"],
+                        readers: ["ean_8_reader","upc_reader", "ean_reader","code_39_reader","code_93_reader","code_128_reader"],
                     },
                 },
                 function (err) {
