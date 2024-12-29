@@ -126,7 +126,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                     <div class="col-lg-3 col-md-4 col-sm-6 col-12">
                                         <div class="product-card">
                                             <div class="card-img">
-                                                <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}">
+                                                <a>
                                                     @if (!empty($product->is_cover))
                                                         <img alt="Image placeholder" src="{{ $productImg . $product->is_cover }}" >
                                                     @else
@@ -184,7 +184,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                     @endif
                                                 </div> --}}
                                                 <h6>
-                                                    <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}">{{ $product->name }}</a>
+                                                    <a>{{ $product->name }}</a>
                                                 </h6>
                                             {{-- <p><span class="td-gray">{{ __('Category') }}:</span>{{ $product->product_category() }}</p> --}}
 
@@ -199,7 +199,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                         </ins>
                                                     </div>
                                                     @if ($product->enable_product_variant == 'on')
-                                                        <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn"> <i class="fas fa-shopping-basket"></i></a>
+                                                        <a class="cart-btn"> <i class="fas fa-shopping-basket"></i></a>
                                                     @else
                                                     <a data-id="{{ $product->id }}" class="cart-btn add_to_cart"> <i class="fas fa-shopping-basket"></i></a>
                                                     @endif
@@ -347,7 +347,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                         </ins>
                                     </div>
                                     @if ($topRatedProduct->product->enable_product_variant == 'on')
-                                        <a href="{{ route('store.product.product_view', [$store->slug, $topRatedProduct->product->id]) }}" class="cart-btn"> <i class="fas fa-shopping-basket"></i></a>
+                                        <a class="cart-btn"> <i class="fas fa-shopping-basket"></i></a>
                                     @else
                                         <a href="javascript:void(0)" class="cart-btn add_to_cart" data-id="{{ $topRatedProduct->product->id }}"> <i class="fas fa-shopping-basket"></i></a>
                                     @endif
@@ -562,6 +562,10 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                 },
                 success: function(response) {
                     if (response.status == "Success") {
+                        const cartItemsCountElements = document.getElementById('cart-item-count');
+                        if (cartItemsCountElements) {
+                            cartItemsCountElements.textContent = `(${response.item_count})`
+                        }
                         show_toastr('Success', response.success, 'success');
                         $("#shoping_counts").html(response.item_count);
                     } else {
