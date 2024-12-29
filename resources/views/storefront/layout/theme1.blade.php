@@ -1,4 +1,5 @@
 @php
+    $cart = session()->get($store->slug);
     $data = DB::table('settings');
     $data = $data
         ->where('created_by', '>', 1)

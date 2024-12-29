@@ -2270,6 +2270,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             $product = Product::find($product_id);
 
             $cart = session()->get($slug);
+            $cart_items = $cart['cart_item_count'] ?? 0;
             $quantity = $product->quantity;
             if ($variant_id > 0) {
                 $quantity = $variant->quantity;
@@ -2377,6 +2378,10 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                         'variant_id' => 0,
                     ];
                 }
+
+                // Update cart item count every time a new item is added to the cart
+                $cart_items += 1;
+                $cart['cart_item_count'] = $cart_items;
                 session()->put($slug, $cart);
 
                 return response()->json(
@@ -2385,7 +2390,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                         'status' => 'Success',
                         'success' => $productname . __('added to cart successfully!'),
                         'cart' => $cart['products'],
-                        'item_count' => count($cart['products']),
+                        'item_count' => $cart_items, // count($cart['products'])
                     ]
                 );
             }
@@ -2414,6 +2419,9 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                             );
                         }
 
+                        // Update cart item count every time a new item is added to the cart
+                        $cart_items += 1;
+                        $cart['cart_item_count'] = $cart_items;
                         session()->put($slug, $cart);
 
                         return response()->json(
@@ -2422,7 +2430,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                 'status' => 'Success',
                                 'success' => $productname . __('   added to cart successfully!'),
                                 'cart' => $cart['products'],
-                                'item_count' => count($cart['products']),
+                                'item_count' => $cart_items, // count($cart['products'])
                             ]
                         );
                     }
@@ -2450,6 +2458,9 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                             );
                         }
 
+                        // Update cart item count every time a new item is added to the cart
+                        $cart_items += 1;
+                        $cart['cart_item_count'] = $cart_items;
                         session()->put($slug, $cart);
 
                         return response()->json(
@@ -2458,7 +2469,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                 'status' => 'Success',
                                 'success' => $productname . __('   added to cart successfully!'),
                                 'cart' => $cart['products'],
-                                'item_count' => count($cart['products']),
+                                'item_count' => $cart_items, // count($cart['products'])
                             ]
                         );
                     }
@@ -2500,6 +2511,9 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 ];
             }
 
+            // Update cart item count every time a new item is added to the cart
+            $cart_items += 1;
+            $cart['cart_item_count'] = $cart_items;
             session()->put($slug, $cart);
             return response()->json(
                 [
@@ -2507,7 +2521,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     'status' => 'Success',
                     'success' => $productname . __('   added to cart successfully!'),
                     'cart' => $cart['products'],
-                    'item_count' => count($cart['products']),
+                    'item_count' => $cart_items, // count($cart['products'])
                 ]
             );
         }
@@ -2537,7 +2551,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         }
         if (isset($cart['products'][$key])) {
 
-            // Calculate difference between current & new quantity to reflect car items count changes
+            // Calculate difference between current & new quantity to reflect cart items count changes
             $current_qty = $cart['products'][$key]['quantity'];
             $qty_difference = $request->product_qty - $current_qty;
 
