@@ -561,6 +561,10 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                 },
                 success: function(response) {
                     if (response.status == "Success") {
+                        const cartItemsCountElements = document.getElementById('cart-item-count');
+                        if (cartItemsCountElements) {
+                            cartItemsCountElements.textContent = `(${response.item_count})`
+                        }
                         show_toastr('Success', response.success, 'success');
                         $("#shoping_counts").html(response.item_count);
                     } else {
