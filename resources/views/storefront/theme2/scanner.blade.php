@@ -6,6 +6,8 @@
 @php 
     $cart = session()->get($store->slug); 
     $imgpath = \App\Models\Utility::get_file('uploads/is_cover_image/'); 
+    $successAudioPath = asset('storage/uploads/audios/successScan.mp3');
+    $failurAudioPath = asset('storage/uploads/audios/wrongScan.mp3');
 @endphp 
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -140,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
             );
 
             Quagga.onDetected(function (data) {
+                let audioURL;
                 if (!isProcessing) return;
 
                 isProcessing = false;
@@ -160,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then((response) => response.json())
                 .then((result) => {
                     if (result.status === 'success') {
+                        audioURL = "{{ $successAudioPath }}";
                         const cartItemsCountElements = document.getElementById('cart-item-count');
                         if (cartItemsCountElements) {
                             cartItemsCountElements.textContent = `(${result.cart_items})`
@@ -167,7 +171,16 @@ document.addEventListener('DOMContentLoaded', function () {
                         show_toastr('success', result.message, "success");
                         console.log(result.cart);
                     } else {
+                        audioURL = "{{ $failurAudioPath }}";
                         show_toastr('Error', result.error, 'error');
+                    }
+
+                    // Play Sound Effect
+                    if (audioURL) {
+                        const successSound = new Audio(audioURL);
+                        successSound.play().catch(error => console.error("Audio playback failed:", error));
+                    } else {
+                        console.error("Audio path is empty");
                     }
                 })
                 .catch((error) => {
@@ -192,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Handle manual barcode submission
     submitManualBarcode.addEventListener('click', function () {
+        let audioURL;
         const barcode = manualBarcodeInput.value.trim();
 
         // Show error if input is empty
@@ -216,6 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then((response) => response.json())
         .then((result) => {
             if (result.status === 'success') {
+                audioURL = "{{ $successAudioPath }}";
                 const cartItemsCountElements = document.getElementById('cart-item-count');
                 if (cartItemsCountElements) {
                     cartItemsCountElements.textContent = `(${result.cart_items})`
@@ -223,7 +238,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 show_toastr('success', result.message, "success");
                 manualBarcodeModal.hide();
             } else {
+                audioURL = "{{ $failurAudioPath }}";
                 show_toastr('Error', result.error, 'error');
+            }
+
+            // Play Sound Effect
+            if (audioURL) {
+                const successSound = new Audio(audioURL);
+                successSound.play().catch(error => console.error("Audio playback failed:", error));
+            } else {
+                console.error("Audio path is empty");
             }
         })
         .catch((error) => {
