@@ -4030,7 +4030,7 @@ form .row {
 .form-footer>*:not(:last-of-type){
     margin-right: 15px;
 }
-.bg-primary{
+.bg-primary{ /*changed*/
     background-color: #4BB543 !important;
 }
 .toast-body{

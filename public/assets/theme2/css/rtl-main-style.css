@@ -3491,8 +3491,8 @@ button.close span{
 .form-footer>*:not(:last-of-type){
     margin-right: 15px;
 }
-.bg-primary{
-    background: var(--theme-color);
+.bg-primary{ /*changed*/
+    background-color: #4BB543 !important;
 }
 .toast-body{
     padding: 15px 40px 15px 15px;
