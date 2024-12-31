@@ -432,6 +432,7 @@
                 border-radius: 1rem;
                 text-align: center;
                 margin: 0 auto;
+                flex-direction: {{ $data->value == 'on' ? 'row-reverse' : 'row' }};"
             }
         
             .tab {

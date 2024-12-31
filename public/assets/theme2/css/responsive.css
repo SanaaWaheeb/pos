@@ -245,7 +245,7 @@
     justify-content: center;
   }
   .checkout-box a{
-    width: 100%;
+    width: 80%; /******** changed **********/
   }
   .addres-btn{
     justify-content: start;
@@ -321,7 +321,7 @@
     right: 0 !important;
   }
   .language-header-2 .menu-dropdown{
-    min-width: 60px;
+    /* min-width: 60px; */
     left: auto;
   }
   .home-banner-section .banner-text {
