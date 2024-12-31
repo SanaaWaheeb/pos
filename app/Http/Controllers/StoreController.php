@@ -1764,7 +1764,7 @@ class StoreController extends Controller
                 [
                     'code' => 200,
                     'status' => 'success',
-                    'message' => __('Product') . ' ' . $product->name . ' ' . __('is added to the cart!'),
+                    'message' =>  $product->name . ' ' . __('is added to the cart!'),
                     'cart' => $cart,
                     'product' => $product,
                     'cart_items' => $cart_items,
