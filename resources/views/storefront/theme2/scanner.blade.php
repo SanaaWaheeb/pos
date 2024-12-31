@@ -14,7 +14,7 @@
 
 @section('content') 
 
-<div class="wrapper" style="padding-top: 1rem; flex: 1; display: flex; flex-direction: column; justify-content: center"> 
+<div class="wrapper" style="flex: 1; display: flex; flex-direction: column; justify-content: center"> 
     <section class="scanner-section py-5"> 
         <div class="container"> 
             <div class="row justify-content-center"> 
@@ -103,14 +103,46 @@ document.addEventListener('DOMContentLoaded', function () {
     const manualBarcodeInput = document.getElementById('manualBarcodeInput');
     const barcodeError = document.getElementById('barcodeError');
     let isProcessing = true; // Prevent multiple detections of the same barcode
-    
+
     const translations = {
         scanning: @json(__('Scanning... Please wait')),
         barcodeDetected: @json(__('Barcode detected')),
         cameraError: @json(__('Error initializing scanner. Please check your camera settings')),
         accessDenied: @json(__('Camera access denied. Please allow camera permissions to use the scanner')),
     };
-    
+
+    // Initialize AudioContext
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let audioUnlocked = false;
+
+    // Unlock audio playback with a silent interaction
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 0.1, audioContext.sampleRate);
+        const source = audioContext.createBufferSource();
+        source.buffer = buffer;
+        source.connect(audioContext.destination);
+        source.start(0);
+        audioUnlocked = true;
+    }
+
+    // Add event listener to unlock audio on first user interaction
+    document.body.addEventListener('click', unlockAudio, { once: true });
+
+    // Function to play audio
+    function playAudio(audioURL) {
+        fetch(audioURL)
+            .then(response => response.arrayBuffer())
+            .then(buffer => audioContext.decodeAudioData(buffer))
+            .then(decodedData => {
+                const source = audioContext.createBufferSource();
+                source.buffer = decodedData;
+                source.connect(audioContext.destination);
+                source.start(0);
+            })
+            .catch(error => console.error("Audio playback failed:", error));
+    }
+
     // Initialize Quagga barcode scanner
     navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
         .then(function (stream) {
@@ -160,38 +192,37 @@ document.addEventListener('DOMContentLoaded', function () {
                         'X-Requested-With': 'XMLHttpRequest',
                     },
                 })
-                .then((response) => response.json())
-                .then((result) => {
-                    if (result.status === 'success') {
-                        audioURL = "{{ $successAudioPath }}";
-                        const cartItemsCountElements = document.getElementById('cart-item-count');
-                        if (cartItemsCountElements) {
-                            cartItemsCountElements.textContent = `(${result.cart_items})`
+                    .then((response) => response.json())
+                    .then((result) => {
+                        if (result.status === 'success') {
+                            audioURL = "{{ $successAudioPath }}";
+                            const cartItemsCountElements = document.getElementById('cart-item-count');
+                            if (cartItemsCountElements) {
+                                cartItemsCountElements.textContent = `(${result.cart_items})`;
+                            }
+                            show_toastr('success', result.message, "success");
+                            console.log(result.cart);
+                        } else {
+                            audioURL = "{{ $failurAudioPath }}";
+                            show_toastr('Error', result.error, 'error');
                         }
-                        show_toastr('success', result.message, "success");
-                        console.log(result.cart);
-                    } else {
-                        audioURL = "{{ $failurAudioPath }}";
-                        show_toastr('Error', result.error, 'error');
-                    }
 
-                    // Play Sound Effect
-                    if (audioURL) {
-                        const successSound = new Audio(audioURL);
-                        successSound.play().catch(error => console.error("Audio playback failed:", error));
-                    } else {
-                        console.error("Audio path is empty");
-                    }
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                })
-                .finally(() => {
-                    setTimeout(() => {
-                        isProcessing = true;
-                        scanResult.textContent = translations.scanning;
-                    }, 3000);
-                });
+                        // Play Sound Effect
+                        if (audioURL) {
+                            playAudio(audioURL);
+                        } else {
+                            console.error("Audio path is empty");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error:", error);
+                    })
+                    .finally(() => {
+                        setTimeout(() => {
+                            isProcessing = true;
+                            scanResult.textContent = translations.scanning;
+                        }, 3000);
+                    });
             });
         })
         .catch(function (error) {
@@ -227,34 +258,34 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-Requested-With': 'XMLHttpRequest',
             },
         })
-        .then((response) => response.json())
-        .then((result) => {
-            if (result.status === 'success') {
-                audioURL = "{{ $successAudioPath }}";
-                const cartItemsCountElements = document.getElementById('cart-item-count');
-                if (cartItemsCountElements) {
-                    cartItemsCountElements.textContent = `(${result.cart_items})`
+            .then((response) => response.json())
+            .then((result) => {
+                if (result.status === 'success') {
+                    audioURL = "{{ $successAudioPath }}";
+                    const cartItemsCountElements = document.getElementById('cart-item-count');
+                    if (cartItemsCountElements) {
+                        cartItemsCountElements.textContent = `(${result.cart_items})`;
+                    }
+                    show_toastr('success', result.message, "success");
+                    manualBarcodeModal.hide();
+                } else {
+                    audioURL = "{{ $failurAudioPath }}";
+                    show_toastr('Error', result.error, 'error');
                 }
-                show_toastr('success', result.message, "success");
-                manualBarcodeModal.hide();
-            } else {
-                audioURL = "{{ $failurAudioPath }}";
-                show_toastr('Error', result.error, 'error');
-            }
 
-            // Play Sound Effect
-            if (audioURL) {
-                const successSound = new Audio(audioURL);
-                successSound.play().catch(error => console.error("Audio playback failed:", error));
-            } else {
-                console.error("Audio path is empty");
-            }
-        })
-        .catch((error) => {
-            console.error("Error:", error);
-            alert("An error occurred while processing the barcode.");
-        });
+                // Play Sound Effect
+                if (audioURL) {
+                    playAudio(audioURL);
+                } else {
+                    console.error("Audio path is empty");
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while processing the barcode.");
+            });
     });
 });
+
 </script>
 @endpush
