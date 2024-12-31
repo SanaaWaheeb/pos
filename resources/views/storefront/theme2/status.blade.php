@@ -22,7 +22,8 @@
     <p>{{ __('Thank You For Shopping With Us. Please visit again.') }}</p>
     <br>
     <div class="details">
-        <p><strong>{{ __('Total value') }}: </strong> {{ $order_amount }} </p>
+        <p><strong>{{ __('Total value') }}: </strong> {{\App\Models\Utility::priceFormat(!empty($order_amount)?$order_amount:0)}} </p> 
+
         <p><strong>{{ __('Date & Time') }}: </strong>{{ $currentDate }}</p>
         <p><strong>{{ __('Order Id') }}: </strong> {{ $order_id }}. </p>
     </div>

@@ -885,51 +885,47 @@ class Utility extends Model
         return $arr;
     }
     public static function priceFormat($price, $slug = null)
-    {
-        $settings = Utility::settings();
-        if (\Auth::check() && \Auth::User()->type == 'Owner') {
-            if(is_null(self::$store)){
-                $store = Store::find(Auth::user()->current_store);
+{
+    $settings = Utility::settings();
+    $currencySymbol = 'SR'; // Static currency symbol
+
+    if (\Auth::check() && \Auth::User()->type == 'Owner') {
+        if (is_null(self::$store)) {
+            $store = Store::find(Auth::user()->current_store);
+            self::$store = $store;
+        }
+        $settings = self::$store;
+
+        // Always append SR to the right
+        return number_format($price, isset($settings->decimal_number) ? $settings->decimal_number : 2) 
+               . (isset($settings['currency_symbol_space']) && $settings['currency_symbol_space'] == "with" ? ' ' : '') 
+               . $currencySymbol;
+
+    } else {
+        if (!isset($slug)) {
+            $slug = session()->get('slug');
+        }
+
+        if (!empty($slug)) {
+            if (is_null(self::$store)) {
+                $store = Store::where('slug', $slug)->first();
                 self::$store = $store;
             }
-            $settings = self::$store;
-            if ($settings['currency_symbol_position'] == "pre" && $settings['currency_symbol_space'] == "with") {
-                return $settings['currency'] . ' ' . number_format($price, isset($settings->decimal_number) ? $settings->decimal_number : 2);
-            } elseif ($settings['currency_symbol_position'] == "pre" && $settings['currency_symbol_space'] == "without") {
-                return $settings['currency'] . number_format($price, isset($settings->decimal_number) ? $settings->decimal_number : 2);
-            } elseif ($settings['currency_symbol_position'] == "post" && $settings['currency_symbol_space'] == "with") {
-                return number_format($price, isset($settings->decimal_number) ? $settings->decimal_number : 2) . ' ' . $settings['currency'];
-            } elseif ($settings['currency_symbol_position'] == "post" && $settings['currency_symbol_space'] == "without") {
-                return number_format($price, isset($settings->decimal_number) ? $settings->decimal_number : 2) . $settings['currency'];
-            }
+            $store = self::$store;
 
-        } else {
-            if (!isset($slug)) {
-                $slug = session()->get('slug');
-            }
-
-            if (!empty($slug)) {
-                if(is_null(self::$store)){
-                    $store = Store::where('slug', $slug)->first();
-                    self::$store = $store;
-                }
-                $store = self::$store;
-
-                if ($store['currency_symbol_position'] == "pre" && $store['currency_symbol_space'] == "with") {
-                    return $store['currency'] . ' ' . number_format($price, isset($store->decimal_number) ? $store->decimal_number : 2);
-                } elseif ($store['currency_symbol_position'] == "pre" && $store['currency_symbol_space'] == "without") {
-                    return $store['currency'] . number_format($price, isset($store->decimal_number) ? $store->decimal_number : 2);
-                } elseif ($store['currency_symbol_position'] == "post" && $store['currency_symbol_space'] == "with") {
-                    return number_format($price, isset($store->decimal_number) ? $store->decimal_number : 2) . ' ' . $store['currency'];
-                } elseif ($store['currency_symbol_position'] == "post" && $store['currency_symbol_space'] == "without") {
-                    return number_format($price, isset($store->decimal_number) ? $store->decimal_number : 2) . $store['currency'];
-                }
-            }
-
-            //            return (($settings['currency_symbol_position'] == "pre") ? $settings['currency_symbol'] : '') . number_format($price, 2) . (($settings['currency_symbol_position'] == "post") ? $settings['currency_symbol'] : '');
-            return (($settings['currency_symbol_position'] == "pre") ? $settings['site_currency_symbol'] : '') . number_format($price, Utility::getValByName('decimal_number')) . (($settings['currency_symbol_position'] == "post") ? $settings['site_currency_symbol'] : '');
+            // Always append SR to the right
+            return number_format($price, isset($store->decimal_number) ? $store->decimal_number : 2) 
+                   . (isset($store['currency_symbol_space']) && $store['currency_symbol_space'] == "with" ? ' ' : ''). ' '
+                   . $currencySymbol;
         }
+
+        // Default return for settings without store
+        return number_format($price, Utility::getValByName('decimal_number')) 
+               . (isset($settings['currency_symbol_space']) && $settings['currency_symbol_space'] == "with" ? ' ' : '') .' '
+               . $currencySymbol;
     }
+}
+
 
     public static function currencySymbol($settings)
     {
