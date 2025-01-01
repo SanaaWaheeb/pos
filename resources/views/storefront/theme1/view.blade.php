@@ -49,7 +49,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                             @endforeach
                         </div>
                     </div>
-                    <div class="review-box-2">
+                    {{-- <div class="review-box-2">
                         <h5>{{ __('Reviews') }}:
                             <b>{{ $avg_rating }}/5</b>
                             <span> ({{ __('reviews') }}) </span>
@@ -74,7 +74,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 @endif
                             </div>
                             @if (Auth::guard('customers')->check())
-                                {{--  <a href="#" data-size="md" class="modal-target"  data-modal="Myaccount" data-url="{{ route('rating', [$store->slug, $products->id]) }}"><i class="fas fa-plus"></i></a>  --}}
+                                 <a href="#" data-size="md" class="modal-target"  data-modal="Myaccount" data-url="{{ route('rating', [$store->slug, $products->id]) }}"><i class="fas fa-plus"></i></a> 
                                 <a href="#"
                                         class="btn btn-sm btn-primary btn-icon-only rounded-circle float-right text-white"
                                         data-size="lg" data-toggle="modal"
@@ -84,7 +84,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                     </a>
                             @endif
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="review-scroll">
                         @foreach ($product_ratings as $product_key => $product_rating)
                         @if ($product_rating->rating_view == 'on')
@@ -94,14 +94,14 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 <span>{{ $product_rating->title }}</span>
                             </div>
                             <div class="review-box-bottom">
-                                <div class="rating-pdp">
+                                {{-- <div class="rating-pdp">
                                     <span>
                                         @for ($i = 0; $i < 5; $i++)
                                         <i class="star fas fa-star {{ $product_rating->ratting > $i ? 'text-primary' : '' }}"></i>
                                         @endfor
                                     </span>
                                     <p>{{ $avg_rating }}/5 ({{ $user_count }} {{ __('reviews') }})</p>
-                                </div>
+                                </div> --}}
                                 <p>{{ $product_rating->description }}</p>
                             </div>
                         @endif
@@ -113,7 +113,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                         <div class="customer-product-review">
                             <div class="product-rating d-flex align-items-center">
                                 <div class="rating-pdp">
-                                    @if ($store_setting->enable_rating == 'on')
+                                    {{-- @if ($store_setting->enable_rating == 'on')
                                         <span>
                                             @for ($i = 1; $i <= 5; $i++)
                                                 @php
@@ -131,9 +131,9 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                             @endfor
                                         </span>
                                         <p>{{ $avg_rating }}/5 ({{ $user_count }} {{ __('reviews') }})</p>
-                                    @endif
+                                    @endif --}}
                                 </div>
-                                <div class="wish-btn-wrap">
+                                {{-- <div class="wish-btn-wrap">
                                     @if (Auth::guard('customers')->check())
                                         @if (!empty($wishlist) && isset($wishlist[$products->id]['product_id']))
                                             @if ($wishlist[$products->id]['product_id'] != $products->id)
@@ -155,7 +155,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                             <i class="far fa-heart"></i>
                                         </a>
                                     @endif
-                                </div>
+                                </div> --}}
                             </div>
                             <h2>{{ $products->name }}</h2>
                             <p>{!! $products->detail !!}
