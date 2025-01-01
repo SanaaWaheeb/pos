@@ -380,6 +380,12 @@
 
 }
 
+@media(max-width: 625px) { /************ Added *************/
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media(max-width: 375px) { /************ Added *************/
   .products-grid {
     grid-template-columns: repeat(1, 1fr);

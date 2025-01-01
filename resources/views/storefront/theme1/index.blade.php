@@ -122,7 +122,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                         @if ($items->count() > 0)
                             <div class="row products-grid">
                                 @foreach ($items as $product)
-                                    <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                                    <div class="col-lg">
                                         <div class="product-card">
                                             <div class="card-img">
                                                 <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}">
