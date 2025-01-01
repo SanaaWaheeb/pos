@@ -61,7 +61,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                                     </div>
                                                     <div class="mini-cart-details-cart">
                                                         <p data-label="Name" class="mini-cart-title">
-                                                            <a href="{{route('store.product.product_view',[$store->slug,$product['id']])}}" class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name'] .' - '. $product['variant_name']}}</a>
+                                                            <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name'] .' - '. $product['variant_name']}}</a>
                                                         </p>
 
                                                         <div class="pvarprice d-flex align-items-center justify-content-between">
@@ -130,7 +130,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
 
                                                     <div class="cart-item-decr">
                                                         <div data-label="Name">
-                                                            <a href="{{route('store.product.product_view',[$store->slug,$product['id']])}}" class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name']}}</a>
+                                                            <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name']}}</a>
                                                         </div>
 
                                                         <div style="display: flex; align-items: center; justify-content: space-between">
@@ -332,7 +332,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                             let segments = url.pathname.split('/'); 
                             segments[segments.length - 1] = sum; // Replace the last segment with the updated total
                             url.pathname = segments.join('/');
-                            console.log("url: ", url);
+                            // console.log("url: ", url);
                             checkoutBtn.href = url.toString(); 
                         }
                     }
@@ -398,8 +398,9 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
     });
 </script>
 <script>
-    var site_currency_symbol_position = '{{ \App\Models\Utility::getValByName('currency_symbol_position') }}';
-     var site_currency_symbol = '{{ $store->currency }}';
+    var site_currency_symbol_position = '{{ $store->currency_symbol_position }}';
+    var site_currency_symbol_space = '{{ $store->currency_symbol_space }}'
+    var site_currency_symbol = '{{ $store->currency }}';
 </script>
 
 @endpush

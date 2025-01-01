@@ -37,7 +37,14 @@ if ($(".multi-select").length > 0) {
 }
 function addCommas(num) {
     var number = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-    return ((site_currency_symbol_position == "pre") ? site_currency_symbol : '') + number + ((site_currency_symbol_position == "post") ? site_currency_symbol : '');    
+    // return ((site_currency_symbol_position == "pre") ? site_currency_symbol : '') + number + ((site_currency_symbol_position == "post") ? site_currency_symbol : '');    
+    return ((site_currency_symbol_position == "pre") 
+        ? site_currency_symbol + ((site_currency_symbol_space == "with")? ' ' : '')
+        : '')
+    + number 
+        + ((site_currency_symbol_position == "post") 
+        ? ((site_currency_symbol_space == "with")? ' ' : '') + site_currency_symbol
+        : '');
 }
 
 $('.show_confirm').click(function (event) {
