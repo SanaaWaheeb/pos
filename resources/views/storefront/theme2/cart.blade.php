@@ -401,6 +401,12 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
     var site_currency_symbol_position = '{{ $store->currency_symbol_position }}';
     var site_currency_symbol_space = '{{ $store->currency_symbol_space }}'
     var site_currency_symbol = '{{ $store->currency }}';
+    window.translations = {
+        yes: "{{ __('Yes') }}",
+        cancel: "{{ __('CANCEL') }}"
+    };
+
+
 </script>
 
 @endpush

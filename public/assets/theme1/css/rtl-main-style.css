@@ -1596,6 +1596,38 @@ p:not(:last-of-type) {
     text-transform: uppercase;
 }
 
+.btn-secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 15px 25px;
+    border: 1px solid var(--theme-color); /* Use theme color for the border */
+    color: var(--theme-color); /* Use theme color for text */
+    background: transparent; /* Transparent background */
+    justify-content: center;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 600;
+    transition: all ease-in-out 0.4s;
+    -webkit-transition: all ease-in-out 0.4s;
+    -moz-transition: all ease-in-out 0.4s;
+    -ms-transition: all ease-in-out 0.4s;
+    -o-transition: all ease-in-out 0.4s;
+    border-radius: 50px; /* Fully rounded corners */
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    -ms-border-radius: 50px;
+    -o-border-radius: 50px;
+    text-transform: uppercase;
+}
+
+/* Optional: Hover effect */
+.btn-secondary-btn:hover {
+    background: var(--theme-color); /* Fill with theme color */
+    color: #fff; /* Change text color to white for contrast */
+    border-color: var(--theme-color); /* Maintain theme color border */
+}
+ 
+
 .btn-ic {
     height: 20px;
     width: 20px;
@@ -2972,12 +3004,22 @@ button, input {
     opacity: 1;
     visibility: visible;
 }
-.modal-dialog-inner {
-    max-width: 800px;
+.modal-footer{
+    display: flex;
+    /* width: 230px; */
+    justify-content: flex-end;
+    padding-bottom: 10px;
+    justify-self: end;
+}
+.modal-footer > * {
+    margin: 0 10px;
+}
+ .modal-dialog-inner.lg-dialog {
+    max-width: 1200px;
     margin: auto;
 }
-.modal-dialog-inner.lg-dialog {
-    max-width: 1200px;
+.modal-dialog-inner {
+    max-width: 800px;
     width: 100%;
     margin: auto;
 }

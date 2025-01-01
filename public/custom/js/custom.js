@@ -175,29 +175,34 @@ $(document).ready(function () {
         var me = $(this),
             me_data = me.data('confirm');
         me_data = me_data.split("|");
+    
         me.fireModal({
             title: me_data[0],
             body: me_data[1],
             buttons: [
                 {
-                    text: me.data('confirm-text-yes') || 'Yes',
-                    class: 'btn btn-sm btn rounded-pill',
+                    text: me.data('confirm-text-yes') || window.translations?.yes || 'Yes', // Use dynamic translation
+                    class: 'btn btn-sm btn btn-secondary-btn',
                     handler: function () {
                         eval(me.data('confirm-yes'));
                     }
                 },
                 {
-                    text: me.data('confirm-text-cancel') || 'Cancel',
-                    class: 'btn btn-sm btn-secondary ',
-                    id : 'close-button',
+                    text: me.data('confirm-text-cancel') || window.translations?.cancel || 'CANCEL', // Use dynamic translation
+                    class: 'btn btn-sm btn-secondary',
+                    id: 'close-button',
                     handler: function (modal) {
                         $.destroyModal(modal);
                         eval(me.data('confirm-no'));
                     }
                 }
             ]
-        })
+        });
     });
+    window.translations = {
+        yes: "{{ __('Yes') }}",
+        cancel: "{{ __('CANCEL') }}"
+    };
 
     var Select = function () {
         var e = $('[data-toggle="select"]');
