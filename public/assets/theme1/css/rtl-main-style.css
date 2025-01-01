@@ -1575,7 +1575,7 @@ p:not(:last-of-type) {
 .btn-secondary {
     display: inline-flex;
     align-items: center;
-    padding: 15px 25px;
+    padding: 15px 30px;
     border: 1px solid var(--second-color);
     color: var(--second-color);
     background: transparent;
@@ -1588,11 +1588,11 @@ p:not(:last-of-type) {
     -moz-transition: all ease-in-out 0.4s;
     -ms-transition: all ease-in-out 0.4s;
     -o-transition: all ease-in-out 0.4s;
-    border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
+    border-radius: 50px;
+    -webkit-border-radius: 50px;
+    -moz-border-radius: 50px;
+    -ms-border-radius: 50px;
+    -o-border-radius: 50px;
     text-transform: uppercase;
 }
 
@@ -4107,12 +4107,7 @@ del {
 .bg-danger{
     background: red !important;
 }
-.modal-footer{
-    display: flex;
-    width: 200px;
-    justify-content: space-around;
-    padding-bottom: 10px;
-}
+
 .modal-footer .btn-primary{
     background-color: var(--theme-color);
 }
