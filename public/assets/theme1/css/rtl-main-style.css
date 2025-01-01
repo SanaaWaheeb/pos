@@ -2621,7 +2621,7 @@ button, input {
 .products-grid{ /*********** ADDED *************/
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1/5rem;
+    gap: 1.5rem;
     margin-bottom: 3rem;
 }
 

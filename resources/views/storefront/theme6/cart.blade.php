@@ -1045,7 +1045,14 @@
         // close
     </script>
     <script>
-        var site_currency_symbol_position = '{{ \App\Models\Utility::getValByName('currency_symbol_position') }}';
-         var site_currency_symbol = '{{ $store->currency }}';
+        // var site_currency_symbol_position = '{{ \App\Models\Utility::getValByName('currency_symbol_position') }}';
+        //  var site_currency_symbol = '{{ $store->currency }}';
+        var site_currency_symbol_position = '{{ $store->currency_symbol_position }}';
+        var site_currency_symbol_space = '{{ $store->currency_symbol_space }}'
+        var site_currency_symbol = '{{ $store->currency }}';
+        window.translations = {
+            yes: "{{ __('Yes') }}",
+            cancel: "{{ __('CANCEL') }}"
+        };
     </script>
 @endpush

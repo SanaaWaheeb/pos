@@ -2184,11 +2184,11 @@ body.no-scroll {
     margin-bottom: 10px;
     border-bottom: 1px solid var(--border-color);
 } */
-.site-header .menu-dropdown ul>li a{
+/* .site-header .menu-dropdown ul>li a{
     padding: 8px 0 !important;
     border: 0;
     color: #000;
-}
+} */
 .login-btn-header a{
     padding: 10px 20px !important;
     white-space: nowrap;

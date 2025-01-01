@@ -143,9 +143,7 @@
             z-index: 2;
             padding: 20px 20px 20px 10px !important;
             border-top: 0;
-            opacity: 1;
-            visibility: visible;
-            transform: scaleY(1);
+            box-shadow: 0 6px 8px 0 rgba(0, 0, 0, 0.1); /******* Added *********/
         }
     </style>
     @stack('css-page')
