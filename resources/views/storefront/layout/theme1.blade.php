@@ -140,7 +140,7 @@
         }
         [dir="rtl"] .site-header .menu-dropdown ul>li:not(:last-of-type) {
             margin-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            /* border-bottom: 1px solid var(--border-color); */
         }
         [dir="rtl"] .site-header .menu-dropdown {
             position: absolute;
@@ -675,6 +675,7 @@
                 border-radius: 1rem;
                 text-align: center;
                 margin: 0 auto;
+                flex-direction: {{ $data->value == 'on' ? 'row-reverse' : 'row' }};"
             }
         
             .tab {

@@ -192,7 +192,7 @@
     max-height: 330px;
     overflow: scroll;
     scrollbar-width: none;
-    min-width: 80px;
+    min-width: 150px; /******** 80px -> 150px changed ********/
   }
   .store-promotions-box i{
     font-size: 28px;
@@ -240,6 +240,10 @@
   }
   .checkout-box{
     text-align: center;
+  }
+
+  .checkout-box a{
+    width: 80%; /******** changed **********/
   }
   .pdp-summery{
     margin-top: 20px;

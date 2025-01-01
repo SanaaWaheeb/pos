@@ -236,6 +236,10 @@
   .checkout-box{
     text-align: center;
   }
+
+  .checkout-box a{
+    width: 80%; /******** changed **********/
+  }
   .pdp-summery{
     margin-top: 20px;
   }

@@ -2238,12 +2238,12 @@ flex-wrap: wrap;
     display: none;
 }
 .site-header .menu-dropdown ul>li{
-    padding: 0 15px 10px;
+    /* padding: 0 15px 10px; */
     margin-left: 0 !important;
 }
 .site-header .menu-dropdown ul>li:not(:last-of-type) {
     margin-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
+    /* border-bottom: 1px solid var(--border-color); */
 }
 .main-navigationbar .menu-right>li.wishlist-header,
 .main-navigationbar .menu-right>li.cart-header{
@@ -3287,7 +3287,16 @@ button, input {
 }
 .cart-tble{
     margin: 50px 0 30px;
+    width: 100%; /***** added ********/
+    border-collapse: collapse; /***** added ********/
 }
+
+#cart-items-list { /****** Added ******/
+    width: 100%;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
 table {
     border: 0;
     border-collapse: collapse;
@@ -3382,9 +3391,23 @@ table tr th {
     cursor: pointer;
 }
 .checkout-box{
-    background-color: none;
+    background-color: var(--white);
     padding: 20px;
+    position: fixed; /****** Added ******/
+    bottom: 3rem; /****** Added ******/
 }
+
+.checkout-box::before { /****** Added blur effect ******/
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    pointer-events: none;
+}
+
 .checkout-btn{
     padding: 12px 30px;
     background-color: var(--theme-color);
@@ -4244,7 +4267,7 @@ table tr th {
 .remove-btn {
     display: inline-block;
     font-size: 24px;
-    margin-left: 15px;
+    /* margin-left: 15px; */
 }
 .checkout-box{
     background-color:none; /*changed*/
