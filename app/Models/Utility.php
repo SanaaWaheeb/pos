@@ -78,9 +78,9 @@ class Utility extends Model
         }
        
         $settings = [
-            "site_currency" => "USD",
-            "site_currency_symbol" => "$",
-            "currency_symbol_position" => "pre",
+            "site_currency" => "SR",
+            "site_currency_symbol" => "SR",
+            "currency_symbol_position" => "post",
             "logo_dark" => "logo-dark.png",
             "logo_light" => "logo-light.png",
             "currency_symbol" => "",
@@ -2240,9 +2240,9 @@ class Utility extends Model
         }
         $data = self::$storageSetting;
         $settings = [
-            "site_currency" => "USD",
-            "site_currency_symbol" => "$",
-            "currency_symbol_position" => "pre",
+            "site_currency" => "SR",
+            "site_currency_symbol" => "SR",
+            "currency_symbol_position" => "post",
             "logo_dark" => "logo-dark.png",
             "logo_light" => "logo-light.png",
             "currency_symbol" => "",
@@ -2542,9 +2542,9 @@ class Utility extends Model
         $data     = $data->where('created_by', '=', $id);
         $data     = $data->get();
         $settings = [
-            "site_currency" => "USD",
-            "site_currency_symbol" => "$",
-            "currency_symbol_position" => "pre",
+            "site_currency" => "SR",
+            "site_currency_symbol" => "SR",
+            "currency_symbol_position" => "post",
             "logo_dark" => "logo-dark.png",
             "logo_light" => "logo-light.png",
             "currency_symbol" => "",
