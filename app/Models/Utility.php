@@ -73,8 +73,22 @@ class Utility extends Model
             } else {
                 $data = $data->where('created_by', '=', 1);
             }
+
             $data = $data->get();
-            self::$fetchsettings = $data;
+            self::$fetchsettings = collect($data); // added part: collect function
+            //------------------- The added part -------------------
+            // Fetch store information
+            $store = null;
+            if (\Auth::check() && \Auth::user()->current_store) {
+                $store = Store::find(\Auth::user()->current_store)->attributes;
+            }
+            // Combine store fields with settings
+            if ($store) {
+                foreach ($store as $key => $value) {
+                    self::$fetchsettings->push((object) ['name' => $key, 'value' => $value]);
+                }
+            }
+            //------------------------------------------------------
         }
        
         $settings = [
