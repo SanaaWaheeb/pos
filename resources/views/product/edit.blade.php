@@ -309,7 +309,7 @@
                                         {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Stock Quantity')]) }}
                                     </div>
                                     <div class="form-group">
-                                        {{ Form::label('expiry_date', __('Expiry Date'), ['class' => 'form-label']) }}<x-required></x-required>
+                                        {{ Form::label('expiry_date', __('Expiry Date'), ['class' => 'form-label']) }}
                                         {{ Form::date('expiry_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Expiry Date'), 'min' => date('Y-m-d')]) }}
                                     </div>
                                     <div class="form-group">

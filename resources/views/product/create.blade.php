@@ -283,24 +283,13 @@
                                         </div>
                                     </div>
                                     <canvas id="barcode-canvas" style="display: none;"></canvas>
-                                    <div class="form-group proprice">
-                                        <div class="row gy-4">
-                                            <div class="col-md-6">
-                                                {{ Form::label('price', __('Price'), ['class' => 'form-label']) }}<x-required></x-required>
-                                                {{ Form::number('price', null, ['step' => 'any', 'class' => 'form-control']) }}
-                                            </div>
-                                            <div class="col-md-6">
-                                                {{ Form::label('last_price', __('Last Price'), ['class' => 'form-label']) }}
-                                                {{ Form::number('last_price', null, ['step' => 'any', 'class' => 'form-control']) }}
-                                            </div>
-                                        </div>
                                     </div>
                                     <div class="form-group proprice">
                                         {{ Form::label('quantity', __('Stock Quantity'), ['class' => 'form-label']) }}<x-required></x-required>
                                         {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Stock Quantity')]) }}
                                     </div>
                                     <div class="form-group">
-                                        {{ Form::label('expiry_date', __('Expiry Date'), ['class' => 'form-label']) }}<x-required></x-required>
+                                        {{ Form::label('expiry_date', __('Expiry Date'), ['class' => 'form-label']) }}
                                         {{ Form::date('expiry_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Expiry Date'), 'min' => date('Y-m-d')]) }}
                                     </div>
                                     <div class="form-group">
