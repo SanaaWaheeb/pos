@@ -44,6 +44,7 @@ use App\Models\CustomDomainRequest;
 use App\Models\ReferralTransaction;
 use Spatie\Permission\Models\Role;
 use Carbon\Carbon;
+use Milon\Barcode\DNS1D;
 
 class StoreController extends Controller
 {
@@ -64,6 +65,22 @@ class StoreController extends Controller
 
     }
 
+    public function generateBarcode()
+    {
+        // Get SKU from the request
+        $sku = request('sku', strtoupper(substr(md5(uniqid()), 0, 8)));
+
+        // Generate the barcode using Code 128
+        $barcode = new DNS1D();
+        $barcode->setStorPath(public_path('barcodes/'));
+        $barcodeImagePath = public_path("barcodes/{$sku}.png");
+        $barcode->getBarcodePNGPath($sku, 'C128', 3, 100, [1, 1, 1], $barcodeImagePath);
+
+        return response()->json([
+            'sku' => $sku,
+            'barcodeURL' => asset("barcodes/{$sku}.png"),
+        ]);
+    }
     public function index()
     {
         if(\Auth::user()->can('Manage Store')){
@@ -848,6 +865,9 @@ class StoreController extends Controller
 
         return redirect()->back()->with('success', __('Store successfully Update.'));
     }
+
+
+    
     public function pwasetting(Request $request, $id){
         $company_favicon = Utility::getValByName('company_favicon');
         $store = Store::find($id);

@@ -501,6 +501,7 @@ Route::get('store/{slug?}', [StoreController::class, 'storeSlug'])->name('store.
 Route::get('store/{slug?}/categorie/{name?}', [StoreController::class, 'product'])->name('store.categorie.product')->middleware('XSS');
 Route::get('user-cart-item/{slug?}/cart/{product_id?}/{quantity?}/{variant_id?}', [StoreController::class, 'StoreCart'])->name('store.cart');
 Route::get('user-cart-item/{slug?}/scanner/{product_id?}/{quantity?}/{variant_id?}', [StoreController::class, 'StoreScanner'])->name('store.scanner')->middleware('SetLocale');
+Route::get('/generate-barcode/{sku}', [StoreController::class, 'generateBarcode']);
 
 
 // The trsting route

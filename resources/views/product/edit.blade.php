@@ -260,9 +260,30 @@
                                         @endif
                                     </div>
                                     <div class="form-group">
-                                        {{ Form::label('SKU', __('SKU'), ['class' => 'form-label']) }}<x-required></x-required>
-                                        {{ Form::text('SKU', null, ['class' => 'form-control', 'placeholder' => __('Enter SKU')]) }}
+                                        {{ Form::label('SKU', __('SKU'), ['class' => 'form-label']) }}
+                                        <x-required></x-required>
+                                        <div class="d-flex align-items-center">
+                                            {{ Form::text('SKU', null, ['class' => 'form-control me-2', 'placeholder' => __('Enter SKU'), 'id' => 'sku-input', 'pattern' => '[0-9]*', 'maxlength' => '12']) }}
+                                            <button type="button" id="generate-barcode-btn" class="btn btn-sm btn-primary">{{ __('Generate') }}</button>
+                                        </div>
                                     </div>
+                                 
+
+                                    <div id="barcode-container" class="mt-3" style="display: none;">
+                                        <label class="form-label">{{ __('Generated Barcode:') }}</label>
+                                        <div id="barcode-output" class="border p-3 text-center">
+                                            <img id="barcode-image" src="" alt="{{ __('Barcode') }}">
+                                            <div id="barcode-details" class="mt-2">
+                                                <p><strong>{{ __('Product Name:') }}</strong> <span id="product-name"></span></p>
+                                                <p><strong>{{ __('Price:') }}</strong> <span id="product-price"></span></p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-3 text-center">
+                                            <button id="print-barcode-btn" class="btn btn-secondary btn-sm">{{ __('Print') }}</button>
+                                            <button id="download-barcode-btn" class="btn btn-success btn-sm">{{ __('Download') }}</button>
+                                        </div>
+                                    </div>
+                                    <canvas id="barcode-canvas" style="display: none;"></canvas>
                                     <div class="form-group">
                                         {{ Form::label('product_tax', __('Product Tax'), ['class' => 'form-label']) }}
                                         {{ Form::select('product_tax[]', $product_tax, explode(',',$product->product_tax), ['class' => 'form-control multi-select', 'id' => 'choices-multiple1', 'multiple']) }}
@@ -626,73 +647,119 @@
         {{ Form::close() }}
     </div>
 @endsection
-
 @push('script-page')
-    {{-- <script>
-        $(document).ready(function(){
-            
-            if($("#enable_product_variant").prop('checked') == false){
-                $("#enable_product_variant").click(function(){
-                    if($("#enable_product_variant").prop('checked') == true){
-                        $('#hiddenhidden').val('now_in_var');
-                    }else{
-                        
-                        $('#hiddenhidden').val('');
-                    }
-                })
-            }
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const generateButton = document.getElementById('generate-barcode-btn');
+    const skuInput = document.getElementById('sku-input');
+    const barcodeContainer = document.getElementById('barcode-container');
+    const productNameDisplay = document.getElementById('product-name');
+    const productPriceDisplay = document.getElementById('product-price');
+    const printButton = document.getElementById('print-barcode-btn');
+    const downloadButton = document.getElementById('download-barcode-btn');
+    
+    const productNameInput = document.querySelector('input[name="name"]');
+    const productPriceInput = document.querySelector('input[name="price"]');
+    
+    const JsBarcode = window.JsBarcode; // Ensure JsBarcode is available
+
+    // Function to generate the barcode
+    function generateBarcode(sku) {
+        const barcodeImage = document.getElementById("barcode-image");
+
+        // Generate barcode with JsBarcode
+        JsBarcode(barcodeImage, sku, {
+            format: "CODE128",
+            width: 2,
+            height: 50,
+            displayValue: true,
+            fontSize: 18
         });
-    </script> --}}
-    <script>
-        $(document).on('click', '.get-variants', function(e) {
 
-            $("#commonModal .modal-title").html('{{ __('Add Variants') }}');
-            $("#commonModal .modal-dialog").addClass('modal-md');
-            $("#commonModal").modal('show');
-            var data_url = $(this).attr('dataa-url');
+        // Get product details
+        const productName = productNameInput.value.trim() || 'N/A';
+        const productPrice = productPriceInput.value.trim() || 'N/A';
 
-            $.get(data_url, {}, function(data) {
-                $('#commonModal .modal-body').html(data);
-            });
-        });
+        // Update the display
+        productNameDisplay.textContent = productName;
+        productPriceDisplay.textContent = productPrice;
 
-        $(document).on('click', '.add-variants', function(e) {
-            e.preventDefault();
-            var form = $(this).parents('form');
-            var variantNameEle = $('#variant_name');
-            var variantOptionsEle = $('#variant_options');
-            var isValid = true;
-            var hiddenVariantOptions = $('#hiddenVariantOptions').val();
+        // Show the barcode container
+        barcodeContainer.style.display = 'block';
 
-            if (variantNameEle.val() == '') {
-                variantNameEle.focus();
-                isValid = false;
-            } else if (variantOptionsEle.val() == '') {
-                variantOptionsEle.focus();
-                isValid = false;
-            }
+        // Prepare Canvas for Download
+        const canvas = document.getElementById("barcode-canvas");
+        const ctx = canvas.getContext("2d");
 
-            if (isValid) {
-                $.ajax({
-                    url: form.attr('action'),
-                    datType: 'json',
-                    data: {
-                        variant_name: variantNameEle.val(),
-                        variant_options: variantOptionsEle.val(),
-                        hiddenVariantOptions: hiddenVariantOptions
-                    },
-                    success: function(data) {
-                        
-                        $('#hiddenVariantOptions').val(data.hiddenVariantOptions);
-                        $('.variant-table').html(data.varitantHTML);
-                        $("#commonModal").modal('hide');
-                    }
-                })
-            }
-        });
-      //  $(document).on('click', '.delet-posibility', function(e) {
-       //     $(this).parent().parent().remove()
+        // Set Canvas Dimensions
+        canvas.width = 400;
+        canvas.height = 200;
 
-      //  })
-    </script>
+        // Clear canvas before drawing
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Fill Background
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Add Product Name
+        ctx.fillStyle = "#000000";
+        ctx.font = "16px Arial";
+        ctx.fillText("Name: " + productName, 10, 20);
+
+        // Add Product Price
+        ctx.fillText("Price: " + productPrice, 10, 50);
+
+        // Wait for the barcode image to load before drawing it on canvas
+        barcodeImage.onload = function () {
+            ctx.drawImage(barcodeImage, 10, 70, 380, 100);
+        };
+    }
+
+    // Generate random SKU when the button is clicked
+    generateButton.addEventListener('click', function () {
+        let sku = skuInput.value.trim();
+
+        if (sku === "") {
+            // Generate a random SKU if the input is empty
+            sku = Math.floor(Math.random() * 1000000000000);
+            skuInput.value = sku; // Populate the input with the generated SKU
+        }
+
+        generateBarcode(sku); // Generate the barcode
+    });
+
+    // Download the barcode as an image when the download button is clicked
+    downloadButton.addEventListener("click", function () {
+        const canvas = document.getElementById("barcode-canvas");
+
+        // Trigger Download
+        const link = document.createElement("a");
+        link.download = "barcode.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+    });
+
+    // Event listener for the Print button
+    printButton.addEventListener('click', function () {
+        const barcodeImage = document.getElementById("barcode-image");
+        const productName = productNameDisplay.textContent;
+        const productPrice = productPriceDisplay.textContent;
+
+        const printWindow = window.open('', '', 'height=600,width=800');
+        printWindow.document.write('<html><head><title>Barcode</title></head><body>');
+        printWindow.document.write('<img src="' + barcodeImage.src + '" />');
+        printWindow.document.write('<p><strong>Product Name:</strong> ' + productName + '</p>');
+        printWindow.document.write('<p><strong>Price:</strong> ' + productPrice + '</p>');
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+    });
+});
+</script>
+
 @endpush
+
+
