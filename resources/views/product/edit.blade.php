@@ -259,6 +259,28 @@
                                             </a>
                                         @endif
                                     </div>
+                                    <div class="form-group proprice">
+                                        <div class="row gy-4">
+                                            <div class="col-md-6">
+                                                {{ Form::label('price', __('Price'), ['class' => 'form-label']) }}<x-required></x-required>
+                                                {{ Form::number('price', null, ['step' => 'any', 'class' => 'form-control']) }}
+                                            </div>
+                                            <div class="col-md-6">
+                                                {{ Form::label('last_price', __('Last Price'), ['class' => 'form-label']) }}
+                                                {{ Form::number('last_price', null, ['step' => 'any', 'class' => 'form-control']) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('product_tax', __('Product Tax'), ['class' => 'form-label']) }}
+                                        {{ Form::select('product_tax[]', $product_tax, explode(',',$product->product_tax), ['class' => 'form-control multi-select', 'id' => 'choices-multiple1', 'multiple']) }}
+                                        @if (count($product_tax) == 0)
+                                            {{ __('Add product tax') }}
+                                            <a href="{{ route('product_tax.index') }}">
+                                                {{ __('Click here') }}
+                                            </a>
+                                        @endif
+                                    </div>
                                     <div class="form-group">
                                         {{ Form::label('SKU', __('SKU'), ['class' => 'form-label']) }}
                                         <x-required></x-required>
@@ -267,8 +289,6 @@
                                             <button type="button" id="generate-barcode-btn" class="btn btn-sm btn-primary">{{ __('Generate') }}</button>
                                         </div>
                                     </div>
-                                 
-
                                     <div id="barcode-container" class="mt-3" style="display: none;">
                                         <label class="form-label">{{ __('Generated Barcode:') }}</label>
                                         <div id="barcode-output" class="border p-3 text-center">
@@ -284,28 +304,6 @@
                                         </div>
                                     </div>
                                     <canvas id="barcode-canvas" style="display: none;"></canvas>
-                                    <div class="form-group">
-                                        {{ Form::label('product_tax', __('Product Tax'), ['class' => 'form-label']) }}
-                                        {{ Form::select('product_tax[]', $product_tax, explode(',',$product->product_tax), ['class' => 'form-control multi-select', 'id' => 'choices-multiple1', 'multiple']) }}
-                                        @if (count($product_tax) == 0)
-                                            {{ __('Add product tax') }}
-                                            <a href="{{ route('product_tax.index') }}">
-                                                {{ __('Click here') }}
-                                            </a>
-                                        @endif
-                                    </div>
-                                    <div class="form-group proprice">
-                                        <div class="row gy-4">
-                                            <div class="col-md-6">
-                                                {{ Form::label('price', __('Price'), ['class' => 'form-label']) }}<x-required></x-required>
-                                                {{ Form::number('price', null, ['step' => 'any', 'class' => 'form-control']) }}
-                                            </div>
-                                            <div class="col-md-6">
-                                                {{ Form::label('last_price', __('Last Price'), ['class' => 'form-label']) }}
-                                                {{ Form::number('last_price', null, ['step' => 'any', 'class' => 'form-control']) }}
-                                            </div>
-                                        </div>
-                                    </div>
                                     <div class="form-group proprice">
                                         {{ Form::label('quantity', __('Stock Quantity'), ['class' => 'form-label']) }}
                                         {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Stock Quantity')]) }}
