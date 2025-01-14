@@ -282,7 +282,7 @@
                                         @endif
                                     </div>
                                     <div class="form-group">
-                                        {{ Form::label('SKU', __('SKU'), ['class' => 'form-label']) }}
+                                        {{ Form::label('SKU', __('SKU (Barcode)'), ['class' => 'form-label']) }}
                                         <x-required></x-required>
                                         <div class="d-flex align-items-center">
                                             {{ Form::text('SKU', null, ['class' => 'form-control me-2', 'placeholder' => __('Enter SKU'), 'id' => 'sku-input', 'pattern' => '[0-9]*', 'maxlength' => '12']) }}

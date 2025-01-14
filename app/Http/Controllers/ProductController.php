@@ -90,7 +90,6 @@ class ProductController extends Controller
                     'SKU' => 'required',
                     'price' => 'required|numeric',
                     'quantity' => 'required|integer',
-                    'expiry_date' => 'required|date',
                 ]
             );
 
