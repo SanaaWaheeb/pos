@@ -20,6 +20,7 @@
         "tailwindcss": "^3.0.18"
     },
     "dependencies": {
+        "barcode-detector": "^2.3.1",
         "vanilla-cookieconsent": "^2.9.0"
     }
 }
