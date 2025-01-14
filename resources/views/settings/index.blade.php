@@ -1564,23 +1564,7 @@
                                                 <div id="collapseThirtySeven" class="accordion-collapse collapse"aria-labelledby="headingTThirtySeven"data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="row">
-                                                            {{-- EdfaPay Password --}}
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label for="edfapay_password"
-                                                                        class="col-form-label">{{ __('EdfaPay Password') }}</label>
-                                                                    <input type="text" name="edfapay_password"
-                                                                        id="edfapay_password" class="form-control"
-                                                                        value="{{ isset($store_payment_setting['edfapay_password']) ? $store_payment_setting['edfapay_password'] : '' }}"
-                                                                        placeholder="{{ __('EdfaPay Password') }}">
-                                                                </div>
-                                                                @if ($errors->has('edfapay_password'))
-                                                                    <span class="invalid-feedback d-block">
-                                                                        {{ $errors->first('edfapay_password') }}
-                                                                    </span>
-                                                                @endif
-                                                            </div>
-
+                                                        
                                                             {{-- EdfaPay Merchant Key --}}
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
@@ -1594,6 +1578,22 @@
                                                                 @if ($errors->has('edfapay_merchant_key'))
                                                                     <span class="invalid-feedback d-block">
                                                                         {{ $errors->first('edfapay_merchant_key') }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                            {{-- EdfaPay Password --}}
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="edfapay_password"
+                                                                        class="col-form-label">{{ __('EdfaPay Password') }}</label>
+                                                                    <input type="text" name="edfapay_password"
+                                                                        id="edfapay_password" class="form-control"
+                                                                        value="{{ isset($store_payment_setting['edfapay_password']) ? $store_payment_setting['edfapay_password'] : '' }}"
+                                                                        placeholder="{{ __('EdfaPay Password') }}">
+                                                                </div>
+                                                                @if ($errors->has('edfapay_password'))
+                                                                    <span class="invalid-feedback d-block">
+                                                                        {{ $errors->first('edfapay_password') }}
                                                                     </span>
                                                                 @endif
                                                             </div>
@@ -6830,23 +6830,6 @@
                                                 <div id="collapseThirtySeven" class="accordion-collapse collapse"aria-labelledby="headingTThirtySeven"data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="row">
-                                                            {{-- EdfaPay Password --}}
-                                                            <div class="col-md-6">
-                                                                <div class="form-group">
-                                                                    <label for="edfapay_password"
-                                                                        class="col-form-label">{{ __('EdfaPay Password') }}</label>
-                                                                    <input type="text" name="edfapay_password"
-                                                                        id="edfapay_password" class="form-control"
-                                                                        value="{{ isset($store_payment_setting['edfapay_password']) ? $store_payment_setting['edfapay_password'] : '' }}"
-                                                                        placeholder="{{ __('EdfaPay Password') }}">
-                                                                </div>
-                                                                @if ($errors->has('edfapay_password'))
-                                                                    <span class="invalid-feedback d-block">
-                                                                        {{ $errors->first('edfapay_password') }}
-                                                                    </span>
-                                                                @endif
-                                                            </div>
-
                                                             {{-- EdfaPay Merchant Key --}}
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
@@ -6860,6 +6843,22 @@
                                                                 @if ($errors->has('edfapay_merchant_key'))
                                                                     <span class="invalid-feedback d-block">
                                                                         {{ $errors->first('edfapay_merchant_key') }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                             {{-- EdfaPay Password --}}
+                                                             <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="edfapay_password"
+                                                                        class="col-form-label">{{ __('EdfaPay Password') }}</label>
+                                                                    <input type="text" name="edfapay_password"
+                                                                        id="edfapay_password" class="form-control"
+                                                                        value="{{ isset($store_payment_setting['edfapay_password']) ? $store_payment_setting['edfapay_password'] : '' }}"
+                                                                        placeholder="{{ __('EdfaPay Password') }}">
+                                                                </div>
+                                                                @if ($errors->has('edfapay_password'))
+                                                                    <span class="invalid-feedback d-block">
+                                                                        {{ $errors->first('edfapay_password') }}
                                                                     </span>
                                                                 @endif
                                                             </div>
