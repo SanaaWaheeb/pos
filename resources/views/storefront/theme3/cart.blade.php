@@ -24,7 +24,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                     <div class="col-lg-9 col-md-12 col-12">
                         <div class="cart-header-btn">
                             <a href="{{route('store.cart',$store->slug)}}" class="active-btn">1 - {{__('My Cart')}}</a>
-                            <a href="{{route('user-address.useraddress',$store->slug)}}">2 -{{__('Customer')}}</a>
+                            <a href="{{route('user-address.useraddress',$store->slug)}}">2 -{{__('Shipping')}}</a>
                             <a href="{{route('store-payment.payment',$store->slug)}}">3 - {{__('Payment')}}</a>
                         </div>
                     </div>
@@ -43,6 +43,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                     <th scope="col">{{ __('Total') }}</th>
                                 </tr>
                             </thead> --}}
+                            
                             <div id="cart-body" class="mini-cart-has-item cart-tble">
                                 @if(!empty($products))
                                     @php

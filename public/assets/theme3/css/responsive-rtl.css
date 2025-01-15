@@ -260,9 +260,9 @@ width: 100%;
 padding-left: 0;
 padding-bottom: 40px;
 }
-.cart-tble {
+/* .cart-tble {
 border: 1px solid var(--border-color);
-}
+} */
 .checkout-box .row .col-12{
 text-align: center;
 }

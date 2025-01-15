@@ -77,7 +77,7 @@
         <link rel="stylesheet" href="{{ asset('assets/theme3/css/main-style.css') }}">
         <link rel="stylesheet" href="{{ asset('assets/theme3/css/responsive.css') }}">
     @endif
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     {{-- pwa customer app --}}
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <meta name="mobile-wep-app-capable" content="yes">
