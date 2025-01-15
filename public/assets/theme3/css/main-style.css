@@ -3770,11 +3770,13 @@ table tr th:first-child, table tr td:first-child {
     position: relative;
 }
 .qty-spinner {
-    border: 1px solid var(--black);
     display: flex;
+    width: 100%; /******** added **********/
+    justify-self: center; /******** added **********/
+    align-items: center;
     max-width: 100px;
     height: 30px;
-    width: 100%;
+    border: 1px solid var(--border-color);
 }
 .qty-spinner button {
     background: transparent;
@@ -4005,7 +4007,7 @@ margin-bottom: 30px;
 margin-bottom: 15px;
 }
 
-.mini-cart-item {
+/* .mini-cart-item {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -4017,6 +4019,16 @@ margin-bottom: 15px;
     border: 1px solid var(--border-color);
     padding: 15px 10px 10px 10px;
     background-color: transparent;
+} */
+/* added */
+.mini-cart-item {
+    margin: 1rem 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    border: 1px solid var(--border-color);
 }
 .mini-cart-item:not(:last-of-type){
     margin-bottom: 15px;
@@ -4790,4 +4802,66 @@ background: var(--white);
 /* Add a thumb */
 .review-box-bottom::-webkit-scrollbar-thumb {
     background: var(--theme-color);
+}
+
+/* ADDED */ 
+.payment-success .details { 
+    background-color: #ffffff; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    padding: 20px; 
+    width: 100%; 
+    max-width: 400px; 
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
+} 
+ 
+.payment-success .details p { 
+    margin: 10px 0; 
+    font-size: 14px; 
+    color: #333; 
+} 
+ 
+.payment-success .details strong { 
+    font-weight: bold; 
+    color: #000; 
+} 
+ 
+.payment-success .button { 
+    margin-top: 20px; 
+} 
+ 
+.payment-success .button a { 
+    background-color: #ee7878; 
+    color: #ffffff; 
+    text-decoration: none; 
+    padding: 10px 20px; 
+    border-radius: 5px; 
+    font-size: 14px; 
+} 
+ 
+.payment-success .button a:hover { 
+    background-color: #fa0505; 
+}
+
+.cart-item-decr {
+    height: 100%; 
+    justify-content: space-between; 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    text-align: left;
+}
+
+.mini-cart-details-cart .mini-cart-image{
+    margin-right: 0.5rem;
+}
+
+.mini-cart-details-cart {
+    flex: 1;
+    width: 100%;
+    display: flex; /******** added **********/
+    align-items: center; /******** added **********/
+    justify-content: space-between; /******** added **********/
+    text-align: center; /******** added **********/
+    padding: 10px; /******** added **********/
 }

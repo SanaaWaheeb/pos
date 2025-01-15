@@ -118,7 +118,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
             </div>
         </div>
     </section>
-    <section class="store-promotions-section">
+    {{-- <section class="store-promotions-section">
         @if($getStoreThemeSetting[1]['section_enable'] == 'on')
             <div class="container">
                 <div class="row justify-content-center">
@@ -151,13 +151,13 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                 </div>
             </div>
         @endif
-    </section>
+    </section> --}}
     @if($store->blog_enable == 'on')
         <section class="new-collection-section padding-bottom">
             <div class="container">
                 <div class="row collection-row">
                     <div class="col-lg-8 col-12">
-                        <div class="new-collection-item">
+                        {{-- <div class="new-collection-item">
                             <div class="new-collection-inner">
                                 @if($blogs->count()>0)
 
@@ -170,7 +170,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                                     </div>
                                 @endif
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="col-lg-4 col-12 right-side">
                         <div class="row">
@@ -210,7 +210,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
             </div>
         </section>
     @endif
-    @if($theme3_product_random != null && $theme3_product_random->count()>0)
+    {{-- @if($theme3_product_random != null && $theme3_product_random->count()>0)
         <section class="your-time-section padding-bottom ">
             <div class="container">
                 <div class="row  align-items-center ">
@@ -271,7 +271,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                 </div>
             </div>
         </section>
-    @endif
+    @endif --}}
     <section class="bestsellers-section  padding-bottom ">
         @if($products['Start shopping']->count() > 0)
             <div class="container">

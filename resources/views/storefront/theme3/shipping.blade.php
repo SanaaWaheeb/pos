@@ -38,7 +38,7 @@
                 <div class="row">
                     <div class="col-lg-8 col-12">
                         <div class="customer-info">
-                            <h5>{{ __('Billing information') }}</h5>
+                            <h5>{{ __('Shipping information') }}</h5>
                             <p> {{ __('Fill the form below so we can send you the orders invoice.') }}</p>
                         </div>
                         <div class="row">
@@ -57,7 +57,7 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     {{Form::label('phone',__('Phone'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    {{Form::text('phone',old('phone'),array('class'=>'form-control','placeholder'=>'(99) 12345 67890','required'=>'required'))}}
+                                    {{Form::text('phone',old('phone'),array('class'=>'form-control','placeholder'=>'(+966) 560714485','required'=>'required'))}}
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
@@ -142,47 +142,48 @@
                                 <div class="row align-items-center">
                                     <div class="col-md-6 col-12">
                                         <div class="customer-info">
-                                            <h5>{{__('Shipping informations')}}</h5>
-                                            <p>{{__('Fill the form below so we can send you the orders invoice.')}}</p>
+                                            {{-- <h5>{{__('Shipping informations')}}</h5>
+                                            <p>{{__('Fill the form below so we can send you the orders invoice.')}}</p> --}}
                                         </div>
                                     </div>
                                     <div class="col-md-6 col-12">
-                                        <div class="addres-btn d-flex justify-content-end">
+                                        {{-- <div class="addres-btn d-flex justify-content-end">
                                             <a class="btn" onclick="billing_data()" id="billing_data" data-toggle="tooltip" data-placement="top" title="Same As Billing Address">
                                                 {{__('Copy Address')}}
                                             </a>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 col-12">
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     {{Form::label('shipping_address',__('Address'),array("class"=>"form-control-label")) }}
                                     {{Form::text('shipping_address',old('shipping_address'),array('class'=>'form-control','placeholder'=>__('Shipping Address')))}}
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-6 col-12">
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     {{Form::label('shipping_country',__('Country'),array("class"=>"form-control-label")) }}
                                     {{Form::text('shipping_country',old('shipping_country'),array('class'=>'form-control','placeholder'=>__('Shipping Country')))}}
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-6 col-12">
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     {{Form::label('shipping_city',__('City'),array("class"=>"form-control-label")) }}
                                     {{Form::text('shipping_city',old('shipping_city'),array('class'=>'form-control','placeholder'=>__('Shipping City')))}}
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-6 col-12">
-                                <div class="form-group">
+                                {{-- <div class="form-group">
                                     {{Form::label('shipping_postalcode',__('Postal Code'),array("class"=>"form-control-label")) }}
                                     {{Form::text('shipping_postalcode',old('shipping_postalcode'),array('class'=>'form-control','placeholder'=>__('Shipping Postal Code')))}}
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="col-md-12 col-12">
                                 <div class="pagination-btn d-flex align-items-center justify-content-center ">
                                     <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a>
-                                    <button type="submit" class="next-btn btn">{{__('Next step')}}</button>
+                                    <button type="submit" class="next-btn btn">{{__('Proceed to checkout')}} <i class="fas fa-shopping-basket"></i></button>
+                                    
                                 </div>
                             </div>
                         </div>
@@ -577,6 +578,39 @@
                 });
             }
         }); 
+    });
+
+// added
+    $(document).on('click', '.next-btn', function (e) {
+        e.preventDefault();
+
+        let totalAmount = $('#total_value').text().trim().replace(/[^\d.-]/g, '');
+        let checkoutUrl = '{{ route('payment.checkout', ['slug' => $store->slug, 'order_amount' => '__total__']) }}';
+        checkoutUrl = checkoutUrl.replace('__total__', totalAmount);
+        // console.log("url: ", checkoutUrl);
+
+        $.ajax({
+            url: checkoutUrl,
+            type: 'GET',
+            headers: {
+                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.redirect_url) {
+                    // Redirect to the payment gateway
+                    window.location.href = response.redirect_url;
+                } else if (response.error) {
+                    show_toastr('Error', response.error, 'error');
+                }
+            },
+            error: function (xhr) {
+                let errorMessage = 'Something went wrong. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                }
+                show_toastr('Error', errorMessage, 'error');
+            }
+        });
     });
 </script>
 @endpush

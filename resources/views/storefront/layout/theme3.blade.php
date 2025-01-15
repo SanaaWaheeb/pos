@@ -111,6 +111,10 @@
             $currantLang = $store->lang;
         }
         $languages = \App\Models\Utility::languages();
+        $specific_langs = [
+            "ar" => "Arabic",
+            "en" => "English",
+        ];
         $langName = \App\Models\Languages::where('code',$currantLang)->first();
         $storethemesetting = \App\Models\Utility::demoStoreThemeSetting($store->id, $store->theme_dir);
     @endphp
@@ -171,7 +175,7 @@
                             </a>
                             <div class="menu-dropdown">
                                 <ul>
-                                    @foreach ($languages as $code => $language)
+                                    @foreach ($specific_langs as $code => $language)
                                         <li><a class="@if ($language == $currantLang) active-language text-primary @endif"
                                                 href="{{ route('change.languagestore', [$store->slug, $code]) }}">{{  ucFirst($language) }}</a>
                                         </li>
@@ -289,7 +293,7 @@
                         </a>
                         <div class="menu-dropdown acnav-list">
                             <ul>
-                                @foreach ($languages as $code => $language)
+                                @foreach ($specific_langs as $code => $language)
                                     <li><a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
                                             class="dropdown-item @if ($language == $currantLang) active-language text-primary @endif">{{  ucFirst($language) }}</a>
                                     </li>

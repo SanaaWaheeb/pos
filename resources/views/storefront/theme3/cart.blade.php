@@ -9,6 +9,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
 @section('content')
     @php
         $cart = session()->get($store->slug);
+        $productImg = \App\Models\Utility::get_file('uploads/is_cover_image/'); 
     @endphp
 @if(!empty($cart['products']) || $cart['products'] = [])
     <div class="wrapper">
@@ -32,7 +33,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                 <div class="row">
                     <div class="col-12">
                         <table class="cart-tble">
-                            <thead>
+                            {{-- <thead>
                                 <tr>
                                     <th scope="col">{{ __('Product') }}</th>
                                     <th scope="col">{{ __('Name') }}</th>
@@ -41,143 +42,147 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                     <th scope="col">{{ __('Tax') }}</th>
                                     <th scope="col">{{ __('Total') }}</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                            </thead> --}}
+                            <div id="cart-body" class="mini-cart-has-item cart-tble">
                                 @if(!empty($products))
                                     @php
-                                        $sub_tax = 0;
                                         $total = 0;
+                                        $sub_tax = 0;
+                                        $sub_total= 0;
                                     @endphp
                                     @foreach($products['products'] as $key => $product)
-                                        @if($product['variant_id'] != 0 )
-                                            <tr data-id="{{$key}}" id="product-variant-id-{{ $product['variant_id'] }}">
-                                                <td data-label="Product">
-                                                    <a class="pro-img-cart">
-                                                        @if(!empty($product['image']))
-                                                            <img src="{{ $imgpath.$product['image']}}">
-                                                        @else
-                                                            <img src="{{asset(Storage::url('uploads/is_cover_image/default.jpg'))}}">
-                                                        @endif
-                                                    </a>
-                                                </td>
-                                                <td data-label="Name">
-                                                    <a href="{{route('store.product.product_view',[$store->slug,$product['id']])}}">{{$product['product_name'] .' - '. $product['variant_name']}}</a>
-                                                </td>
-                                                <td data-label="price">{{\App\Models\Utility::priceFormat($product['variant_price'])}}</td>
-                                                <td data-label="quantity">
-                                                    <div class="qty-spinner" data-id="{{$key}}">
-                                                        <button type="button" class="quantity-decrement qty-minus product_qty">
-                                                            <svg width="12" height="2" viewBox="0 0 12 2" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M0 0.251343V1.74871H12V0.251343H0Z" fill="#61AFB3"></path>
-                                                            </svg>
-                                                        </button>
-                                                        <input type="number" class="quantity product_qty_input bx-cart-qty" data-cke-saved-name="quantity" data-id="{{$product['product_id']}}" value="{{$product['quantity']}}" id="product_qty"
-                                                            name="quantity">
-                                                        <button type="button" class="quantity-increment qty-plus product_qty">
-                                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path
-                                                                    d="M6.74868 5.25132V0H5.25132V5.25132H0V6.74868H5.25132V12H6.74868V6.74868H12V5.25132H6.74868Z"
-                                                                    fill="#61AFB3"></path>
-                                                            </svg>
-                                                        </button>
+                                        @if ($product['variant_id'] != 0)
+                                            <div class="mini-cart-body" data-id="{{$key}}" id="product-variant-id-{{ $product['variant_id'] }}">
+                                                <div class="mini-cart-item">
+                                                    <div class="mini-cart-image" data-label="Product">
+                                                        <a href="">
+                                                            <img src="{{$productImg .$product['image']}}" alt="img">
+                                                        </a>
                                                     </div>
-                                                </td>
-                                                <td data-label="Tax">
-                                                    @php
-                                                        $total_tax=0;
-                                                    @endphp
-                                                    @if(!empty($product['tax']))
-                                                        @foreach($product['tax'] as $k => $tax)
+                                                    <div class="mini-cart-details-cart">
+                                                        <p data-label="Name" class="mini-cart-title">
+                                                            <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name'] .' - '. $product['variant_name']}}</a>
+                                                        </p>
+
+                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
+                                                            <div data-label="quantity" class="price">
+                                                                <div class="qty-spinner" data-id="{{$key}}">
+                                                                    <button type="button" class="quantity-decrement qty-minus product_qty">
+                                                                        <svg width="12" height="2" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M0 0.251343V1.74871H12V0.251343H0Z" fill="#61AFB3"></path>
+                                                                        </svg>
+                                                                    </button>
+                                                                    <input type="number" class="quantity product_qty_input bx-cart-qty" data-cke-saved-name="quantity" name="quantity" data-id="{{$product['product_id']}}" value="{{$product['quantity']}}" id="product_qty">
+                                                                    <button type="button" class="quantity-increment qty-plus product_qty">
+                                                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M6.74868 5.25132V0H5.25132V5.25132H0V6.74868H5.25132V12H6.74868V6.74868H12V5.25132H6.74868Z" fill="#61AFB3"></path>
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <a class="remove_item">
+                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
+                                                            </a>
+                                                        </div>
+
+                                                        <div data-label="Tax"> 
                                                             @php
-                                                                $sub_tax = ($product['variant_price']* $product['quantity'] * $tax['tax']) / 100;
-                                                                $total_tax += $sub_tax;
+                                                                $total_tax=0;
                                                             @endphp
-                                                            <span class="variant_tax_{{ $k }}">{{$tax['tax_name'].' '.$tax['tax'].'%'.' ('.$sub_tax.')'}}</span>
-                                                        @endforeach
-                                                    @else  
-                                                        -
-                                                    @endif
-                                                </td>
-                                                <td data-label="Total">
-                                                    @php
-                                                        $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
-                                                        $total += $totalprice;
-                                                    @endphp
-                                                    <span class="subtotal">{{\App\Models\Utility::priceFormat($totalprice)}}</span> 
-                                                    <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fas fa-times"></i></a>
-                                                    {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
-                                                    {!! Form::close() !!}
-                                                </td>
-                                            </tr>
-                                        @else
-                                            <tr data-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
-                                                <td data-label="Product">
-                                                    <a class="pro-img-cart">
-                                                        @if(!empty($product['image']))
-                                                            <img src="{{ $imgpath.$product['image']}}">
-                                                        @else
-                                                            <img src="{{asset(Storage::url('uploads/is_cover_image/default.jpg'))}}">
-                                                        @endif
-                                                    </a>
-                                                </td>
-                                                <td data-label="Name">
-                                                    <a href="{{route('store.product.product_view',[$store->slug,$product['id']])}}">{{$product['product_name']}}</a>
-                                                </td>
-                                                <td data-label="price">{{\App\Models\Utility::priceFormat($product['price'])}}</td>
-                                                <td data-label="quantity">
-                                                    <div class="qty-spinner" data-id="{{$key}}">
-                                                        <button type="button" class="quantity-decrement qty-minus product_qty">
-                                                            <svg width="12" height="2" viewBox="0 0 12 2" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M0 0.251343V1.74871H12V0.251343H0Z" fill="#61AFB3"></path>
-                                                            </svg>
-                                                        </button>
-                                                        <input type="number" class="quantity product_qty_input bx-cart-qty" data-cke-saved-name="quantity" data-id="{{$product['product_id']}}" value="{{$product['quantity']}}" id="product_qty"
-                                                            name="quantity">
-                                                        <button type="button" class="quantity-increment qty-plus product_qty">
-                                                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                                                                xmlns="http://www.w3.org/2000/svg">
-                                                                <path
-                                                                    d="M6.74868 5.25132V0H5.25132V5.25132H0V6.74868H5.25132V12H6.74868V6.74868H12V5.25132H6.74868Z"
-                                                                    fill="#61AFB3"></path>
-                                                            </svg>
-                                                        </button>
+                                                            @if(!empty($product['tax']))
+                                                            @foreach($product['tax'] as $k => $tax)
+                                                                @php
+                                                                    $sub_tax = ($product['variant_price']* $product['quantity'] * $tax['tax']) / 100;
+                                                                    $total_tax += $sub_tax;
+                                                                @endphp
+                                                                <p class="t-gray p-title mb-0 variant_tax_{{ $k }}">
+                                                                    {{$tax['tax_name'].' '.$tax['tax'].'%'.' ('.$sub_tax.')'}}
+                                                                </p>
+                                                            @endforeach
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </div> 
+
+                                                        <td data-label="Total">
+                                                            @php
+                                                                $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
+                                                                $total += $totalprice;
+                                                            @endphp
+                                                            <p class="pt-price t-black15 subtotal">
+                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
+                                                            </p>
+                                                            <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fas fa-times"></i></a>
+                                                            {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
+                                                            {!! Form::close() !!}
+                                                        </td>
                                                     </div>
-                                                </td>
-                                                <td data-label="Tax">
-                                                    @php
-                                                        $total_tax=0;
-                                                    @endphp
-                                                    @if(!empty($product['tax']))
-                                                        @foreach($product['tax'] as $k => $tax)
-                                                            @php   
-                                                                $sub_tax = ($product['price']* $product['quantity'] * $tax['tax']) / 100;
-                                                                $total_tax += $sub_tax;
-                                                            @endphp
-                                                            <span class="tax_{{ $k }}">{{$tax['tax_name'].' '.$tax['tax'].'%'.' ('.$sub_tax.')'}}</span>
-                                                        @endforeach
-                                                    @else
-                                                    -
-                                                    @endif
-                                                   
-                                                </td>
-                                                <td data-label="Total">
-                                                    @php
-                                                        $totalprice = $product['price'] * $product['quantity'] + $total_tax;
-                                                        $total += $totalprice;
-                                                    @endphp
-                                                    <span class="subtotal">{{\App\Models\Utility::priceFormat($totalprice)}}</span>
-                                                    <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fas fa-times"></i></a>
-                                                    {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
-                                                    {!! Form::close() !!}
-                                                </td>
-                                            </tr>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="mini-cart-item" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
+                                                <div class="mini-cart-details-cart">
+                                                    <div data-label="Product" class="mini-cart-image">
+                                                        <a href="">
+                                                            <img src="{{$productImg .$product['image']}}" alt="img">
+                                                        </a>
+                                                    </div>
+
+                                                    <div class="cart-item-decr">
+                                                        <div data-label="Name">
+                                                            <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name']}}</a>
+                                                        </div>
+
+                                                        <div style="display: flex; align-items: center; justify-content: space-between">
+                                                            <div data-label="Total">
+                                                                @php
+                                                                    $total_tax=0;
+                                                                @endphp
+                                                                @if(!empty($product['tax']))
+                                                                @foreach($product['tax'] as $k => $tax)
+                                                                    @php
+                                                                    
+                                                                        $sub_tax = ($product['price']* $product['quantity'] * $tax['tax']) / 100;
+                                                                        $total_tax += $sub_tax;
+                                                                    @endphp
+                                                                @endforeach
+                                                                @endif
+                                                                @php
+                                                                    $totalprice = $product['price'] * $product['quantity'] + $total_tax;
+                                                                    $total += $totalprice;
+                                                                @endphp
+                                                                <span class="subtotal">{{\App\Models\Utility::priceFormat($totalprice)}}</span>
+                                                            </div>
+
+                                                            <div data-label="quantity" style="flex: 1; margin: 0 0.6rem">
+                                                                <div class="qty-spinner" data-id="{{$key}}">
+                                                                    <button type="button" class="quantity-decrement qty-minus product_qty">
+                                                                        <svg width="12" height="2" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M0 0.251343V1.74871H12V0.251343H0Z" fill="#61AFB3"></path>
+                                                                        </svg>
+                                                                    </button>
+                                                                    <input type="number" class="quantity product_qty_input bx-cart-qty" data-cke-saved-name="quantity" name="quantity" data-id="{{$product['product_id']}}" value="{{$product['quantity']}}" id="product_qty">
+                                                                    <button type="button" class="quantity-increment qty-plus product_qty">
+                                                                        <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                            <path d="M6.74868 5.25132V0H5.25132V5.25132H0V6.74868H5.25132V12H6.74868V6.74868H12V5.25132H6.74868Z" fill="#61AFB3"></path>
+                                                                        </svg>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+    
+                                                            <div>
+                                                                <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fa-solid fa-trash-can"></i></a>
+                                                                {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
+                                                                {!! Form::close() !!}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>                                               
                                         @endif
                                     @endforeach
                                 @endif
-                            </tbody>
+                            </div>
                         </table>
                     </div>
                 </div>
@@ -186,13 +191,12 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                         <div class="col-md-8 col-12">
                             @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
                                 <a href="#" class="checkout-btn modal-target" data-modal="Checkout" id="checkout-btn">
-                                    {{__('Proceed to checkout')}}
+                                    {{__('Continue to Shipping')}}
                                     <i class="fas fa-shopping-basket"></i>
                                 </a>
                             @else
                                 <a href="{{route('user-address.useraddress',$store->slug)}}" class="checkout-btn">
-                                    {{__('Proceed to checkout')}}
-                                    <i class="fas fa-shopping-basket"></i>
+                                    {{__('Continue to Shipping')}}
                                 </a>
                             @endif
                            
