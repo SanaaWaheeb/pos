@@ -128,8 +128,11 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                                 @for ($i = 0; $i < $storethemesetting['loop_number']; $i++)
                                     <div class="col-lg-4 col-md-6 col-12">
                                         <div class="about-promotions">
-                                            <h3>{!! $storethemesetting['homepage-promotions-font-icon'][$i] !!} {{ $storethemesetting['homepage-promotions-title'][$i] }}</h3>
-                                            <p> {{ $storethemesetting['homepage-promotions-description'][$i] }}</p>
+                                            <@if(isset($storethemesetting['homepage-promotions-description'][$i]))  
+                                                <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>  
+                                            @else  
+                                                <p>Default promotion description</p>  
+                                            @endif
                                         </div>
                                     </div>
                                 @endfor
@@ -525,7 +528,11 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                                                         <div class="subtitle">{{$getStoreThemeSetting[3]['inner-list'][1]['field_default_text']}}</div>
                                                         <h2>{{$getStoreThemeSetting[3]['inner-list'][0]['field_default_text']}}</h2>
                                                     </div>
-                                                    <p>{{ $storethemesetting['homepage-testimonial-card-description'][$i] }}</p>
+                                                        @if(isset($storethemesetting['homepage-promotions-description'][$i]))  
+                                                            <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>  
+                                                        @else  
+                                                            <p>Default promotion description</p>  
+                                                        @endif
                                                     <div class="abt-user">
                                                         <p>{{ $storethemesetting['homepage-testimonial-card-title'][$i] }}</p>
                                                         <small> {{ $storethemesetting['homepage-testimonial-card-sub-text'][$i] }}</small>

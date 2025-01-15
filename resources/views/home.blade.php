@@ -170,13 +170,24 @@ $company_logo = \App\Models\Utility::getValByName('company_logo');
                                     </span>
                                 </div>
                                 <div class="mb-4 text-center">{{--qrcode--}}
+                                    @if($store_id['theme_dir']=='theme2')
+                                    {!! QrCode::generate(  url("user-cart-item/{$store_id['slug']}/scanner"))!!}
+                                    @else
                                     {!! QrCode::generate($store_id['store_url']) !!}
+                                    @endif
                                 </div>
                                 <div class="d-flex justify-content-between pb-2">
-                                    <a href="#!" class="btn btn-light-primary w-100 cp_link" data-link="{{  $store_id['store_url'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Click to copy Store link') }}" style=" padding-left: 10px; padding-right: 10px; ">
-                                        {{ __('Store Link') }}
-                                        <i class="ms-3"data-feather="copy"></i>
-                                    </a>
+                                    @if($store_id['theme_dir']=='theme2')
+                                        <a href="#!" class="btn btn-light-primary w-100 cp_link" data-link="{{  url("user-cart-item/{$store_id['slug']}/scanner") }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Click to copy Store link') }}" style=" padding-left: 10px; padding-right: 10px; ">
+                                            {{ __('Store Link') }}
+                                            <i class="ms-3"data-feather="copy"></i>
+                                        </a>
+                                    @else
+                                        <a href="#!" class="btn btn-light-primary w-100 cp_link" data-link="{{ $store_id['store_url'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Click to copy Store link') }}" style=" padding-left: 10px; padding-right: 10px; ">
+                                            {{ __('Store Link') }}
+                                            <i class="ms-3"data-feather="copy"></i>
+                                        </a>
+                                    @endif
                                     <a href="#" id="socialShareButton"
                                         class="socialShareButton btn btn-sm btn-primary ms-1 share-btn" style=" padding-top: 8px; padding-bottom: 8px; ">
                                         <i class="ti ti-share"></i>
