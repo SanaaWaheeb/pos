@@ -505,7 +505,7 @@ Route::get('/generate-barcode/{sku}', [StoreController::class, 'generateBarcode'
 
 
 // The trsting route
-Route::get('payment-checkout/{slug}/{order_amount}', [PaymentController::class, 'processCheckout'])->name(name: 'payment.checkout');
+Route::get('payment-checkout/{slug}/{order_amount}', [PaymentController::class, 'processCheckout'])->name(name: 'payment.checkout')->middleware('SetLocale');
 Route::get('payment-status/{slug}/{order_id}', [PaymentController::class, 'paymentStatus'])->name('payment.status')->middleware('SetLocale');
 Route::post('edfapay-payment/callback', [PaymentController::class, 'edfapayCallback'])->name('edfapay.callback');
 

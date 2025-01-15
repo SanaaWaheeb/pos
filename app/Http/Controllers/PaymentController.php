@@ -3066,18 +3066,38 @@ class PaymentController extends Controller
 
     }
 
-    public function processCheckout($slug, $order_amount) 
+    public function processCheckout($slug, $order_amount)
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
-        // Get payment settings 
-        if(\Auth::check())
-        {
-            $store_payment_setting = Utility::getPaymentSetting();
+
+        if (!$store) {
+            return response()->json(['error' => __('Store not found.')], 404);
         }
-        else
-        {
-            $store_payment_setting = Utility::getPaymentSetting($store->id);
+
+        // Get payment settings
+        $store_payment_setting = \Auth::check()
+            ? Utility::getPaymentSetting()
+            : Utility::getPaymentSetting($store->id);
+
+        // Get the enabled payment method
+        $enabled_payment_method = null;
+        foreach ($store_payment_setting as $key => $value) {
+            if (str_starts_with($key, 'is_') && str_ends_with($key, '_enabled') && $value === 'on') {
+                $enabled_payment_method = str_replace(['is_', '_enabled'], '', $key);
+                break;
+            }
         }
+
+        if (!$enabled_payment_method) {
+            return response()->json(
+                [
+                    'error' => __('The admin has not set the payment method.'),
+                ],
+                400
+            );
+        }
+
+        // --------------- Later: make the code dynamic for other payment methods ------------ 
         $edfaPayPassword = $store_payment_setting['edfapay_password'];
         $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
 
@@ -3104,6 +3124,7 @@ class PaymentController extends Controller
         $encoded_order_amount = base64_encode($order_amount); 
         $encoded_code = base64_encode(200);
 
+        // Prepare payment data
         $paymentData = [
             "action" => "SALE",
             "edfa_merchant_id" => $edfaPayMerchantKey,
@@ -3132,6 +3153,7 @@ class PaymentController extends Controller
             "hash" => $hash,
         ];
 
+        // Send request to payment gateway
         $ch = curl_init('https://api.edfapay.com/payment/initiate');
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $paymentData);
@@ -3142,27 +3164,12 @@ class PaymentController extends Controller
         if ($response !== false) {
             $responseData = json_decode($response, true);
             if (isset($responseData['redirect_url'])) {
-
-                // Redirect the user to the payment gateway
-                header('Location: ' . $responseData['redirect_url']);
-                exit;
-
+                return response()->json(['redirect_url' => $responseData['redirect_url']]);
             } else {
-                // Redirect to payment status with failure message
-                return redirect() -> route('payment.status', [
-                    'slug' => $slug,
-                    'order_id' => $order_id,
-                    'code' => 404,
-                ]);
+                return response()->json(['error' => __('Failed to initiate payment')], 400);
             }
-
         } else {
-            // Handle cURL errors and redirect
-            return redirect()->route('payment.status', [
-                'slug' => $slug,
-                'order_id' => $order_id,
-                'code' => 404,
-            ]);
+            return response()->json(['error' => __('Payment gateway not reachable')], 500);
         }
     }
 
@@ -3171,7 +3178,7 @@ class PaymentController extends Controller
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
     
         if (!$store) {
-            return abort(404, 'Store not found or disabled.');
+            return abort(404, __('Store not found.'));
         }
     
         $code = base64_decode($request->query('code', 'unknown')); // Decode code
