@@ -2372,7 +2372,7 @@ body.no-scroll {
     right: 0;
     top: 0;
     z-index: 3;
-    /* padding: 20px 0;     */
+    padding: 20px 0;    
     -webkit-transition: all ease-in-out 0.5s;
     -moz-transition: all ease-in-out 0.5s;
     -ms-transition: all ease-in-out 0.5s;
