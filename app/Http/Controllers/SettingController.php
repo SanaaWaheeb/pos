@@ -654,7 +654,7 @@ class SettingController extends Controller
     public function saveOwnerPaymentSettings(Request $request, $slug)
     {
         $store = Store::where('slug', $slug)->first();
-
+        
         $validator = \Validator::make(
             $request->all(), [
                 'currency' => 'required|string|max:255',
@@ -667,6 +667,19 @@ class SettingController extends Controller
         if ($validator->fails()) {
             $messages = $validator->getMessageBag();
             return redirect()->back()->with('error', $messages->first());
+        }
+
+        // Make sure the admin will enable only one payment method
+        $input = $request->all();
+        $enabled_methods = [];
+        foreach($input as $key => $value) {
+            if (str_starts_with($key, 'is_') && str_ends_with($key, '_enabled') && $value === 'on') {
+                $payment_method = str_replace(['is_', '_enabled'], '', $key);
+                $enabled_methods[] = $payment_method;
+            }
+        }
+        if (count($enabled_methods) > 1) {
+            return redirect()->back()->with('error', __('Only one payment method can be enabled.'));
         }
 
 
@@ -683,6 +696,13 @@ class SettingController extends Controller
                     'paypal_mode' => 'required|string',
                     'paypal_client_id' => 'required|string',
                     'paypal_secret_key' => 'required|string',
+                ]
+            );
+        } elseif ($request->is_edfapay_enabled == 'on') { // EdfaPay Payment Gateway
+            $request->validate(
+                [
+                    'edfapay_merchant_key' => 'required|string',
+                    'edfapay_password' => 'required|string',
                 ]
             );
         }
@@ -706,14 +726,12 @@ class SettingController extends Controller
         $store['enable_telegram'] = $request->enable_telegram ?? 'off';
         $store['telegrambot'] = str_replace(' ', '', $request->telegrambot);
         $store['telegramchatid'] = str_replace(' ', '', $request->telegramchatid);
-
         $store['is_edfapay_enabled'] = $request->is_edfapay_enabled?? 'off';
-        if ($request->has('edfapay_password')) {
-            $store['edfapay_password'] = $request->edfapay_password;
-        }
-        
         if ($request->has('edfapay_merchant_key')) {
             $store['edfapay_merchant_key'] = $request->edfapay_merchant_key;
+        }
+        if ($request->has(key: 'edfapay_password')) {
+            $store['edfapay_password'] = $request->edfapay_password;
         }
 
         $store->update();

@@ -900,6 +900,7 @@
     "Payment setting successfully saved.": "Payment setting successfully saved.",
     "Payment setting successfully updated.": "Payment setting successfully updated.",
     "Payment Settings": "Payment Settings",
+    "Only one payment method can be enabled.": "Only one payment method can be enabled.",
     "Payment Status": "Payment Status",
     "Payment Store setting successfully created.": "Payment Store setting successfully created.",
     "Payment Type": "Payment Type",

@@ -904,6 +904,7 @@
   "Payment setting successfully saved.": "تم حفظ إعداد الدفع بنجاح.",
   "Payment setting successfully updated.": "تم تحديث إعداد الدفع بنجاح.",
   "Payment Settings": "إعدادات الدفع",
+  "Only one payment method can be enabled.": "لا يمكن تفعيل سوى طريقة دفع واحدة.",
   "Payment Status": "حالة الدفع",
   "Payment Store setting successfully created.": "تم إنشاء إعداد متجر الدفع بنجاح.",
   "Payment Type": "نوع الدفع",
