@@ -1670,7 +1670,7 @@ class StoreController extends Controller
             $barcode = request('barcode'); 
      
             // ------------ Retrive Product with equivalent barcode ------------
-            $product = Product::where('SKU', $barcode)->first(); 
+            $product = Product::where('store_id', $store->id)->where('SKU', $barcode)->first(); 
             if (empty($product)) { 
                 return response()->json(
                     [ 
