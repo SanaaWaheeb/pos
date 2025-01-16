@@ -128,10 +128,10 @@
                 </div>
                 <div class="main-nav">
                     <ul>
-                        <li class="menu-link">
+                        {{-- <li class="menu-link">
                             <a class="{{ route('store.slug') ?: 'text-dark' }} {{ Request::segment(1) == 'store-blog' ? 'text-dark' : '' }}"
                                 href="{{ route('store.slug', $store->slug) }}">{{ ucfirst($store->name) }}</a>
-                        </li>
+                        </li> --}}
                         @if (!empty($page_slug_urls))
                             @foreach ($page_slug_urls as $k => $page_slug_url)
                                 @if ($page_slug_url->enable_page_header == 'on')
@@ -156,10 +156,17 @@
 
                         </li>
                         @if (Utility::CustomerAuthCheck($store->slug) == true)
-                            <li>
+                            {{-- <li>
                                 <a href="{{ route('store.wishlist', $store->slug) }}"><i class="fas fa-heart"></i></a>
                                 <span
                                     class="count wishlist_count">{{ !empty($wishlist) ? count($wishlist) : '0' }}</span>
+                            </li> --}}
+                            <li>
+                                <a href="{{ route('store.wishlist', $store->slug) }}">
+                                    <i class="fas fa-heart"></i>
+                                    <div class="count wishlist_count" id="shoping_counts">
+                                        {{ !empty($wishlist) ? count($wishlist) : '0' }}</div>
+                                </a>
                             </li>
                         @endif
                         <li>
@@ -231,13 +238,13 @@
                         @endif
                     </ul>
                 </div>
-                <div class="mobile-menu mobile-only">
+                {{-- <div class="mobile-menu mobile-only">
                     <button class="mobile-menu-button" id="menu">
                         <div class="one"></div>
                         <div class="two"></div>
                         <div class="three"></div>
                     </button>
-                </div>
+                </div> --}}
             </div>
             <div class="mobile-menu-bottom">
                 <ul>
@@ -291,7 +298,7 @@
                             <i class="fas fa-language"></i>
                             <span class="select">{{ ucFirst($langName->fullName) }}</span>
                         </a>
-                        <div class="menu-dropdown acnav-list">
+                        <div class="acnav-list">
                             <ul>
                                 @foreach ($specific_langs as $code => $language)
                                     <li><a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
