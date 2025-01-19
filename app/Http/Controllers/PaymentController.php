@@ -3217,6 +3217,232 @@ class PaymentController extends Controller
         ));
     }
 
+    public function edfapayPayment($slug, $order_amount)
+    {
+        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
+        $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
+        $cust_details = $cart['customer']; // need to be modified
+
+        if (!$store) {
+            return response()->json(['error' => __('Store not found.')], 404);
+        }
+
+        // Get payment settings
+        $store_payment_setting = \Auth::check()
+            ? Utility::getPaymentSetting()
+            : Utility::getPaymentSetting($store->id);
+
+        // Get the enabled payment method
+        $enabled_payment_method = null;
+        foreach ($store_payment_setting as $key => $value) {
+            if (str_starts_with($key, 'is_') && str_ends_with($key, '_enabled') && $value === 'on') {
+                $enabled_payment_method = str_replace(['is_', '_enabled'], '', $key);
+                break;
+            }
+        }
+
+        if (!$enabled_payment_method) {
+            return response()->json(
+                [
+                    'error' => __('The admin has not set the payment method.'),
+                ],
+                400
+            );
+        }
+
+        // Iniitate edfapay payment request
+        $edfaPayPassword = $store_payment_setting['edfapay_password'];
+        $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
+
+        // Get order information
+        $order_id = date("YmdHis"); // Format: YYYYMMDDHHMMSS
+        $orderCurrency = "SAR";
+        $payerCountry = "SA";
+        $orderDescription = 'Hi From AVA';
+
+        // Fetch IP address
+        $ipAddress = '';
+        $ipResponse = file_get_contents('https://api.ipify.org?format=json');
+        if ($ipResponse !== false) {
+            $ipData = json_decode($ipResponse, true);
+            $ipAddress = $ipData['ip'] ?? '';
+        }
+
+        // Security purpose
+        $to_md5 = $order_id . $order_amount . $orderCurrency . $orderDescription . $edfaPayPassword;
+        $md5_hash = md5(strtoupper($to_md5));
+        $hash = sha1($md5_hash);
+
+        // Base64 encode the order amount and code 
+        $encoded_order_amount = base64_encode($order_amount); 
+        $encoded_code = base64_encode(200);
+
+        // Prepare payment data
+        $paymentData = [
+            "action" => "SALE",
+            "edfa_merchant_id" => $edfaPayMerchantKey,
+            'order_id' => $order_id,
+            "order_amount" => $order_amount,
+            "order_currency" => $orderCurrency,
+            "order_description" => $orderDescription,
+            "req_token" => "N",
+            "payer_first_name" => "payer_first_name",
+            "payer_last_name" => "payer_last_name",
+            "payer_address" => "payer_address",
+            "payer_country" => $payerCountry,
+            "payer_city" => "payer_city",
+            "payer_zip" => "12221",
+            "payer_email" => "edfapayPayer@mailinator.com",
+            "payer_phone" => "966565555555",
+            'payer_ip' => $ipAddress,
+            "term_url_3ds" => route('payment.status', [
+                'slug' => $slug, 
+                'order_id' => $order_id,
+                'order_amount' => $encoded_order_amount,
+                'code' => $encoded_code,
+            ]),
+            "auth" => "N",
+            "recurring_init" => "N",
+            "hash" => $hash,
+        ];
+
+        // Send request to payment gateway
+        $ch = curl_init('https://api.edfapay.com/payment/initiate');
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $paymentData);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        // Handle callback
+        if($response)
+        {
+            $result = json_decode($response, true);
+        }
+
+        // Get products
+        $products = '';
+        $product_ids = [];
+        if(!empty($cart))
+        {
+            $products = $cart['products'];
+        }
+        else
+        {
+            return redirect()->back()->with('error', __('Please add to product into cart'));
+        }
+
+        foreach($products as $item) {
+            $product = Product::find($item['product_id']);
+            if ($product) {
+                $new_qty = $product->quantity - $item['quantity'];
+                $product->quantity = $new_qty < 0 ? 0 : $new_qty;
+                $product->save();
+
+                $total_price += $item['price'] * $item['quantity']; // Calculate the total price
+                $product_ids[] = $item['product_id'];
+            }
+        }
+
+        // create order object
+        if(array_key_exists('data', $result) && array_key_exists('status', $result['data']) && ($result['data']['status'] === 'success'))
+        {
+            if (Utility::CustomerAuthCheck($store->slug)) {
+                $customer = Auth::guard('customers')->user()->id;
+            }else{
+                $customer = 0;
+            }
+
+            $customer               = Auth::guard('customers')->user();
+            $order                  = new Order();
+            $order->order_id        = time();
+            // theme3 , but theme1 and theme2 only phone number::
+            $order->name            = $cust_details['name'];
+            $order->email           = $cust_details['email'];
+
+            $order->card_number     = '';
+            $order->card_exp_month  = '';
+            $order->card_exp_year   = '';
+            $order->status          = 'pending';
+            // $order->user_address_id = $cust_details['id'];
+            // $order->shipping_data   = $shipping_data;
+            $order->product_id      = implode(',', $product_ids);
+            $order->price           = $order_amount;
+            // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
+            // $order->coupon_json     = json_encode($coupon);
+            // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
+            $order->product         = json_encode($products);
+            $order->price_currency  = $store->currency_code;
+            $order->txn_id          = isset($result['data']['id']) ? $result['data']['id'] : '';
+            $order->payment_type    = 'edfapay';
+            $order->payment_status  = isset($result['data']['status']) ? $result['data']['status'] : 'succeeded';
+            $order->receipt         = '';
+            $order->user_id         = $store['id'];
+            $order->customer_id     = isset($customer->id) ? $customer->id : '';
+            $order->save();
+
+            //webhook
+            $module = 'New Order';
+            $webhook =  Utility::webhook($module, $store->id);
+            if ($webhook) {
+                $parameter = json_encode($order);
+                //
+                // 1 parameter is  URL , 2 parameter is data , 3 parameter is method
+                $status = Utility::WebhookCall($webhook['url'], $parameter, $webhook['method']);
+                
+                if ($status != true) {
+                    $msg  = 'Webhook call failed.';
+                }
+            }
+
+            if ((!empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'on') ){
+                foreach($products as $product_id)
+                {
+                    $purchased_products = new PurchasedProducts();
+                    $purchased_products->product_id  = $product_id['product_id'];
+                    $purchased_products->customer_id = $customer->id;
+                    $purchased_products->order_id   = $order->id;
+                    $purchased_products->save();
+                }
+            }
+
+            session()->forget($slug);
+            $order_email = $order->email;
+            $owner=User::find($store->created_by);
+
+            $owner_email=$owner->email;
+            $order_id    = Crypt::encrypt($order->id);
+
+            // if(isset($store->mail_driver) && !empty($store->mail_driver))
+            // {
+                $dArr = [
+                    'order_name' => $order->name,
+                ];
+
+                $resp = Utility::sendEmailTemplate('Order Created', $order_email, $dArr, $store, $order_id);
+
+                $resp1=Utility::sendEmailTemplate('Order Created For Owner', $owner_email, $dArr, $store, $order_id);
+
+
+            // }
+            if(isset($store->is_twilio_enabled) && $store->is_twilio_enabled=="on")
+            {
+                    Utility::order_create_owner($order,$owner,$store);
+                    Utility::order_create_customer($order,$customer,$store);
+            }
+
+            if (isset($responseData['redirect_url'])) {
+                return response()->json(['redirect_url' => $result['redirect_url']]);
+            } else {
+                return response()->json(['error' => __('Failed to initiate payment')], 400);
+            }
+        }
+        else
+        {
+            return redirect()->back()->with('error', __('Transaction Unsuccesfull'));
+            // return response()->json(['error' => __('Payment gateway not reachable')], 500);
+        }
+    }
 
     // Mercado mercadopagoPaymentCallback
     public function mercadopagoPaymentCallback($plan, Request $request)
