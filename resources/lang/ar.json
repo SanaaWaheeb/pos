@@ -1565,6 +1565,7 @@
   "Make sure to place the product barcode within the red frame. Once the barcode is in focus it should be detected automatically": "تأكد من وضع باركود المنتج داخل الإطار الأحمر. بمجرد أن يكون الباركود داخله، سيتم اكتشافه تلقائيًا.",
   "Submit": "إرسال",
   "Return to Store": "العودة للمتجر",
+  "Return to Scanner": "العودة لمسح المنتجات",
   "is added to the cart!":"تمت إضافته للسلة",
   "CANCEL":"إلغاء",
   "Help": "مساعدة",
