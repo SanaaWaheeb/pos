@@ -557,8 +557,8 @@ $data = $data
                             <ul class="social-link">
                                 @if (isset($getStoreThemeSetting[18]['homepage-footer-2-social-icon']) ||
                                         isset($getStoreThemeSetting[18]['homepage-footer-2-social-link']))
-                                    @if (isset($getStoreThemeSetting[18]['inner-list'][1]['field_default_text']) &&
-                                            isset($getStoreThemeSetting[18]['inner-list'][0]['field_default_text']))
+                                    @if (isset($getStoreThemeSetting[18]['inner-list'][1]) &&
+                                            isset($getStoreThemeSetting[18]['inner-list'][0]))
                                         @foreach ($getStoreThemeSetting[18]['homepage-footer-2-social-icon'] as $icon_key => $storethemesettingicon)
                                             @foreach ($getStoreThemeSetting[18]['homepage-footer-2-social-link'] as $link_key => $storethemesettinglink)
                                                 @if ($icon_key == $link_key)

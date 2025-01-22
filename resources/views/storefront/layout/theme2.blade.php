@@ -482,9 +482,9 @@
     @endif
 
     @if ($getStoreThemeSetting[14]['section_enable'] == 'on')
-        <script>
+        {{-- <script>
             {!! $getStoreThemeSetting[16]['inner-list'][0]['field_default_text'] !!}
-        </script>
+        </script> --}}
     @endif
     <div class="mask-body mask-body-home mask-body-dark"></div>
     <div class="mobile-menu-wrapper">

@@ -2591,26 +2591,24 @@
                                                             <?php $field = (array) $field; ?>
                                                             <input type="hidden"
                                                                 name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_name]"
-                                                                value="{{ $field['field_name'] }}">
+                                                                value="{{ $field['field_name']?? '' }}">
                                                             <input type="hidden"
                                                                 name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_slug]"
-                                                                value="{{ $field['field_slug'] }}">
+                                                                value="{{ $field['field_slug']?? '' }}">
                                                             <input type="hidden"
                                                                 name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_help_text]"
-                                                                value="{{ $field['field_help_text'] }}">
-                                                            <input type="hidden"
-                                                                name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_default_text]"
-                                                                value="{{ $field['field_default_text'] }}">
+                                                                value="{{ $field['field_help_text']?? '' }}">
+                                                        
                                                             <input type="hidden"
                                                                 name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_type]"
-                                                                value="{{ $field['field_type'] }}">
+                                                                value="{{ $field['field_type'] ?? ''}}">
                                                             @if ($field['field_type'] == 'text')
                                                                 <div class="col-md-6">
                                                                     <div class="form-group">
                                                                         <label
                                                                             class="form-label">{{ $field['field_name'] }}</label>
                                                                         @php
-                                                                            $checked1 = $field['field_default_text'];
+                                                                          $checked1 = $section[$field['field_slug']][$i] ?? '';
                                                                             if (!empty($section[$field['field_slug']][$i])) {
                                                                                 $checked1 = $section[$field['field_slug']][$i];
                                                                             }
@@ -2620,40 +2618,37 @@
                                                                                 name="array[{{ $json_key }}][{{ $field['field_slug'] }}][{{ $i }}]"
                                                                                 class="form-control"
                                                                                 value="{{ $checked1 }}"
-                                                                                placeholder="{{ $field['field_help_text'] }}">
+                                                                                placeholder="{{ $field['field_help_text']?? '' }}">
                                                                         @else
                                                                             <input type="text" class="form-control"
                                                                                 name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_default_text]"
                                                                                 value="{{ $field['field_default_text'] }}"
-                                                                                placeholder="{{ $field['field_help_text'] }}">
+                                                                                placeholder="{{ $field['field_help_text'] ?? '' }}">
                                                                         @endif
 
                                                                     </div>
                                                                 </div>
                                                             @endif
                                                             @if ($field['field_type'] == 'text area')
-                                                                <div class="col-md-6">
-                                                                    <div class="form-group">
-                                                                        <label
-                                                                            class="form-label">{{ $field['field_name'] }}</label>
-                                                                            @php
-                                                                                $checked1 = $field['field_default_text'];
-                                                                                
-                                                                                if (!empty($section[$field['field_slug']][$i])) {
-                                                                                    $checked1 = $section[$field['field_slug']][$i];
-                                                                                }
-                                                                               
-                                                                            @endphp
-                                                                        @if ($section['array_type'] == 'multi-inner-list')
-                                                                            <textarea name="array[{{ $json_key }}][{{ $field['field_slug'] }}][{{ $i }}]" id=""
-                                                                                class="form-control" rows="3" placeholder="{{ $field['field_help_text'] }}">{{ $checked1 }}</textarea>
-                                                                        @else
-                                                                            <textarea name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_default_text]" id=""
-                                                                                class="form-control" rows="3" placeholder="{{ $field['field_help_text'] }}">{{ $field['field_default_text'] }}</textarea>
-                                                                        @endif
-                                                                    </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="form-label">{{ $field['field_name'] }}</label>
+                                                                    @php
+                                                                        $checked1 = $section[$field['field_slug']][$i] ?? '';
+                                                                        // if (!empty($section[$field['field_slug']][$i])) {
+                                                                        //             $checked1 = $section[$field['field_slug']][$i];
+                                                                        //         }
+                                                                    @endphp
+                                                                    @if ($section['array_type'] == 'multi-inner-list')
+                                                                        <textarea name="array[{{ $json_key }}][{{ $field['field_slug'] }}][{{ $i }}]" 
+                                                                            class="form-control" rows="3" placeholder="{{ $field['field_help_text'] ?? '' }}">{{ old('array.'.$json_key.'.'.$field['field_slug'].'.'.$i, $checked1) }}</textarea>
+                                                                    @else
+                                                                        <textarea name="array[{{ $json_key }}][inner-list][{{ $inner_list_key }}][field_default_text]" 
+                                                                            class="form-control" rows="3" placeholder="{{ $field['field_help_text'] ?? '' }}">{{ old('array.'.$json_key.'.inner-list.'.$inner_list_key.'.field_default_text', '') }}</textarea>
+                                                                    @endif
                                                                 </div>
-                                                            @endif
+                                                            </div>
+                                                        @endif
                                                             @if ($field['field_type'] == 'photo upload')
                                                                 <div class="col-md-6">
                                                                     @if ($section['array_type'] == 'multi-inner-list')

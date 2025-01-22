@@ -533,7 +533,7 @@ $data = $data
                             @if ($getStoreThemeSetting[16]['section_enable'] == 'on')
                                 <ul class="footer-social">
                                     @if (isset($getStoreThemeSetting[17]['homepage-footer-2-social-icon']) || isset($getStoreThemeSetting[17]['homepage-footer-2-social-link']))
-                                        @if (isset($getStoreThemeSetting[17]['inner-list'][1]['field_default_text']) && isset($getStoreThemeSetting[17]['inner-list'][0]['field_default_text']))
+                                        @if (isset($getStoreThemeSetting[17]['inner-list'][1]) && isset($getStoreThemeSetting[17]['inner-list'][0]))
                                             @foreach ($getStoreThemeSetting[17]['homepage-footer-2-social-icon'] as $icon_key => $storethemesettingicon)
                                                 @foreach ($getStoreThemeSetting[17]['homepage-footer-2-social-link'] as $link_key => $storethemesettinglink)
                                                     @if ($icon_key == $link_key)
