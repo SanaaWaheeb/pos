@@ -504,10 +504,13 @@ Route::get('user-cart-item/{slug?}/scanner/{product_id?}/{quantity?}/{variant_id
 Route::get('/generate-barcode/{sku}', [StoreController::class, 'generateBarcode']);
 
 
-// The trsting route
+// The testing route
 Route::get('payment-checkout/{slug}/{order_amount}', [PaymentController::class, 'processCheckout'])->name(name: 'payment.checkout')->middleware('SetLocale');
 Route::get('payment-status/{slug}/{order_id}', [PaymentController::class, 'paymentStatus'])->name('payment.status')->middleware('SetLocale');
-Route::post('edfapay-payment/callback', [PaymentController::class, 'edfapayCallback'])->name('edfapay.callback');
+Route::get('edfapay-payment/callback', [PaymentController::class, 'edfaPayPaymentCallback'])->name('edfapay.callback');
+Route::get('confirm-order/{order}', [OrderController::class, 'storeConfirmOrder'])->name('confirm.order');
+
+Route::get('testing', [PaymentController::class, 'statusTesting'])->name('testing')->middleware('SetLocale');
 
 
 Route::get('checkoutPermission/{store?}', [StoreController::class, 'CheckoutPermit'])->name('checkout.permission');

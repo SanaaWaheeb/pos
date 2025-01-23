@@ -3069,9 +3069,14 @@ class PaymentController extends Controller
     public function processCheckout($slug, $order_amount)
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
+        $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
 
         if (!$store) {
-            return response()->json(['error' => __('Store not found.')], 404);
+            return redirect()->back()->with('error', __('Store not found.'));
+        }
+        if(empty($cart))
+        {
+            return redirect()->back()->with('error', __('Please add to product into cart'));
         }
 
         // Get payment settings
@@ -3102,7 +3107,9 @@ class PaymentController extends Controller
         $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
 
         // Get order information
-        $order_id = date("YmdHis"); // Format: YYYYMMDDHHMMSS
+        $order_id = Order::latest()->first()->id;
+        $order_id = $order_id + 1;
+        // $order_id = date("YmdHis"); // Format: YYYYMMDDHHMMSS
         $orderCurrency = "SAR";
         $payerCountry = "SA";
         $orderDescription = 'Hi From AVA';
@@ -3121,8 +3128,8 @@ class PaymentController extends Controller
         $hash = sha1($md5_hash);
 
         // Base64 encode the order amount and code 
-        $encoded_order_amount = base64_encode($order_amount); 
-        $encoded_code = base64_encode(200);
+        // $encoded_order_amount = base64_encode($order_amount); 
+        // $encoded_code = base64_encode(200);
 
         // Prepare payment data
         $paymentData = [
@@ -3142,11 +3149,11 @@ class PaymentController extends Controller
             "payer_email" => "edfapayPayer@mailinator.com",
             "payer_phone" => "966565555555",
             'payer_ip' => $ipAddress,
-            "term_url_3ds" => route('payment.status', [
+            "term_url_3ds" => route('edfapay.callback', [
                 'slug' => $slug, 
                 'order_id' => $order_id,
-                'order_amount' => $encoded_order_amount,
-                'code' => $encoded_code,
+                // 'order_amount' => $encoded_order_amount,
+                // 'code' => $encoded_code,
             ]),
             "auth" => "N",
             "recurring_init" => "N",
@@ -3173,275 +3180,222 @@ class PaymentController extends Controller
         }
     }
 
-    public function paymentStatus($slug, $order_id, Request $request)
-    {
-        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
-    
-        if (!$store) {
-            return abort(404, __('Store not found.'));
-        }
-    
-        $code = base64_decode($request->query('code', 'unknown')); // Decode code
-        $order_amount = base64_decode($request->query('order_amount', 0)); // Decode order_amount
-        $currentDate = Carbon::now()->format('d-m-Y, H:i:s'); 
-    
-        if ($code == 200) { 
-            $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
-            // Reduce products quantity in DB
-            try {
-                foreach($cart['products'] as $key => $item) {
-                    $product = Product::find($item['product_id']);
-                    if ($product) {
-                        $newQty = $product->quantity - $item['quantity'];
-                        $product->quantity = $newQty < 0? 0 : $newQty;
-                        // Save the updated stock quantity
-                        $product->save();
-                    }
-
-                    // Clear the cart
-                    $cart['products'] = [];
-                    $cart['cart_item_count'] = 0;
-                    session()->put($slug, $cart);
-                }
-            } catch (\Exception $e) {
-                return redirect()->route('payment.status', [
-                    'slug' => $slug,
-                    'order_id' => $order_id,
-                    'code' => 500,
-                ])->with('error', $e->getMessage());
-            }
-        }
-    
-        return view('storefront.' . $store->theme_dir . '.status', compact(
-            'store', 'order_id', 'code', 'order_amount', 'currentDate'
-        ));
-    }
-
-    public function edfapayPayment($slug, $order_amount)
-    {
+    public function edfaPayPaymentCallback(Request $request) 
+    { 
+        $slug = $request->slug;
+        $target_status = 'SUCCESS';
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
-        $cust_details = $cart['customer']; // need to be modified
+        $products = $cart['products'];
 
-        if (!$store) {
-            return response()->json(['error' => __('Store not found.')], 404);
-        }
+        // ----------- Read edfapay callback's file content ----------- 
+        $callback_content = ''; 
+        $callback_path = base_path('edfapay/data.txt'); 
+        if (file_exists($callback_path)) { 
+            $callback_content = file_get_contents($callback_path); 
+        } else { 
+            return response()->json( 
+                [ 
+                    'status' => 'error', 
+                    'error' => 'File not found', 
+                ] 
+            ); 
+        } 
 
-        // Get payment settings
-        $store_payment_setting = \Auth::check()
-            ? Utility::getPaymentSetting()
-            : Utility::getPaymentSetting($store->id);
+        // ----------- Split and Process Each JSON Object -----------
+        $order_obj = null;
+        $json_objects = preg_split('/(?<=\})\s*(?=\{)/', $callback_content); // Split on boundaries between JSON objects
 
-        // Get the enabled payment method
-        $enabled_payment_method = null;
-        foreach ($store_payment_setting as $key => $value) {
-            if (str_starts_with($key, 'is_') && str_ends_with($key, '_enabled') && $value === 'on') {
-                $enabled_payment_method = str_replace(['is_', '_enabled'], '', $key);
-                break;
+        foreach($json_objects as $obj) {
+            $decoded_object = json_decode($obj, true);
+            if ($decoded_object && isset($decoded_object['params'])) {
+                $param_obj = (object) $decoded_object['params'];
+                if (
+                    (isset($param_obj->order_id) && isset($param_obj->status)) 
+                    && $param_obj->order_id === $request->order_id
+                    && $param_obj->status === $target_status
+                ) {
+                    $order_obj = $param_obj;
+                    break;
+                }
             }
         }
 
-        if (!$enabled_payment_method) {
-            return response()->json(
-                [
-                    'error' => __('The admin has not set the payment method.'),
-                ],
-                400
-            );
-        }
+        // ----------- Handle payment callback ----------- 
+        if ($order_obj) {
+            // Reduce products stock quantity in DB
+            $product_ids = [];
+            foreach($products as $item) {
+                $product = Product::find($item['product_id']);
+                if ($product) {
+                    $new_qty = $product->quantity - $item['quantity'];
+                    $product->quantity = $new_qty < 0 ? 0 : $new_qty;
+                    $product->save();
 
-        // Iniitate edfapay payment request
-        $edfaPayPassword = $store_payment_setting['edfapay_password'];
-        $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
-
-        // Get order information
-        $order_id = date("YmdHis"); // Format: YYYYMMDDHHMMSS
-        $orderCurrency = "SAR";
-        $payerCountry = "SA";
-        $orderDescription = 'Hi From AVA';
-
-        // Fetch IP address
-        $ipAddress = '';
-        $ipResponse = file_get_contents('https://api.ipify.org?format=json');
-        if ($ipResponse !== false) {
-            $ipData = json_decode($ipResponse, true);
-            $ipAddress = $ipData['ip'] ?? '';
-        }
-
-        // Security purpose
-        $to_md5 = $order_id . $order_amount . $orderCurrency . $orderDescription . $edfaPayPassword;
-        $md5_hash = md5(strtoupper($to_md5));
-        $hash = sha1($md5_hash);
-
-        // Base64 encode the order amount and code 
-        $encoded_order_amount = base64_encode($order_amount); 
-        $encoded_code = base64_encode(200);
-
-        // Prepare payment data
-        $paymentData = [
-            "action" => "SALE",
-            "edfa_merchant_id" => $edfaPayMerchantKey,
-            'order_id' => $order_id,
-            "order_amount" => $order_amount,
-            "order_currency" => $orderCurrency,
-            "order_description" => $orderDescription,
-            "req_token" => "N",
-            "payer_first_name" => "payer_first_name",
-            "payer_last_name" => "payer_last_name",
-            "payer_address" => "payer_address",
-            "payer_country" => $payerCountry,
-            "payer_city" => "payer_city",
-            "payer_zip" => "12221",
-            "payer_email" => "edfapayPayer@mailinator.com",
-            "payer_phone" => "966565555555",
-            'payer_ip' => $ipAddress,
-            "term_url_3ds" => route('payment.status', [
-                'slug' => $slug, 
-                'order_id' => $order_id,
-                'order_amount' => $encoded_order_amount,
-                'code' => $encoded_code,
-            ]),
-            "auth" => "N",
-            "recurring_init" => "N",
-            "hash" => $hash,
-        ];
-
-        // Send request to payment gateway
-        $ch = curl_init('https://api.edfapay.com/payment/initiate');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $paymentData);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        // Handle callback
-        if($response)
-        {
-            $result = json_decode($response, true);
-        }
-
-        // Get products
-        $products = '';
-        $product_ids = [];
-        if(!empty($cart))
-        {
-            $products = $cart['products'];
-        }
-        else
-        {
-            return redirect()->back()->with('error', __('Please add to product into cart'));
-        }
-
-        foreach($products as $item) {
-            $product = Product::find($item['product_id']);
-            if ($product) {
-                $new_qty = $product->quantity - $item['quantity'];
-                $product->quantity = $new_qty < 0 ? 0 : $new_qty;
-                $product->save();
-
-                $total_price += $item['price'] * $item['quantity']; // Calculate the total price
-                $product_ids[] = $item['product_id'];
-            }
-        }
-
-        // create order object
-        if(array_key_exists('data', $result) && array_key_exists('status', $result['data']) && ($result['data']['status'] === 'success'))
-        {
-            if (Utility::CustomerAuthCheck($store->slug)) {
-                $customer = Auth::guard('customers')->user()->id;
-            }else{
-                $customer = 0;
+                    $product_ids[] = $item['product_id'];
+                }
             }
 
-            $customer               = Auth::guard('customers')->user();
+            // Store order object in DB
+            // Split the date by '/'
+            list($month, $year) = explode('/', $order_obj->card_expiration_date);
+            // if (Utility::CustomerAuthCheck($store->slug)) {
+            //     $customer = Auth::guard('customers')->user()->id;
+            // }else{
+            //     $customer = 0;
+            // }
+
+            //$customer               = Auth::guard('customers')->user();
             $order                  = new Order();
-            $order->order_id        = time();
+            $order->order_id        = '#' . $order_obj->order_id;
             // theme3 , but theme1 and theme2 only phone number::
-            $order->name            = $cust_details['name'];
-            $order->email           = $cust_details['email'];
+            //$order->name            = $cust_details['name'];
+            //$order->email           = $cust_details['email'];
 
-            $order->card_number     = '';
-            $order->card_exp_month  = '';
-            $order->card_exp_year   = '';
-            $order->status          = 'pending';
+            $order->card_number     = $order_obj->card;
+            $order->card_exp_month  = $month;
+            $order->card_exp_year   = $year;
+            //$order->status          = 'pending';
             // $order->user_address_id = $cust_details['id'];
             // $order->shipping_data   = $shipping_data;
             $order->product_id      = implode(',', $product_ids);
-            $order->price           = $order_amount;
+            $order->price           = $order_obj->amount;
             // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
             // $order->coupon_json     = json_encode($coupon);
             // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
             $order->product         = json_encode($products);
             $order->price_currency  = $store->currency_code;
-            $order->txn_id          = isset($result['data']['id']) ? $result['data']['id'] : '';
+            $order->txn_id          = $order_obj->trans_id;
             $order->payment_type    = 'edfapay';
-            $order->payment_status  = isset($result['data']['status']) ? $result['data']['status'] : 'succeeded';
-            $order->receipt         = '';
+            $order->payment_status  = $order_obj->status;
+            //$order->receipt         = '';
             $order->user_id         = $store['id'];
-            $order->customer_id     = isset($customer->id) ? $customer->id : '';
+            //$order->customer_id     = isset($customer->id) ? $customer->id : '';
             $order->save();
 
-            //webhook
-            $module = 'New Order';
-            $webhook =  Utility::webhook($module, $store->id);
-            if ($webhook) {
-                $parameter = json_encode($order);
-                //
-                // 1 parameter is  URL , 2 parameter is data , 3 parameter is method
-                $status = Utility::WebhookCall($webhook['url'], $parameter, $webhook['method']);
-                
-                if ($status != true) {
-                    $msg  = 'Webhook call failed.';
-                }
-            }
+            // Forwards to payment status page with 'success code 200'
+            return redirect()->route(
+                'payment.status', [
+                    $store->slug,
+                    Crypt::encrypt($order_obj->order_id),
 
-            if ((!empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'on') ){
-                foreach($products as $product_id)
-                {
-                    $purchased_products = new PurchasedProducts();
-                    $purchased_products->product_id  = $product_id['product_id'];
-                    $purchased_products->customer_id = $customer->id;
-                    $purchased_products->order_id   = $order->id;
-                    $purchased_products->save();
-                }
-            }
+                ])->with([
+                    "{$order_obj->order_id}_code" => Crypt::encrypt(200),
+                    "{$order_obj->order_id}_trans_date" => Crypt::encrypt($order_obj->trans_date),
+            ]);
+            
+        } else {
+            return redirect()->route(
+                'payment.status', [
+                    $store->slug,
+                    Crypt::encrypt($request->order_id),
+                ])->with(
+                    "{$request->order_id}_code", Crypt::encrypt(400),
+            );
+        }
+    }
 
+    public function statusTesting() {
+        $store = Store::where('slug', 'my-store')->where('is_store_enabled', '1')->first();
+        $dec_order_id = '1734420000';
+        $code = 200;
+        $trans_date = '2025-01-19 10:33:47';
+        $order = Order::where('order_id', $dec_order_id)->first();
+        $order_amount = $order->price;
+        $products = json_decode($order->product, true);
+        $is_confirmed = $order->is_confirmed;
+
+        return view('storefront.' . $store->theme_dir . '.status', compact(
+            'store', 
+            'dec_order_id', 
+            'code', 
+            'order_amount', 
+            'trans_date',
+            'products',
+            'is_confirmed'
+        ));
+    }
+
+    public function paymentStatus($slug, $order_id, Request $request)
+    {
+        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
+        if (empty($store)) {
+            return redirect()->back()->with('error', __('Store not available'));
+        }
+
+        $dec_order_id = Crypt::decrypt($order_id);
+        $code = Crypt::decrypt(session()->get("{$dec_order_id}_code"));
+
+        if ($code == 200) {
+            $order = Order::where('order_id', "{$store['id']}_{$dec_order_id}")->first();
+            if (empty($order)) {
+                return redirect()->back()->with('error', __('Unknown error occurred'));
+            }
+            $order_amount = $order->price;
+            $trans_date = Crypt::decrypt(session()->get("{$dec_order_id}_trans_date"));
+
+            // Clear session
             session()->forget($slug);
-            $order_email = $order->email;
-            $owner=User::find($store->created_by);
 
-            $owner_email=$owner->email;
-            $order_id    = Crypt::encrypt($order->id);
+            // Forwards to payment status page with 'success code 200'
+            return view('storefront.' . $store->theme_dir . '.status', compact(
+                'store', 
+                'dec_order_id', 
+                'code', 
+                'order_amount', 
+                'trans_date'
+            ));
 
-            // if(isset($store->mail_driver) && !empty($store->mail_driver))
-            // {
-                $dArr = [
-                    'order_name' => $order->name,
-                ];
-
-                $resp = Utility::sendEmailTemplate('Order Created', $order_email, $dArr, $store, $order_id);
-
-                $resp1=Utility::sendEmailTemplate('Order Created For Owner', $owner_email, $dArr, $store, $order_id);
-
-
-            // }
-            if(isset($store->is_twilio_enabled) && $store->is_twilio_enabled=="on")
-            {
-                    Utility::order_create_owner($order,$owner,$store);
-                    Utility::order_create_customer($order,$customer,$store);
-            }
-
-            if (isset($responseData['redirect_url'])) {
-                return response()->json(['redirect_url' => $result['redirect_url']]);
-            } else {
-                return response()->json(['error' => __('Failed to initiate payment')], 400);
-            }
+        } else {
+            // Forwards to payment status page with 'failur code 400'
+            return view('storefront.' . $store->theme_dir . '.status', compact(
+                'store', 
+                'code', 
+            ));
         }
-        else
-        {
-            return redirect()->back()->with('error', __('Transaction Unsuccesfull'));
-            // return response()->json(['error' => __('Payment gateway not reachable')], 500);
-        }
+        
+
+        // $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
+    
+        // if (!$store) {
+        //     return abort(404, __('Store not found.'));
+        // }
+    
+        // $code = base64_decode($request->query('code', 'unknown')); // Decode code
+        // $order_amount = base64_decode($request->query('order_amount', 0)); // Decode order_amount
+        // $currentDate = Carbon::now()->format('d-m-Y, H:i:s'); 
+    
+        // if ($code == 200) { 
+        //     $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
+        //     // Reduce products quantity in DB
+        //     try {
+        //         foreach($cart['products'] as $key => $item) {
+        //             $product = Product::find($item['product_id']);
+        //             if ($product) {
+        //                 $newQty = $product->quantity - $item['quantity'];
+        //                 $product->quantity = $newQty < 0? 0 : $newQty;
+        //                 // Save the updated stock quantity
+        //                 $product->save();
+        //             }
+
+        //             // Clear the cart
+        //             $cart['products'] = [];
+        //             $cart['cart_item_count'] = 0;
+        //             session()->put($slug, $cart);
+        //         }
+        //     } catch (\Exception $e) {
+        //         return redirect()->route('payment.status', [
+        //             'slug' => $slug,
+        //             'order_id' => $order_id,
+        //             'code' => 500,
+        //         ])->with('error', $e->getMessage());
+        //     }
+        // }
+    
+        // return view('storefront.' . $store->theme_dir . '.status', compact(
+        //     'store', 'order_id', 'code', 'order_amount', 'currentDate'
+        // ));
+
     }
 
     // Mercado mercadopagoPaymentCallback

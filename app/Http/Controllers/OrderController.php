@@ -565,4 +565,20 @@ class OrderController extends Controller
             return redirect()->back()->with('error',__('Invalid Url'));
         }
     }
+
+    public function storeConfirmOrder($order) {
+        $order_obj = Order::where('order_id', $order)->first();
+        // Check if the order exists
+        if (!$order_obj) {
+            return redirect()->back()->with('error', __('Order not found'));
+        }
+        // Check if the order is already confirmed
+        if ($order_obj->is_confirmed) {
+            return redirect()->back()->with('error', __('Order is already confirmed'));
+        }
+
+        // Mark the order as confirmed
+        $order_obj->update(['is_confirmed' => true]);
+        return redirect()->back()->with('success', __('Your Order is Confirmed'));
+    }
 }

@@ -35,6 +35,7 @@ class Order extends Model
         'payer_id',
         'payment_frequency',
         'created_by',
+        'is_confirmed',
     ];
 
 

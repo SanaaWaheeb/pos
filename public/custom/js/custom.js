@@ -184,7 +184,17 @@ $(document).ready(function () {
                     text: me.data('confirm-text-yes') || window.translations?.yes || 'Yes', // Use dynamic translation
                     class: 'btn btn-sm btn btn-secondary-btn',
                     handler: function () {
-                        eval(me.data('confirm-yes'));
+                        const confirmYes = me.data('confirm-yes');
+                        if (confirmYes) {
+                            // Check if the value is a URL
+                            if (confirmYes.startsWith('http://') || confirmYes.startsWith('https://') || confirmYes.startsWith('/')) {
+                                // Redirect to the URL
+                                window.location.href = confirmYes;
+                            } else {
+                                // Otherwise, execute it as JavaScript
+                                eval(confirmYes);
+                            }
+                        }
                     }
                 },
                 {

@@ -3273,7 +3273,7 @@ table tr td img {
 }
 
 .checkout-btn{
-    padding: 12px 30px;
+    padding: 10px 30px;
     background-color: var(--theme-color);
     text-align: center;
     color: white;
@@ -4183,32 +4183,85 @@ form .row {
 }
 
 /* ADDED */ 
-.payment-success .details { 
-    background-color: #ffffff; 
+.payment-status {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.payment-status .details { 
+    background-color: var(--white); 
     border: 1px solid #ddd; 
     border-radius: 8px; 
-    padding: 20px; 
+    /* padding: 20px;  */
     width: 100%; 
-    max-width: 400px; 
+    max-width: 600px; 
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); 
 } 
+
+.order-details {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
  
-.payment-success .details p { 
+.payment-status .details p { 
     margin: 10px 0; 
     font-size: 14px; 
     color: #333; 
 } 
  
-.payment-success .details strong { 
+.payment-status .details strong { 
     font-weight: bold; 
     color: #000; 
 } 
+
+.payment-status #cart-body {
+    overflow-y: auto;
+    max-height: 20vh;
+}
+
+.payment-status .details > *:not(:last-child) {
+    border-bottom: 1px solid var(--border-color);
+}
+
+.payment-status .mini-cart-item {
+    margin: 0;
+    border: none;
+}
+
+.payment-footer {
+    width: 90%;
+    max-width: 600px;
+    padding: 0.8rem 0;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    bottom: 0;
+    background-color: var(--white);
+    gap: 10px;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.payment-footer .confirm {
+    background-color: inherit;
+    color: var(--theme-color);
+    border: 1.5px solid var(--theme-color);
+}
+
+.payment-footer .confirm.disabled {
+    color: var(--second-color);
+    border: 1.5px solid var(--second-color);
+    pointer-events: none;
+}
  
-.payment-success .button { 
+.payment-status .button { 
     margin-top: 20px; 
 } 
  
-.payment-success .button a { 
+.payment-status .button a { 
     background-color: #ee7878; 
     color: #ffffff; 
     text-decoration: none; 
@@ -4217,7 +4270,7 @@ form .row {
     font-size: 14px; 
 } 
  
-.payment-success .button a:hover { 
+.payment-status .button a:hover { 
     background-color: #fa0505; 
 }
 
