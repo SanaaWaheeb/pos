@@ -3106,10 +3106,9 @@ class PaymentController extends Controller
         $edfaPayPassword = $store_payment_setting['edfapay_password'];
         $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
 
-        // Get order information
-        $order_id = Order::latest()->first()->id;
-        $order_id = $order_id + 1;
-        // $order_id = date("YmdHis"); // Format: YYYYMMDDHHMMSS
+        // $lastOrder = Order::orderBy('id', 'desc')->first();
+        // $order_id = (string)$lastOrder ? $lastOrder->id + 1 : 1234567890;
+        $order_id = date(format: "YmdHis"); // Format: YYYYMMDDHHMMSS
         $orderCurrency = "SAR";
         $payerCountry = "SA";
         $orderDescription = 'Hi From AVA';
@@ -3324,15 +3323,17 @@ class PaymentController extends Controller
         }
 
         $dec_order_id = Crypt::decrypt($order_id);
-        $code = Crypt::decrypt(session()->get("{$dec_order_id}_code"));
+        $enc_code = session()->get("{$dec_order_id}_code");
+        $code = Crypt::decrypt($enc_code);
 
         if ($code == 200) {
-            $order = Order::where('order_id', "{$store['id']}_{$dec_order_id}")->first();
+            $order = Order::where('id', $dec_order_id)->first();
             if (empty($order)) {
-                return redirect()->back()->with('error', __('Unknown error occurred'));
+                return redirect()->back()->with('error', __('Order not found'));
             }
             $order_amount = $order->price;
             $trans_date = Crypt::decrypt(session()->get("{$dec_order_id}_trans_date"));
+            $is_confirmed = $order->is_confirmed;
 
             // Clear session
             session()->forget($slug);
@@ -3343,7 +3344,8 @@ class PaymentController extends Controller
                 'dec_order_id', 
                 'code', 
                 'order_amount', 
-                'trans_date'
+                'trans_date',
+                'is_confirmed',
             ));
 
         } else {

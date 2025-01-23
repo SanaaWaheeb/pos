@@ -179,6 +179,7 @@
     </div>
 
     <div class="payment-footer">
+        @if ($code===200)
         <div class="checkout-btn confirm {{ $is_confirmed ? 'disabled' : '' }}" data-confirm="{{__('Confirm Order').' | '.__('The confirmation should be done only from store owner')}}" data-confirm-yes="{{ route('confirm.order', ['order' => $dec_order_id]) }}">
             <a href="javascript:void(0)" onclick="confirmOrder(this)"> 
             @if ($is_confirmed)
@@ -192,6 +193,7 @@
         <form id="confirm-order-form" method="POST" style="display: none;">
             @csrf
         </form>
+        @endif
 
         <div class="checkout-btn">
             <a href="{{ url("/user-cart-item/{$store->slug}/scanner") }}"> {{ __('Return to Scanner') }} </a>
