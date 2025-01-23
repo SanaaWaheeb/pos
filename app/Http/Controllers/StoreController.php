@@ -1682,7 +1682,13 @@ class StoreController extends Controller
             }
 
             $currentDate = Carbon::now();
-            $expiryDate = Carbon::parse($product->expiry_date);
+
+            if (empty($product->expiry_date) || $product->expiry_date === '0000-00-00') {
+                // If expiry date is not set or is default, allow processing (do nothing)
+            } else {
+                $expiryDate = Carbon::parse($product->expiry_date);
+
+           
             // Check if the expiry date is in the past
             if ($expiryDate->isPast()) {
                 // If expired, return false or an error message
@@ -1693,7 +1699,7 @@ class StoreController extends Controller
                         'error' => __('The product is expired'), 
                     ]
                 ); 
-            }
+            }}
 
             // ----------------------- Get Product Info ------------------------
             // Handle Product image
@@ -2270,7 +2276,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         );
     }
 
-    public function addToCart(Request $request, $product_id, $slug, $variant_id = 0)
+    public function addToCart(Request $request, $product_id, $product, $slug, $variant_id = 0)
     {
         if ($request->ajax()) {
 
@@ -2285,6 +2291,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     ]
                 );
             }
+           
             $variant = ProductVariantOption::find($variant_id);
 
             $product = Product::find($product_id);
@@ -2295,6 +2302,25 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             if ($variant_id > 0) {
                 $quantity = $variant->quantity;
             }
+            $currentDate = Carbon::now();
+
+            if (empty($product->expiry_date) || $product->expiry_date === '0000-00-00') {
+                // If expiry date is not set or is default, allow processing (do nothing)
+            } else {
+                $expiryDate = Carbon::parse($product->expiry_date);
+
+           
+            // Check if the expiry date is in the past
+            if ($expiryDate->isPast()) {
+                // If expired, return false or an error message
+                return response()->json(
+                    [ 
+                        'code' => 404,
+                        'status' => 'Error', 
+                        'error' => __('The product is expired'), 
+                    ]
+                ); 
+            }}
 
             if (!empty($product->is_cover)) {
                 $pro_img = $product->is_cover;
