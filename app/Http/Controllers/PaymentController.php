@@ -3106,9 +3106,24 @@ class PaymentController extends Controller
         $edfaPayPassword = $store_payment_setting['edfapay_password'];
         $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
 
-        // $lastOrder = Order::orderBy('id', 'desc')->first();
-        // $order_id = (string)$lastOrder ? $lastOrder->id + 1 : 1234567890;
-        $order_id = date(format: "YmdHis"); // Format: YYYYMMDDHHMMSS
+        $latestOrder = Order::orderBy('created_at', 'DESC')->first();
+        if (!empty($latestOrder)) {
+            $order_id=  str_pad($latestOrder->id + 1, 4, "000", STR_PAD_LEFT);
+        } else {
+            $order_id =  str_pad(1, 4, "000", STR_PAD_LEFT);
+        }
+
+        // Store order in sessions
+        session()->put('pending_order', [
+            'order_id' => $order_id,
+            'status' => 'pending',
+            'trans_id' => null, // null values will be updated later
+            'trans_date' => null,
+            'card' => null,
+            'card_expiration_date' => null,
+            'amount' => $order_amount,
+        ]);
+        // $order_id = date(format: "YmdHis"); // Format: YYYYMMDDHHMMSS
         $orderCurrency = "SAR";
         $payerCountry = "SA";
         $orderDescription = 'Hi From AVA';
@@ -3182,46 +3197,134 @@ class PaymentController extends Controller
     public function edfaPayPaymentCallback(Request $request) 
     { 
         $slug = $request->slug;
-        $target_status = 'SUCCESS';
-        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
-        $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
-        $products = $cart['products'];
+        $order_id = $request->order_id;
+    
+        // Redirect to the waiting page
+        return view('layouts.waiting', compact('slug', 'order_id'));
 
-        // ----------- Read edfapay callback's file content ----------- 
-        $callback_content = ''; 
-        $callback_path = base_path('edfapay/data.txt'); 
-        if (file_exists($callback_path)) { 
-            $callback_content = file_get_contents($callback_path); 
-        } else { 
-            return response()->json( 
-                [ 
-                    'status' => 'error', 
-                    'error' => 'File not found', 
-                ] 
-            ); 
-        } 
+        // $slug = $request->slug;
+        // $target_status = 'SUCCESS';
+        // $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
+        // $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
+        // $products = $cart['products'];
 
-        // ----------- Split and Process Each JSON Object -----------
-        $order_obj = null;
-        $json_objects = preg_split('/(?<=\})\s*(?=\{)/', $callback_content); // Split on boundaries between JSON objects
+        // // Get session order
+        // $sessionOrder = session()->get('pending_order');
 
-        foreach($json_objects as $obj) {
-            $decoded_object = json_decode($obj, true);
-            if ($decoded_object && isset($decoded_object['params'])) {
-                $param_obj = (object) $decoded_object['params'];
-                if (
-                    (isset($param_obj->order_id) && isset($param_obj->status)) 
-                    && $param_obj->order_id === $request->order_id
-                    && $param_obj->status === $target_status
-                ) {
-                    $order_obj = $param_obj;
-                    break;
-                }
-            }
+        // // ----------- Handle payment callback ----------- 
+        // if ($order_obj) {
+        //     // Reduce products stock quantity in DB
+        //     $product_ids = [];
+        //     foreach($products as $item) {
+        //         $product = Product::find($item['product_id']);
+        //         if ($product) {
+        //             $new_qty = $product->quantity - $item['quantity'];
+        //             $product->quantity = $new_qty < 0 ? 0 : $new_qty;
+        //             $product->save();
+
+        //             $product_ids[] = $item['product_id'];
+        //         }
+        //     }
+
+        //     // Store order object in DB
+        //     // Split the date by '/'
+        //     list($month, $year) = explode('/', $order_obj->card_expiration_date);
+        //     // if (Utility::CustomerAuthCheck($store->slug)) {
+        //     //     $customer = Auth::guard('customers')->user()->id;
+        //     // }else{
+        //     //     $customer = 0;
+        //     // }
+
+        //     //$customer               = Auth::guard('customers')->user();
+        //     $order                  = new Order();
+        //     $order->order_id        = '#' . $order_obj->order_id;
+        //     // theme3 , but theme1 and theme2 only phone number::
+        //     //$order->name            = $cust_details['name'];
+        //     //$order->email           = $cust_details['email'];
+
+        //     $order->card_number     = $order_obj->card;
+        //     $order->card_exp_month  = $month;
+        //     $order->card_exp_year   = $year;
+        //     //$order->status          = 'pending';
+        //     // $order->user_address_id = $cust_details['id'];
+        //     // $order->shipping_data   = $shipping_data;
+        //     $order->product_id      = implode(',', $product_ids);
+        //     $order->price           = $order_obj->amount;
+        //     // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
+        //     // $order->coupon_json     = json_encode($coupon);
+        //     // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
+        //     $order->product         = json_encode($products);
+        //     $order->price_currency  = $store->currency_code;
+        //     $order->txn_id          = $order_obj->trans_id;
+        //     $order->payment_type    = 'edfapay';
+        //     $order->payment_status  = $order_obj->status;
+        //     //$order->receipt         = '';
+        //     $order->user_id         = $store['id'];
+        //     //$order->customer_id     = isset($customer->id) ? $customer->id : '';
+        //     $order->save();
+
+        //     // Forwards to payment status page with 'success code 200'
+        //     return redirect()->route(
+        //         'payment.status', [
+        //             $store->slug,
+        //             Crypt::encrypt($order_obj->order_id),
+
+        //         ])->with([
+        //             "{$order_obj->order_id}_code" => Crypt::encrypt(200),
+        //             "{$order_obj->order_id}_trans_date" => Crypt::encrypt($order_obj->trans_date),
+        //     ]);
+            
+        // } else {
+        //     return redirect()->route(
+        //         'payment.status', [
+        //             $store->slug,
+        //             Crypt::encrypt($request->order_id),
+        //         ])->with(
+        //             "{$request->order_id}_code", Crypt::encrypt(400),
+        //     );
+        // }
+    }
+
+    public function checkOrderStatus(Request $request) {
+        $order_id = $request->order_id;
+        $encrypt_order_id = Crypt::encrypt($order_id);
+
+        // Retrieve the session order
+        $sessionOrder = session()->get('pending_order');
+
+        if ($sessionOrder && $sessionOrder['order_id'] === $order_id) {
+            return response()->json([
+                'order_id' => $encrypt_order_id,
+                'status' => $sessionOrder['status'],
+            ]);
         }
 
-        // ----------- Handle payment callback ----------- 
-        if ($order_obj) {
+        return response()->json([
+            'order_id' => $encrypt_order_id,
+            'status' => 'pending',
+        ]);
+    }
+
+
+    public function paymentStatus($slug, $order_id, Request $request)
+    {
+        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
+        if (empty($store)) {
+            return redirect()->back()->with('error', __('Store not available'));
+        }
+
+        $target_status = 'SUCCESS';
+        $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
+        $products = $cart['products'];
+        $dec_order_id = Crypt::decrypt($order_id);
+        $sessionOrder = session()->get('pending_order');
+
+        // ---------- Case1: successful status ----------
+        if (
+            $sessionOrder 
+            && $sessionOrder['order_id'] === $dec_order_id
+            && $sessionOrder['status'] === $target_status
+        ) {
             // Reduce products stock quantity in DB
             $product_ids = [];
             foreach($products as $item) {
@@ -3236,8 +3339,7 @@ class PaymentController extends Controller
             }
 
             // Store order object in DB
-            // Split the date by '/'
-            list($month, $year) = explode('/', $order_obj->card_expiration_date);
+            list($month, $year) = explode('/', $sessionOrder['card_expiration_date']);
             // if (Utility::CustomerAuthCheck($store->slug)) {
             //     $customer = Auth::guard('customers')->user()->id;
             // }else{
@@ -3246,97 +3348,41 @@ class PaymentController extends Controller
 
             //$customer               = Auth::guard('customers')->user();
             $order                  = new Order();
-            $order->order_id        = '#' . $order_obj->order_id;
+            $order->order_id        = '#' . $dec_order_id;
             // theme3 , but theme1 and theme2 only phone number::
             //$order->name            = $cust_details['name'];
             //$order->email           = $cust_details['email'];
 
-            $order->card_number     = $order_obj->card;
+            $order->card_number     = $sessionOrder['card'];
             $order->card_exp_month  = $month;
             $order->card_exp_year   = $year;
             //$order->status          = 'pending';
             // $order->user_address_id = $cust_details['id'];
             // $order->shipping_data   = $shipping_data;
             $order->product_id      = implode(',', $product_ids);
-            $order->price           = $order_obj->amount;
+            $order->price           = $sessionOrder['amount'];
             // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
             // $order->coupon_json     = json_encode($coupon);
             // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
             $order->product         = json_encode($products);
             $order->price_currency  = $store->currency_code;
-            $order->txn_id          = $order_obj->trans_id;
+            $order->txn_id          = $sessionOrder['trans_id'];
             $order->payment_type    = 'edfapay';
-            $order->payment_status  = $order_obj->status;
+            $order->payment_status  = $sessionOrder['status'];
             //$order->receipt         = '';
             $order->user_id         = $store['id'];
+            $order->is_confirmed    = 0;
             //$order->customer_id     = isset($customer->id) ? $customer->id : '';
             $order->save();
 
-            // Forwards to payment status page with 'success code 200'
-            return redirect()->route(
-                'payment.status', [
-                    $store->slug,
-                    Crypt::encrypt($order_obj->order_id),
-
-                ])->with([
-                    "{$order_obj->order_id}_code" => Crypt::encrypt(200),
-                    "{$order_obj->order_id}_trans_date" => Crypt::encrypt($order_obj->trans_date),
-            ]);
-            
-        } else {
-            return redirect()->route(
-                'payment.status', [
-                    $store->slug,
-                    Crypt::encrypt($request->order_id),
-                ])->with(
-                    "{$request->order_id}_code", Crypt::encrypt(400),
-            );
-        }
-    }
-
-    public function statusTesting() {
-        $store = Store::where('slug', 'my-store')->where('is_store_enabled', '1')->first();
-        $dec_order_id = '1734420000';
-        $code = 200;
-        $trans_date = '2025-01-19 10:33:47';
-        $order = Order::where('order_id', $dec_order_id)->first();
-        $order_amount = $order->price;
-        $products = json_decode($order->product, true);
-        $is_confirmed = $order->is_confirmed;
-
-        return view('storefront.' . $store->theme_dir . '.status', compact(
-            'store', 
-            'dec_order_id', 
-            'code', 
-            'order_amount', 
-            'trans_date',
-            'products',
-            'is_confirmed'
-        ));
-    }
-
-    public function paymentStatus($slug, $order_id, Request $request)
-    {
-        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
-        if (empty($store)) {
-            return redirect()->back()->with('error', __('Store not available'));
-        }
-
-        $dec_order_id = Crypt::decrypt($order_id);
-        $enc_code = session()->get("{$dec_order_id}_code");
-        $code = Crypt::decrypt($enc_code);
-
-        if ($code == 200) {
-            $order = Order::where('id', $dec_order_id)->first();
-            if (empty($order)) {
-                return redirect()->back()->with('error', __('Order not found'));
-            }
-            $order_amount = $order->price;
-            $trans_date = Crypt::decrypt(session()->get("{$dec_order_id}_trans_date"));
-            $is_confirmed = $order->is_confirmed;
-
             // Clear session
             session()->forget($slug);
+
+            // Define variables for the view
+            $code = 200; // success code
+            $order_amount = $sessionOrder['amount'];
+            $trans_date = $sessionOrder['trans_date'];
+            $is_confirmed = $order->is_confirmed;
 
             // Forwards to payment status page with 'success code 200'
             return view('storefront.' . $store->theme_dir . '.status', compact(
@@ -3348,55 +3394,56 @@ class PaymentController extends Controller
                 'is_confirmed',
             ));
 
+        // ---------- Case2: un-successful status ----------
         } else {
             // Forwards to payment status page with 'failur code 400'
-            return view('storefront.' . $store->theme_dir . '.status', compact(
+            $code = 400;
+            return view(view: 'storefront.' . $store->theme_dir . '.status', compact(
                 'store', 
                 'code', 
             ));
         }
-        
+
+
 
         // $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
-    
-        // if (!$store) {
-        //     return abort(404, __('Store not found.'));
+        // if (empty($store)) {
+        //     return redirect()->back()->with('error', __('Store not available'));
         // }
-    
-        // $code = base64_decode($request->query('code', 'unknown')); // Decode code
-        // $order_amount = base64_decode($request->query('order_amount', 0)); // Decode order_amount
-        // $currentDate = Carbon::now()->format('d-m-Y, H:i:s'); 
-    
-        // if ($code == 200) { 
-        //     $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
-        //     // Reduce products quantity in DB
-        //     try {
-        //         foreach($cart['products'] as $key => $item) {
-        //             $product = Product::find($item['product_id']);
-        //             if ($product) {
-        //                 $newQty = $product->quantity - $item['quantity'];
-        //                 $product->quantity = $newQty < 0? 0 : $newQty;
-        //                 // Save the updated stock quantity
-        //                 $product->save();
-        //             }
 
-        //             // Clear the cart
-        //             $cart['products'] = [];
-        //             $cart['cart_item_count'] = 0;
-        //             session()->put($slug, $cart);
-        //         }
-        //     } catch (\Exception $e) {
-        //         return redirect()->route('payment.status', [
-        //             'slug' => $slug,
-        //             'order_id' => $order_id,
-        //             'code' => 500,
-        //         ])->with('error', $e->getMessage());
+        // $dec_order_id = Crypt::decrypt($order_id);
+        // $enc_code = session()->get("{$dec_order_id}_code");
+        // $code = Crypt::decrypt($enc_code);
+
+        // if ($code == 200) {
+        //     $order = Order::where('id', $dec_order_id)->first();
+        //     if (empty($order)) {
+        //         return redirect()->back()->with('error', __('Order not found'));
         //     }
+        //     $order_amount = $order->price;
+        //     $trans_date = Crypt::decrypt(session()->get("{$dec_order_id}_trans_date"));
+        //     $is_confirmed = $order->is_confirmed;
+
+        //     // Clear session
+        //     session()->forget($slug);
+
+        //     // Forwards to payment status page with 'success code 200'
+        //     return view('storefront.' . $store->theme_dir . '.status', compact(
+        //         'store', 
+        //         'dec_order_id', 
+        //         'code', 
+        //         'order_amount', 
+        //         'trans_date',
+        //         'is_confirmed',
+        //     ));
+
+        // } else {
+        //     // Forwards to payment status page with 'failur code 400'
+        //     return view('storefront.' . $store->theme_dir . '.status', compact(
+        //         'store', 
+        //         'code', 
+        //     ));
         // }
-    
-        // return view('storefront.' . $store->theme_dir . '.status', compact(
-        //     'store', 'order_id', 'code', 'order_amount', 'currentDate'
-        // ));
 
     }
 
