@@ -3106,12 +3106,14 @@ class PaymentController extends Controller
         $edfaPayPassword = $store_payment_setting['edfapay_password'];
         $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
 
-        $latestOrder = Order::orderBy('created_at', 'DESC')->first();
-        if (!empty($latestOrder)) {
-            $order_id=  str_pad($latestOrder->id + 1, 4, "000", STR_PAD_LEFT);
-        } else {
-            $order_id =  str_pad(1, 4, "000", STR_PAD_LEFT);
-        }
+        // $latestOrder = Order::orderBy('created_at', 'DESC')->first();
+        // if (!empty($latestOrder)) {
+        //     $order_id=  str_pad($latestOrder->id + 1, 4, "000", STR_PAD_LEFT);
+        // } else {
+        //     $order_id =  str_pad(1, 4, "000", STR_PAD_LEFT);
+        // }
+        // $order_id = date(format: "YmdHis"); // Format: YYYYMMDDHHMMSS
+        $order_id = strtoupper(str_replace('.', '', uniqid('', true)));
 
         // Store order in sessions
         session()->put('pending_order', [
@@ -3123,7 +3125,6 @@ class PaymentController extends Controller
             'card_expiration_date' => null,
             'amount' => $order_amount,
         ]);
-        // $order_id = date(format: "YmdHis"); // Format: YYYYMMDDHHMMSS
         $orderCurrency = "SAR";
         $payerCountry = "SA";
         $orderDescription = 'Hi From AVA';
@@ -3398,7 +3399,7 @@ class PaymentController extends Controller
         } else {
             // Forwards to payment status page with 'failur code 400'
             $code = 400;
-            return view(view: 'storefront.' . $store->theme_dir . '.status', compact(
+            return view('storefront.' . $store->theme_dir . '.status', compact(
                 'store', 
                 'code', 
             ));
