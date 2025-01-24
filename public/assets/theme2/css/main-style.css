@@ -3515,7 +3515,7 @@ button.close span{
 .mini-cart-details-cart {
     flex: 1;
     width: 100%;
-    display: flex; /******** added **********/
+    display: flex; /******** added ***********/
     align-items: center; /******** added **********/
     justify-content: space-between; /******** added **********/
     text-align: center; /******** added **********/
