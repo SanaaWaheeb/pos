@@ -8,6 +8,9 @@
 
 @endpush
 @section('content')
+@php
+    $productImg = \App\Models\Utility::get_file('uploads/is_cover_image/'); 
+@endphp
 
 <div class="wrapper" style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center">
     @php
@@ -158,7 +161,7 @@
     </div>
 
     <div class="payment-footer">
-        @if ($code===200)
+        {{-- @if ($code===200)
         <div class="checkout-btn confirm {{ $is_confirmed ? 'disabled' : '' }}" data-confirm="{{__('Confirm Order').' | '.__('The confirmation should be done only from store owner')}}" data-confirm-yes="{{ route('confirm.order', ['order' => $dec_order_id]) }}">
             <a href="javascript:void(0)" onclick="confirmOrder(this)"> 
             @if ($is_confirmed)
@@ -172,7 +175,7 @@
         <form id="confirm-order-form" method="POST" style="display: none;">
             @csrf
         </form>
-        @endif
+        @endif --}}
 
         <div class="checkout-btn">
             <a href="{{ url("/user-cart-item/{$store->slug}/scanner") }}"> {{ __('Return to Scanner') }} </a>
@@ -180,3 +183,70 @@
     </div>
 </div>
 @endsection
+
+@push('script-page')
+<script>
+    const code = "{{ $code }}";
+    console.log(code);
+    if (code === 200) {
+        const order_id = "{{ $dec_order_id }}";
+
+        $.ajax({
+            url: "{{ route('order.fetch') }}",
+            type: 'GET',
+            data: {
+                order_id: order_id,
+            },
+            headers: {
+                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
+            },
+            // dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    const order = response.data;
+
+                    // Update product list
+                    // Loop through products in the order
+                    const products = order.product;
+                    let productHTML = '';
+                    const decodedProducts = JSON.parse(products);
+
+                    Object.entries(decodedProducts).forEach(([key, product]) => {
+                        productHTML += `
+                            <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
+                                <div class="mini-cart-details-cart">
+                                    <div class="d-flex align-items-center" style="gap: 5px">
+                                        <span>${product.quantity} X </span>
+                                        <div data-label="Product" class="mini-cart-image">
+                                            <a href="">
+                                                <img src="{{ $productImg }}${product.image}" alt="img">
+                                            </a>
+                                        </div>
+                                        <div data-label="Name">
+                                            <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
+                                        </div>
+                                    </div>
+                                    <div data-label="Total">
+                                        <span class="subtotal">${product.price * product.quantity}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    // Update the cart-body with the generated HTML
+                    $('#cart-body').html(productHTML);
+                    
+                } else {
+                    alert(response.message || "{{ __('An error occurred while fetching the order.') }}");
+                }
+            },
+            error: function(xhr) {
+                console.error(xhr);
+                alert("{{ __('An error occurred. Please try again later.') }}");
+            }
+
+        })
+    }
+</script>
+@endpush

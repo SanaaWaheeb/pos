@@ -566,19 +566,30 @@ class OrderController extends Controller
         }
     }
 
-    public function storeConfirmOrder($order) {
-        $order_obj = Order::where('order_id', $order)->first();
-        // Check if the order exists
-        if (!$order_obj) {
-            return redirect()->back()->with('error', __('Order not found'));
-        }
-        // Check if the order is already confirmed
-        if ($order_obj->is_confirmed) {
-            return redirect()->back()->with('error', __('Order is already confirmed'));
+    // public function storeConfirmOrder($order) {
+    //     $order_obj = Order::find($order);
+    //     // Check if the order exists
+    //     if (!$order_obj) {
+    //         return redirect()->back()->with('error', __('Order not found'));
+    //     }
+    //     // Check if the order is already confirmed
+    //     if ($order_obj->is_confirmed) {
+    //         return redirect()->back()->with('error', __('Order is already confirmed'));
+    //     }
+
+    //     // Mark the order as confirmed
+    //     $order_obj['is_confirmed'] = true;
+    //     $order_obj->update();
+    //     return redirect()->back()->with('success', __('Your Order is Confirmed'));
+    // }
+
+    public function fetchOrder(Request $request) {
+        $order = Order::find($request->order_id);
+
+        if (!$order) {
+            return response()->json(['success' => false, 'message' => __('Order not found')], 404);
         }
 
-        // Mark the order as confirmed
-        $order_obj->update(['is_confirmed' => true]);
-        return redirect()->back()->with('success', __('Your Order is Confirmed'));
+        return response()->json(['success' => true, 'data' => $order]);
     }
 }

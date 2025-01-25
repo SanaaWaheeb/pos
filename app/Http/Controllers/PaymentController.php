@@ -3070,6 +3070,7 @@ class PaymentController extends Controller
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
+        $products = $cart['products'];
 
         if (!$store) {
             return redirect()->back()->with('error', __('Store not found.'));
@@ -3106,25 +3107,6 @@ class PaymentController extends Controller
         $edfaPayPassword = $store_payment_setting['edfapay_password'];
         $edfaPayMerchantKey = $store_payment_setting['edfapay_merchant_key'];
 
-        // $latestOrder = Order::orderBy('created_at', 'DESC')->first();
-        // if (!empty($latestOrder)) {
-        //     $order_id=  str_pad($latestOrder->id + 1, 4, "000", STR_PAD_LEFT);
-        // } else {
-        //     $order_id =  str_pad(1, 4, "000", STR_PAD_LEFT);
-        // }
-        // $order_id = date(format: "YmdHis"); // Format: YYYYMMDDHHMMSS
-        $order_id = strtoupper(str_replace('.', '', uniqid('', true)));
-
-        // Store order in sessions
-        session()->put('pending_order', [
-            'order_id' => $order_id,
-            'status' => 'pending',
-            'trans_id' => null, // null values will be updated later
-            'trans_date' => null,
-            'card' => null,
-            'card_expiration_date' => null,
-            'amount' => $order_amount,
-        ]);
         $orderCurrency = "SAR";
         $payerCountry = "SA";
         $orderDescription = 'Hi From AVA';
@@ -3137,14 +3119,62 @@ class PaymentController extends Controller
             $ipAddress = $ipData['ip'] ?? '';
         }
 
+        // Get product IDs
+        $product_ids = [];
+        foreach($products as $item) {
+            $product = Product::find($item['product_id']);
+            if ($product) {
+                $product_ids[] = $item['product_id'];
+            }
+        }
+
+        // Store order in DB
+        // Store order object in DB
+        // if (Utility::CustomerAuthCheck($store->slug)) {
+        //     $customer = Auth::guard('customers')->user()->id;
+        // }else{
+        //     $customer = 0;
+        // }
+
+        //$customer               = Auth::guard('customers')->user();
+        $order                  = new Order();
+        $order->order_id        = 'xxxxx';
+        // theme3 , but theme1 and theme2 only phone number::
+        //$order->name            = $cust_details['name'];
+        //$order->email           = $cust_details['email'];
+
+        $order->card_number     = '';
+        $order->card_exp_month  = '';
+        $order->card_exp_year   = '';
+        //$order->status          = 'pending';
+        // $order->user_address_id = $cust_details['id'];
+        // $order->shipping_data   = $shipping_data;
+        $order->product_id      = implode(',', $product_ids);
+        $order->price           = $order_amount;
+        // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
+        // $order->coupon_json     = json_encode($coupon);
+        // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
+        $order->product         = json_encode($products);
+        $order->price_currency  = $store->currency_code;
+        $order->txn_id          = 'xxxxxx';
+        $order->payment_type    = 'edfapay';
+        $order->payment_status  = 'pending';
+        //$order->receipt         = '';
+        $order->user_id         = $store['id'];
+        $order->is_confirmed    = 0;
+        //$order->customer_id     = isset($customer->id) ? $customer->id : '';
+        $order->save();
+
+        // Udpate order id
+        $order_id = $order->id;
+        $encoded_order_id = base64_encode($order_id);
+        $order->order_id        = "#" . $order_id;
+        $order->update();
+
         // Security purpose
         $to_md5 = $order_id . $order_amount . $orderCurrency . $orderDescription . $edfaPayPassword;
         $md5_hash = md5(strtoupper($to_md5));
         $hash = sha1($md5_hash);
-
-        // Base64 encode the order amount and code 
-        // $encoded_order_amount = base64_encode($order_amount); 
-        // $encoded_code = base64_encode(200);
 
         // Prepare payment data
         $paymentData = [
@@ -3166,7 +3196,7 @@ class PaymentController extends Controller
             'payer_ip' => $ipAddress,
             "term_url_3ds" => route('edfapay.callback', [
                 'slug' => $slug, 
-                'order_id' => $order_id,
+                'order_id' => $encoded_order_id,
                 // 'order_amount' => $encoded_order_amount,
                 // 'code' => $encoded_code,
             ]),
@@ -3202,106 +3232,22 @@ class PaymentController extends Controller
     
         // Redirect to the waiting page
         return view('layouts.waiting', compact('slug', 'order_id'));
-
-        // $slug = $request->slug;
-        // $target_status = 'SUCCESS';
-        // $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
-        // $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
-        // $products = $cart['products'];
-
-        // // Get session order
-        // $sessionOrder = session()->get('pending_order');
-
-        // // ----------- Handle payment callback ----------- 
-        // if ($order_obj) {
-        //     // Reduce products stock quantity in DB
-        //     $product_ids = [];
-        //     foreach($products as $item) {
-        //         $product = Product::find($item['product_id']);
-        //         if ($product) {
-        //             $new_qty = $product->quantity - $item['quantity'];
-        //             $product->quantity = $new_qty < 0 ? 0 : $new_qty;
-        //             $product->save();
-
-        //             $product_ids[] = $item['product_id'];
-        //         }
-        //     }
-
-        //     // Store order object in DB
-        //     // Split the date by '/'
-        //     list($month, $year) = explode('/', $order_obj->card_expiration_date);
-        //     // if (Utility::CustomerAuthCheck($store->slug)) {
-        //     //     $customer = Auth::guard('customers')->user()->id;
-        //     // }else{
-        //     //     $customer = 0;
-        //     // }
-
-        //     //$customer               = Auth::guard('customers')->user();
-        //     $order                  = new Order();
-        //     $order->order_id        = '#' . $order_obj->order_id;
-        //     // theme3 , but theme1 and theme2 only phone number::
-        //     //$order->name            = $cust_details['name'];
-        //     //$order->email           = $cust_details['email'];
-
-        //     $order->card_number     = $order_obj->card;
-        //     $order->card_exp_month  = $month;
-        //     $order->card_exp_year   = $year;
-        //     //$order->status          = 'pending';
-        //     // $order->user_address_id = $cust_details['id'];
-        //     // $order->shipping_data   = $shipping_data;
-        //     $order->product_id      = implode(',', $product_ids);
-        //     $order->price           = $order_obj->amount;
-        //     // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
-        //     // $order->coupon_json     = json_encode($coupon);
-        //     // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
-        //     $order->product         = json_encode($products);
-        //     $order->price_currency  = $store->currency_code;
-        //     $order->txn_id          = $order_obj->trans_id;
-        //     $order->payment_type    = 'edfapay';
-        //     $order->payment_status  = $order_obj->status;
-        //     //$order->receipt         = '';
-        //     $order->user_id         = $store['id'];
-        //     //$order->customer_id     = isset($customer->id) ? $customer->id : '';
-        //     $order->save();
-
-        //     // Forwards to payment status page with 'success code 200'
-        //     return redirect()->route(
-        //         'payment.status', [
-        //             $store->slug,
-        //             Crypt::encrypt($order_obj->order_id),
-
-        //         ])->with([
-        //             "{$order_obj->order_id}_code" => Crypt::encrypt(200),
-        //             "{$order_obj->order_id}_trans_date" => Crypt::encrypt($order_obj->trans_date),
-        //     ]);
-            
-        // } else {
-        //     return redirect()->route(
-        //         'payment.status', [
-        //             $store->slug,
-        //             Crypt::encrypt($request->order_id),
-        //         ])->with(
-        //             "{$request->order_id}_code", Crypt::encrypt(400),
-        //     );
-        // }
     }
 
     public function checkOrderStatus(Request $request) {
         $order_id = $request->order_id;
-        $encrypt_order_id = Crypt::encrypt($order_id);
+        $decOrderId = base64_decode($order_id);
 
-        // Retrieve the session order
-        $sessionOrder = session()->get('pending_order');
+        $order = Order::find(id: $decOrderId);
+        if (isset($order)) {
+            $status = $order->payment_status;
 
-        if ($sessionOrder && $sessionOrder['order_id'] === $order_id) {
             return response()->json([
-                'order_id' => $encrypt_order_id,
-                'status' => $sessionOrder['status'],
+                'status' => $status
             ]);
         }
 
         return response()->json([
-            'order_id' => $encrypt_order_id,
             'status' => 'pending',
         ]);
     }
@@ -3314,76 +3260,36 @@ class PaymentController extends Controller
             return redirect()->back()->with('error', __('Store not available'));
         }
 
-        $target_status = 'SUCCESS';
         $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
         $products = $cart['products'];
-        $dec_order_id = Crypt::decrypt($order_id);
-        $sessionOrder = session()->get('pending_order');
+        $target_status = 'success';
+        $dec_order_id = base64_decode($order_id);
+        $order = Order::find($dec_order_id);
+
+        if (!isset($order)) {
+            return redirect()->back()->with('error', __('Order not found'));
+        }
+        $status = $order->payment_status;
 
         // ---------- Case1: successful status ----------
-        if (
-            $sessionOrder 
-            && $sessionOrder['order_id'] === $dec_order_id
-            && $sessionOrder['status'] === $target_status
-        ) {
+        if ($status == $target_status) {
             // Reduce products stock quantity in DB
-            $product_ids = [];
             foreach($products as $item) {
                 $product = Product::find($item['product_id']);
                 if ($product) {
                     $new_qty = $product->quantity - $item['quantity'];
                     $product->quantity = $new_qty < 0 ? 0 : $new_qty;
                     $product->save();
-
-                    $product_ids[] = $item['product_id'];
                 }
             }
-
-            // Store order object in DB
-            list($month, $year) = explode('/', $sessionOrder['card_expiration_date']);
-            // if (Utility::CustomerAuthCheck($store->slug)) {
-            //     $customer = Auth::guard('customers')->user()->id;
-            // }else{
-            //     $customer = 0;
-            // }
-
-            //$customer               = Auth::guard('customers')->user();
-            $order                  = new Order();
-            $order->order_id        = '#' . $dec_order_id;
-            // theme3 , but theme1 and theme2 only phone number::
-            //$order->name            = $cust_details['name'];
-            //$order->email           = $cust_details['email'];
-
-            $order->card_number     = $sessionOrder['card'];
-            $order->card_exp_month  = $month;
-            $order->card_exp_year   = $year;
-            //$order->status          = 'pending';
-            // $order->user_address_id = $cust_details['id'];
-            // $order->shipping_data   = $shipping_data;
-            $order->product_id      = implode(',', $product_ids);
-            $order->price           = $sessionOrder['amount'];
-            // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
-            // $order->coupon_json     = json_encode($coupon);
-            // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
-            $order->product         = json_encode($products);
-            $order->price_currency  = $store->currency_code;
-            $order->txn_id          = $sessionOrder['trans_id'];
-            $order->payment_type    = 'edfapay';
-            $order->payment_status  = $sessionOrder['status'];
-            //$order->receipt         = '';
-            $order->user_id         = $store['id'];
-            $order->is_confirmed    = 0;
-            //$order->customer_id     = isset($customer->id) ? $customer->id : '';
-            $order->save();
 
             // Clear session
             session()->forget($slug);
 
-            // Define variables for the view
             $code = 200; // success code
-            $order_amount = $sessionOrder['amount'];
-            $trans_date = $sessionOrder['trans_date'];
-            $is_confirmed = $order->is_confirmed;
+            $order_amount = $order->price;
+            $trans_date = now();
+            // $is_confirmed = $order->is_confirmed;
 
             // Forwards to payment status page with 'success code 200'
             return view('storefront.' . $store->theme_dir . '.status', compact(
@@ -3392,19 +3298,20 @@ class PaymentController extends Controller
                 'code', 
                 'order_amount', 
                 'trans_date',
-                'is_confirmed',
+                // 'is_confirmed',
+                'products'
             ));
 
-        // ---------- Case2: un-successful status ----------
+            // ---------- Case2: un-successful status ----------
         } else {
             // Forwards to payment status page with 'failur code 400'
             $code = 400;
             return view('storefront.' . $store->theme_dir . '.status', compact(
+                'dec_order_id', 
                 'store', 
                 'code', 
             ));
         }
-
 
 
         // $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();

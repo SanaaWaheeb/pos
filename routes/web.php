@@ -510,9 +510,9 @@ Route::get('payment-status/{slug}/{order_id}', [PaymentController::class, 'payme
 Route::get('edfapay-payment/callback', [PaymentController::class, 'edfaPayPaymentCallback'])->name('edfapay.callback')->middleware('SetLocale');
 Route::get('confirm-order/{order}', [OrderController::class, 'storeConfirmOrder'])->name('confirm.order');
 Route::get('/check-order-status', [PaymentController::class, 'checkOrderStatus'])->name('edfapay.check')->middleware('SetLocale');
+Route::get('/fetch-order', [OrderController::class, 'fetchOrder'])->name('order.fetch');
 
-
-Route::get('testing', [PaymentController::class, 'statusTesting'])->name('testing')->middleware('SetLocale');
+// Route::get('testing', [PaymentController::class, 'statusTesting'])->name('testing')->middleware('SetLocale');
 
 
 Route::get('checkoutPermission/{store?}', [StoreController::class, 'CheckoutPermit'])->name('checkout.permission');

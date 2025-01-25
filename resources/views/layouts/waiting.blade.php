@@ -42,7 +42,7 @@
     <script>
         const order_id = "{{ $order_id }}";
         const slug = "{{ $slug }}";
-        const paymentStatusBaseUrl = "{{ route('payment.status', ['slug' => $slug, 'order_id' => ':order_id']) }}";
+        const paymentStatusBaseUrl = "{{ route('payment.status', ['slug' => $slug, 'order_id' => $order_id]) }}";
 
         async function checkOrderStatus() {
             try {
@@ -59,8 +59,7 @@
                     success: function (response) {
                         if (response.status !== 'pending') {
                             // Redirect to the final status page
-                            const paymentStatusUrl = paymentStatusBaseUrl.replace(':order_id', response.order_id);
-                            window.location.href = paymentStatusUrl;
+                            window.location.href = paymentStatusBaseUrl;
                         } else {
                             // Poll again after 1 second
                             setTimeout(checkOrderStatus, 3000);
