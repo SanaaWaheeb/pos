@@ -188,7 +188,7 @@
 <script>
     const code = "{{ $code }}";
     console.log(code);
-    if (code === 200) {
+    if (code == 200) {
         const order_id = "{{ $dec_order_id }}";
 
         $.ajax({

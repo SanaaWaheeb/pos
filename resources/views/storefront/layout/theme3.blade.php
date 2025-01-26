@@ -164,7 +164,7 @@
                             <li>
                                 <a href="{{ route('store.wishlist', $store->slug) }}">
                                     <i class="fas fa-heart"></i>
-                                    <div class="count wishlist_count" id="shoping_counts">
+                                    <div class="count wishlist_count" >
                                         {{ !empty($wishlist) ? count($wishlist) : '0' }}</div>
                                 </a>
                             </li>
@@ -345,6 +345,7 @@
     </header>
     @yield('content')
 
+    @if (Route::currentRouteName() !== 'payment.status')
     <footer class="site-footer">
         <div class="container">
             @if ($getStoreThemeSetting[5]['section_enable'] == 'on')
@@ -469,6 +470,7 @@
             @endif
         </div>
     </footer>
+    @endif
     @if ($getStoreThemeSetting[14]['section_enable'] == 'on')
         <script>
             {!! $getStoreThemeSetting[15]['inner-list'][1]['field_default_text'] !!}

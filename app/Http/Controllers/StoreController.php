@@ -2275,8 +2275,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             ]
         );
     }
-
-    public function addToCart(Request $request, $product_id, $product, $slug, $variant_id = 0)
+    public function addToCart(Request $request, $product_id, $slug, $variant_id = 0)
     {
         if ($request->ajax()) {
 
@@ -2291,7 +2290,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     ]
                 );
             }
-           
             $variant = ProductVariantOption::find($variant_id);
 
             $product = Product::find($product_id);
