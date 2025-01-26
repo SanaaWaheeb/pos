@@ -3288,7 +3288,13 @@ class PaymentController extends Controller
 
             $code = 200; // success code
             $order_amount = $order->price;
-            $trans_date = now();
+
+            // Store transaction date in session to prevent updates on refresh
+         if (!session()->has('trans_date_' . $dec_order_id)) {
+            session(['trans_date_' . $dec_order_id => Carbon::now('Asia/Riyadh')]);
+        }
+
+        $trans_date = session('trans_date_' . $dec_order_id);
             // $is_confirmed = $order->is_confirmed;
 
             // Forwards to payment status page with 'success code 200'

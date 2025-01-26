@@ -3919,6 +3919,9 @@ del {
     font-size: 1.2rem;
     color: var(--black);
 }
+.price-bar * {
+    color: black !important; /* Force black color on all child elements */
+}
 
 /* ADDED */ 
 .payment-status {
