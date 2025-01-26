@@ -32,13 +32,18 @@ class OrderController extends Controller
             if (Auth::user()->type == 'super admin') {
                 $user  = \Auth::user();
                 $store = Store::where('id', $user->current_store)->first();
-    
-                $orders = Order::orderBy('id', 'DESC')->get();
+                // Exclude orders with 'pending' payment status    
+                $orders = Order::orderBy('id', 'DESC')
+                ->where('payment_status', '!=', 'pending')
+                ->get();
             } else {
                 $user  = \Auth::user();
                 $store = Store::where('id', $user->current_store)->first();
     
-                $orders = Order::orderBy('id', 'DESC')->where('user_id', $store->id)->get();
+                $orders = Order::orderBy('id', 'DESC')
+                ->where('user_id', $store->id)
+                ->where('payment_status', '!=', 'pending')
+                ->get();
             }
             return view('orders.index', compact('orders'));
         }

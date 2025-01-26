@@ -252,6 +252,9 @@ video {
     vertical-align: baseline;
 }
 body { 
+    display: flex; /*** added ***/
+    flex-direction: column; /*** added ***/
+    min-height: 100vh; /*** added ***/
     font: var(--common-text);
     margin: 0;
     padding: 0; 
