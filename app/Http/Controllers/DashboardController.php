@@ -114,7 +114,7 @@ class DashboardController extends Controller
                     $userstore = UserStore::where('store_id', $store->current_store)->first();
                     $newproduct = Product::where('store_id', $store->current_store)->count();
                     $products = Product::where('store_id', $store->current_store)->limit(5)->get();
-                    $new_orders = Order::where('user_id', $store->current_store)->limit(8)->orderBy('id', 'DESC')->get();
+                    $new_orders = Order::where('user_id', $store->current_store)->where('payment_status', '!=', 'pending')->limit(8)->orderBy('id', 'DESC')->get();
                     $chartData = $this->getOrderChart(['duration' => 'week'],$userstore);
                     $saleData = $this->getSaleChart(['duration' => 'week'],$userstore);
                     $store_id = Store::where('id', $store->current_store)->first();
