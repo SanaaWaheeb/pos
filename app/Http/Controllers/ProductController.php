@@ -87,20 +87,8 @@ class ProductController extends Controller
                 $request->all(),
                 [
                     'name' => 'required|max:120',
-                    'SKU' => 'required',
-                    'price' => 'required|numeric',
-                    'quantity' => 'required|integer',
                 ]
             );
-
-            if ($validator->fails()) {
-                $messages = $validator->getMessageBag();
-
-                $msg['flag'] = 'error';
-                $msg['msg'] = $messages->first();
-
-                return $msg;
-            }
             if ($request->enable_product_variant == '') {
                 $validator = \Validator::make(
                     $request->all(),
@@ -109,7 +97,8 @@ class ProductController extends Controller
                         'quantity' => 'required',
                         'name' => 'required',
                         'SKU' => 'required',
-                        'last_price' => 'required',
+                        'multiple_files.*' => 'nullable|file|mimes:jpg,jpeg,png,xlsx,xls,csv,pdf', 
+                        // 'last_price' => 'required',
                     ]
                 );
             }
@@ -131,6 +120,14 @@ class ProductController extends Controller
 
                     return $msg;
                 }
+            }
+            if ($validator->fails()) {
+                $messages = $validator->getMessageBag();
+
+                $msg['flag'] = 'error';
+                $msg['msg'] = $messages->first();
+
+                return $msg;
             }
 
 
@@ -488,10 +485,6 @@ class ProductController extends Controller
                 $request->all(),
                 [
                     'name' => 'required|max:120',
-                    'SKU' => 'required',
-                    'price' => 'required|numeric',
-                    'quantity' => 'required|integer',
-                    'expiry_date' => 'required|date',
                 ]
             );
             if ($request->enable_product_variant == '') {
@@ -502,6 +495,7 @@ class ProductController extends Controller
                         'quantity' => 'required',
                         'is_cover_image' => 'mimes:jpeg,png,jpg,gif,svg,pdf,doc|max:20480',
                         'downloadable_prodcut' => 'mimes:jpeg,png,jpg,gif,svg,pdf,doc|max:20480',
+                        'multiple_files.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,pdf,doc|max:20480'
                     ]
                 );
             }

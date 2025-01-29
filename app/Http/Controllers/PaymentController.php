@@ -3066,7 +3066,7 @@ class PaymentController extends Controller
 
     }
 
-    public function processCheckout($slug, $order_amount)
+    public function processCheckout(Request $request, $slug, $order_amount)
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 0]);
@@ -3128,6 +3128,27 @@ class PaymentController extends Controller
             }
         }
 
+        // Get Shipping
+        $shipping_data = null;
+        if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
+            $shipping = Shipping::find($cart['shipping']['shipping_id']);
+            if (!empty($shipping)) {
+                $shipping_name = $shipping->name;
+                $shipping_price = $shipping->price;
+    
+                $shipping_data = json_encode(
+                    [
+                        'shipping_name' => $shipping_name,
+                        'shipping_price' => $shipping_price,
+                        'location_id' => $cart['shipping']['location_id'],
+                    ]
+                );
+            } else {
+                $shipping_data = '';
+            }
+        }
+        $cust_details = $cart['customer'] ?? null;
+
         // Store order in DB
         // Store order object in DB
         // if (Utility::CustomerAuthCheck($store->slug)) {
@@ -3140,15 +3161,15 @@ class PaymentController extends Controller
         $order                  = new Order();
         $order->order_id        = 'xxxxx';
         // theme3 , but theme1 and theme2 only phone number::
-        //$order->name            = $cust_details['name'];
-        //$order->email           = $cust_details['email'];
+        $order->name            = $cust_details['name'] ?? 'Guest';
+        $order->email           =  $cust_details['email'] ?? 'guest@example.com';
 
         $order->card_number     = '';
         $order->card_exp_month  = '';
         $order->card_exp_year   = '';
         //$order->status          = 'pending';
-        // $order->user_address_id = $cust_details['id'];
-        // $order->shipping_data   = $shipping_data;
+        $order->user_address_id = $cust_details['id'] ?? null;
+        $order->shipping_data   = $shipping_data;
         $order->product_id      = implode(',', $product_ids);
         $order->price           = $order_amount;
         // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
@@ -3216,7 +3237,11 @@ class PaymentController extends Controller
         if ($response !== false) {
             $responseData = json_decode($response, true);
             if (isset($responseData['redirect_url'])) {
-                return response()->json(['redirect_url' => $responseData['redirect_url']]);
+                if ($request->ajax()) {
+                    return response()->json(['redirect_url' => $responseData['redirect_url']]);
+                } else {
+                    return redirect()->away($responseData['redirect_url']);
+                }
             } else {
                 return response()->json(['error' => __('Failed to initiate payment')], 400);
             }
@@ -3274,12 +3299,25 @@ class PaymentController extends Controller
         // ---------- Case1: successful status ----------
         if ($status == $target_status) {
             // Reduce products stock quantity in DB
-            foreach($products as $item) {
-                $product = Product::find($item['product_id']);
-                if ($product) {
-                    $new_qty = $product->quantity - $item['quantity'];
-                    $product->quantity = $new_qty < 0 ? 0 : $new_qty;
-                    $product->save();
+            // foreach($products as $item) {
+            //     $product = Product::find($item['product_id']);
+            //     if ($product) {
+            //         $new_qty = $product->quantity - $item['quantity'];
+            //         $product->quantity = $new_qty < 0 ? 0 : $new_qty;
+            //         $product->save();
+            //     }
+            // }
+            foreach ($products as $key => $product) {
+                if ($product['variant_id'] != 0) {
+                    $new_qty = $product['originalvariantquantity'] - $product['quantity'];
+                    $product_edit = ProductVariantOption::find($product['variant_id']);
+                    $product_edit->quantity = $new_qty;
+                    $product_edit->save();
+                } else {
+                    $new_qty = $product['originalquantity'] - $product['quantity'];
+                    $product_edit = Product::find($product['product_id']);
+                    $product_edit->quantity = $new_qty;
+                    $product_edit->save();
                 }
             }
 

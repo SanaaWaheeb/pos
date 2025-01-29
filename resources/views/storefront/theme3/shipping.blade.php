@@ -353,6 +353,7 @@
                                         <div class="mini-total-price final_total_price" id="total_value" data-value="666">
                                             <input type="hidden" class="product_total" value="{{$total}}">
                                             <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
+                                            <input type="hidden" name="total" value="{{ $total }}">
                                             <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}">  {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
                                         </div>
                                     </div>
@@ -578,39 +579,6 @@
                 });
             }
         }); 
-    });
-
-// added
-    $(document).on('click', '.next-btn', function (e) {
-        e.preventDefault();
-
-        let totalAmount = $('#total_value').text().trim().replace(/[^\d.-]/g, '');
-        let checkoutUrl = '{{ route('payment.checkout', ['slug' => $store->slug, 'order_amount' => '__total__']) }}';
-        checkoutUrl = checkoutUrl.replace('__total__', totalAmount);
-        // console.log("url: ", checkoutUrl);
-
-        $.ajax({
-            url: checkoutUrl,
-            type: 'GET',
-            headers: {
-                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                if (response.redirect_url) {
-                    // Redirect to the payment gateway
-                    window.location.href = response.redirect_url;
-                } else if (response.error) {
-                    show_toastr('Error', response.error, 'error');
-                }
-            },
-            error: function (xhr) {
-                let errorMessage = 'Something went wrong. Please try again.';
-                if (xhr.responseJSON && xhr.responseJSON.error) {
-                    errorMessage = xhr.responseJSON.error;
-                }
-                show_toastr('Error', errorMessage, 'error');
-            }
-        });
     });
 </script>
 @endpush

@@ -2810,8 +2810,11 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         }
 
         session()->put($slug, $cart);
-        return redirect()->route('store-payment.payment', $slug);
-
+        // return redirect()->route('store-payment.payment', $slug);
+        return redirect()->route('payment.checkout', [
+            'slug' => $slug,
+            'order_amount' => $request->total ?? 0,
+        ]);
     }
 
     public function complete($slug, $order_id)
