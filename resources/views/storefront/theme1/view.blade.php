@@ -192,7 +192,9 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                        {{ \App\Models\Utility::priceFormat($products->price) }}
                                     @endif
                                 </span>
-                                <del>{{ \App\Models\Utility::priceFormat($products->last_price) }}</del>
+                                @if ($products->last_price != 0)
+                                    <del>{{ \App\Models\Utility::priceFormat($products->last_price) }}</del>
+                                @endif
                             </div>
                             <span class=" mb-0 text-danger product-price-error"></span>
                         </div>

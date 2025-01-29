@@ -755,6 +755,49 @@ document.addEventListener('DOMContentLoaded', function () {
         printWindow.document.close();
         printWindow.print();
     });
+
+    $(document).on('click', '.get-variants', function(e) {
+        $("#commonModal .modal-title").html('{{ __('Add Variants') }}');
+        $("#commonModal .modal-dialog").addClass('modal-md');
+        $("#commonModal").modal('show');
+
+        $.get('{{ route('product.variants.create') }}', {}, function(data) {
+            $('#commonModal .modal-body').html(data);
+        });
+        });
+
+        $(document).on('click', '.add-variants', function(e) {
+        e.preventDefault();
+        var form = $(this).parents('form');
+        var variantNameEle = $('#variant_name');
+        var variantOptionsEle = $('#variant_options');
+        var isValid = true;
+
+        if (variantNameEle.val() == '') {
+            variantNameEle.focus();
+            isValid = false;
+        } else if (variantOptionsEle.val() == '') {
+            variantOptionsEle.focus();
+            isValid = false;
+        }
+
+        if (isValid) {
+            $.ajax({
+                url: form.attr('action'),
+                datType: 'json',
+                data: {
+                    variant_name: variantNameEle.val(),
+                    variant_options: variantOptionsEle.val(),
+                    hiddenVariantOptions: $('#hiddenVariantOptions').val()
+                },
+                success: function(data) {
+                    $('#hiddenVariantOptions').val(data.hiddenVariantOptions);
+                    $('.variant-table').html(data.varitantHTML);
+                    $("#commonModal").modal('hide');
+                }
+            })
+        }
+        });
 });
 </script>
 

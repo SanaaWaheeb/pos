@@ -144,8 +144,9 @@
                                     @else
                                         {{ \App\Models\Utility::priceFormat($products->price) }}
                                     @endif
-                                    <del>{{ \App\Models\Utility::priceFormat($products->last_price) }}</del>
-
+                                    @if ($products->last_price != 0)
+                                        <del>{{ \App\Models\Utility::priceFormat($products->last_price) }}</del>
+                                    @endif
                                 </div>
                                 <a href="#" data-id="{{ $products->id }}"
                                     class="btn add_to_cart">{{ __('Add to cart') }} <i

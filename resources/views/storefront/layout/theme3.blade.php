@@ -1,5 +1,6 @@
 @php
     $data = DB::table('settings');
+    $cart = session()->get($store->slug);
     
     $data = $data
         ->where('created_by', '>', 1)
@@ -173,7 +174,7 @@
                             <a href="{{ route('store.cart', $store->slug) }}">
                                 <i class="fas fa-shopping-basket"></i>
                                 <div class="count shoping_counts" id="shoping_counts">
-                                    {{ !empty($total_item) ? $total_item : '0' }}</div>
+                                {{$cart['cart_item_count'] ?? 0}}</div>
                             </a>
                         </li>
                         <li class="language-header has-item">

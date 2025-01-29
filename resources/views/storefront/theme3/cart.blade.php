@@ -53,20 +53,46 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                     @endphp
                                     @foreach($products['products'] as $key => $product)
                                         @if ($product['variant_id'] != 0)
-                                            <div class="mini-cart-body" data-id="{{$key}}" id="product-variant-id-{{ $product['variant_id'] }}">
-                                                <div class="mini-cart-item">
+                                            <div class="mini-cart-item" data-id="{{$key}}" id="product-variant-id-{{ $product['variant_id'] }}">
+                                                <div class="mini-cart-details-cart">
                                                     <div class="mini-cart-image" data-label="Product">
-                                                        <a href="">
-                                                            <img src="{{$productImg .$product['image']}}" alt="img">
+                                                        <a class="pro-img-cart">
+                                                            @if(!empty($product['image']))
+                                                                <img src="{{ $imgpath.$product['image']}}">
+                                                            @else
+                                                                <img src="{{asset(Storage::url('uploads/is_cover_image/default.jpg'))}}">
+                                                            @endif
                                                         </a>
                                                     </div>
-                                                    <div class="mini-cart-details-cart">
+                                                
+                                                    <div class="cart-item-decr">
                                                         <p data-label="Name" class="mini-cart-title">
                                                             <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name'] .' - '. $product['variant_name']}}</a>
                                                         </p>
 
-                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
-                                                            <div data-label="quantity" class="price">
+                                                        <div style="display: flex; align-items: center; justify-content: space-between">
+                                                            <div data-label="Total">
+                                                            @php
+                                                                $total_tax=0;
+                                                            @endphp
+                                                            @if(!empty($product['tax']))
+                                                            @foreach($product['tax'] as $k => $tax)
+                                                                @php
+                                                                    $sub_tax = ($product['variant_price']* $product['quantity'] * $tax['tax']) / 100;
+                                                                    $total_tax += $sub_tax;
+                                                                @endphp
+                                                                <p class="t-gray p-title mb-0 variant_tax_{{ $k }}">
+                                                                    {{$tax['tax_name'].' '.$tax['tax'].'%'.' ('.$sub_tax.')'}}
+                                                                </p>
+                                                            @endforeach
+                                                            @endif
+                                                            @php
+                                                                $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
+                                                            @endphp
+                                                                <span class="subtotal">{{\App\Models\Utility::priceFormat($totalprice)}}</span>
+                                                            </div>
+
+                                                            <div data-label="quantity" style="flex: 1; margin: 0 0.6rem">
                                                                 <div class="qty-spinner" data-id="{{$key}}">
                                                                     <button type="button" class="quantity-decrement qty-minus product_qty">
                                                                         <svg width="12" height="2" viewBox="0 0 12 2" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -81,44 +107,48 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                                                     </button>
                                                                 </div>
                                                             </div>
-                                                            <a class="remove_item">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
-                                                            </a>
+
+                                                            <div>
+                                                                <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fa-solid fa-trash-can"></i></a>
+                                                                {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
+                                                                {!! Form::close() !!}
+                                                            </div>
                                                         </div>
 
-                                                        <div data-label="Tax"> 
-                                                            @php
-                                                                $total_tax=0;
-                                                            @endphp
-                                                            @if(!empty($product['tax']))
-                                                            @foreach($product['tax'] as $k => $tax)
-                                                                @php
-                                                                    $sub_tax = ($product['variant_price']* $product['quantity'] * $tax['tax']) / 100;
-                                                                    $total_tax += $sub_tax;
-                                                                @endphp
-                                                                <p class="t-gray p-title mb-0 variant_tax_{{ $k }}">
-                                                                    {{$tax['tax_name'].' '.$tax['tax'].'%'.' ('.$sub_tax.')'}}
-                                                                </p>
-                                                            @endforeach
-                                                            @else
-                                                                -
-                                                            @endif
-                                                        </div> 
-
-                                                        <td data-label="Total">
-                                                            @php
-                                                                $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
-                                                                $total += $totalprice;
-                                                            @endphp
-                                                            <p class="pt-price t-black15 subtotal">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
-                                                            </p>
-                                                            <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fas fa-times"></i></a>
-                                                            {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
-                                                            {!! Form::close() !!}
-                                                        </td>
                                                     </div>
                                                 </div>
+
+                                                    <!-- <div data-label="Tax"> 
+                                                        @php
+                                                            $total_tax=0;
+                                                        @endphp
+                                                        @if(!empty($product['tax']))
+                                                        @foreach($product['tax'] as $k => $tax)
+                                                            @php
+                                                                $sub_tax = ($product['variant_price']* $product['quantity'] * $tax['tax']) / 100;
+                                                                $total_tax += $sub_tax;
+                                                            @endphp
+                                                            <p class="t-gray p-title mb-0 variant_tax_{{ $k }}">
+                                                                {{$tax['tax_name'].' '.$tax['tax'].'%'.' ('.$sub_tax.')'}}
+                                                            </p>
+                                                        @endforeach
+                                                        @else
+                                                            -
+                                                        @endif
+                                                    </div>  -->
+
+                                                    <!-- <td data-label="Total">
+                                                        @php
+                                                            $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
+                                                            $total += $totalprice;
+                                                        @endphp
+                                                        <p class="pt-price t-black15 subtotal">
+                                                            {{\App\Models\Utility::priceFormat($totalprice)}}
+                                                        </p>
+                                                        <a href="#" class="action-item mr-2 remove-btn" data-toggle="tooltip" data-original-title="{{__('Move to trash')}}" data-confirm="{{__('Are You Sure?').' | '.__('This action can not be undone. Do you want to continue?')}}" data-confirm-yes="document.getElementById('delete-product-cart-{{$key}}').submit();"><i class="fas fa-times"></i></a>
+                                                        {!! Form::open(['method' => 'DELETE', 'route' => ['delete.cart_item',[$store->slug,$product['product_id'],$product['variant_id']]],'id'=>'delete-product-cart-'.$key]) !!}
+                                                        {!! Form::close() !!}
+                                                    </td> -->
                                             </div>
                                         @else
                                             <div class="mini-cart-item" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
@@ -863,15 +893,15 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
             e.preventDefault();
             var currEle = $(this);
             var product_id = $(this).siblings(".bx-cart-qty").attr('data-id');
-            var arrkey = $(this).parents('tr').attr('data-id');
-            var sum =0;
+            var arrkey = $(this).parents('div').attr('data-id');
+            var sum = 0;
             setTimeout(function () {
                 if (currEle.hasClass('qty-minus') == true) {
                     qty_id = currEle.next().val()
                 } else {
-                    qty_id = currEle.prev().val()
+                    qty_id = currEle.prev().val();
                 }
-
+                
                 if (qty_id == 0 || qty_id == '' || qty_id < 0) {
                     location.reload();
                     return false;
@@ -893,6 +923,13 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 location.reload();
                             }, 1000);
                         } else {
+                            // Update the cart item count dynamically
+                            const cartItemsCountElements = document.getElementById('shoping_counts');
+                            if (cartItemsCountElements) {
+                                console.log("cart items: ", response.cart_items_count)
+                                cartItemsCountElements.textContent = response.cart_items_count;
+                            }
+
                             $.each(response.product, function (key, value) {
                                 if(value.variant_id != 0){
                                     sum += value.variant_subtotal;
@@ -916,10 +953,19 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 }
                             });
                             $('#displaytotal').text(addCommas(sum));
+                            const checkoutBtn = document.querySelector('.checkout-btn');
+                            if (checkoutBtn) {
+                                let url = new URL(checkoutBtn.href, window.location.origin);
+                                let segments = url.pathname.split('/'); 
+                                segments[segments.length - 1] = sum; // Replace the last segment with the updated total
+                                url.pathname = segments.join('/');
+                                // console.log("url: ", url);
+                                checkoutBtn.href = url.toString(); 
+                            }
                         }
                     },
                     error: function (result) {
-                        console.log('error12');
+                    
                     }
                 });
             }, 100);

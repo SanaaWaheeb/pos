@@ -333,7 +333,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                                                                 <div class="price">
                                                                     <ins>{{__('In variant')}}</ins>
                                                                 </div>
-                                                                <a href="{{route('store.product.product_view',[$store->slug,$product->id])}}" class="btn cart-btn"><i class="fas fa-shopping-basket"></i></a>
+                                                                <a href="{{route('store.product.product_view',[$store->slug,$product->id])}}" class="btn cart-btn">{{__('Add to cart')}}<i class="fas fa-shopping-basket"></i></a>
                                                                 @if(Auth::guard('customers')->check())
                                                                     @if(!empty($wishlist) && isset($wishlist[$product->id]['product_id']))
                                                                         @if($wishlist[$product->id]['product_id'] != $product->id)
