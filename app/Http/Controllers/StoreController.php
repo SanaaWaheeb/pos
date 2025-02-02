@@ -2681,6 +2681,10 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
     public function customer(Request $request, $slug)
     {
+        $totalPrice = null;
+        if ($request->total) {
+            $totalPrice = str_replace('$', '', $request->total);
+        }
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
 
         if (empty($store)) {
@@ -2813,7 +2817,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         // return redirect()->route('store-payment.payment', $slug);
         return redirect()->route('payment.checkout', [
             'slug' => $slug,
-            'order_amount' => $request->total ?? 0,
+            'order_amount' => $totalPrice ?? 0,
         ]);
     }
 

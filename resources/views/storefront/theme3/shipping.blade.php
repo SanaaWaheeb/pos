@@ -353,7 +353,7 @@
                                         <div class="mini-total-price final_total_price" id="total_value" data-value="666">
                                             <input type="hidden" class="product_total" value="{{$total}}">
                                             <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
-                                            <input type="hidden" name="total" value="{{ $total }}">
+                                            <input type="hidden" name="total" id="total-shipping-price" value="{{ $total }}">
                                             <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}">  {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
                                         </div>
                                     </div>
@@ -441,6 +441,9 @@
                 $('.shipping_price').html(data.price);
                 $('.shipping_price').attr('data-value', data.price);
                 $('.pro_total_price').html(data.total_price);
+
+                // Update hidden input field
+                $('#total-shipping-price').val(data.total_price);
             }
         });
     }
