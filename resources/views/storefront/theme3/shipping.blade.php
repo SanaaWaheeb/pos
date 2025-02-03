@@ -19,7 +19,8 @@
 <div class="wrapper">
     <section class="cart-section padding-bottom padding-top">
         <div class="container">
-            <div class="row align-items-center cart-head">
+        {{ Form::model($cust_details, ['route' => ['store.customer', $store->slug], 'method' => 'POST']) }}
+            <div class="row align-items-center cart-head" style="margin-bottom: 50px">
                 <div class="col-lg-3 col-md-12 col-12">
                     <div class="cart-title">
                         <h2>{{ __('Customer') }}</h2>
@@ -29,12 +30,12 @@
                     <div class="cart-header-btn">
                         <a href="{{ route('store.cart', $store->slug) }}">1 - {{ __('My Cart') }}</a>
                         <a href="{{ route('user-address.useraddress', $store->slug) }}" class="active-btn">2 -{{ __('Customer') }}</a>
-                        <a href="{{ route('store-payment.payment', $store->slug) }}">3 - {{ __('Payment') }}</a>
+                        <a><button style="all: unset" type="submit">3 - {{ __('Payment') }}</button></a>
                     </div>
                 </div>
 
             </div>
-            {{ Form::model($cust_details, ['route' => ['store.customer', $store->slug], 'method' => 'POST']) }}
+            
                 <div class="row">
                     <div class="col-lg-8 col-12">
                         <div class="customer-info">
@@ -459,6 +460,17 @@
 
         }
 
+        // Remove checked attribute from all shipping method inputs
+        $("input[name='shipping_id']").prop("checked", false);
+
+        // Clear price
+        $('.shipping_price').html('');
+        $('.shipping_price').attr('data-value', '');
+        $('.pro_total_price').html($('.pro_total_price').attr('data-value'));
+
+        // Update hidden input field
+        $('#total-shipping-price').val($('.pro_total_price').attr('data-value'));
+
         $.ajax({
             url: '{{ route('user.location', [$store->slug, '_location_id']) }}'.replace('_location_id',
                 location_id),
@@ -474,15 +486,16 @@
                 var shipping_id =
                     '{{ isset($cust_details['shipping_id']) ? $cust_details['shipping_id'] : '' }}';
                 $.each(data.shipping, function(key, value) {
-                    var checked = '';
-                    if (shipping_id != '' && shipping_id == value.id) {
-                        checked = 'checked';
-                    }
+                    
+                    // var checked = '';
+                    // if (shipping_id != '' && shipping_id == value.id) {
+                    //     checked = 'checked';
+                    // }
 
                     html +=
                         '<div class="shipping_location"><input type="radio" name="shipping_id" data-id="' +
                         value.price + '" value="' + value.id + '" id="shipping_price' +
-                        key + '" class="shipping_mode" ' + checked + '>' +
+                        key + '" class="shipping_mode" ' + '>' +
                         ' <label name="shipping_label" for="shipping_price' + key +
                         '" class="shipping_label"> ' + value.name + '</label></div>';
 

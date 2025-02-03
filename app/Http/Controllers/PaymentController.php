@@ -3167,7 +3167,7 @@ class PaymentController extends Controller
         $order->card_number     = '';
         $order->card_exp_month  = '';
         $order->card_exp_year   = '';
-        //$order->status          = 'pending';
+        $order->status          = 'pending';
         $order->user_address_id = $cust_details['id'] ?? null;
         $order->shipping_data   = $shipping_data;
         $order->product_id      = implode(',', $product_ids);

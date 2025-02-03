@@ -376,7 +376,7 @@ $company_logo = \App\Models\Utility::getValByName('company_logo');
                                                     <td> {{ \App\Models\Utility::priceFormat($order->price) }}</td>
                                                     <td>{{ $order->payment_type }}</td>
                                                     <td>
-                                                        @if ($order->payment_status == 'approved' && $order->status == 'pending')
+                                                        @if ($order->payment_status == 'success' && $order->status == 'pending')
                                                             <span class="badge me-2 rounded p-2  bg-light-secondary">{{ __('Pending') }}</span>
                                                             {{ \App\Models\Utility::dateFormat($order->created_at) }}
                                                         @else

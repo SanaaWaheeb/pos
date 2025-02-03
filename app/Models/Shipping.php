@@ -16,11 +16,11 @@ class Shipping extends Model
     private static $location = null;
     public function locationName()
     {
-        if(is_null(self::$location)){
+        if(!isset($this->location_name)){
             $result =  Location::whereIn('id',explode(',',$this->location_id))->get()->pluck('name')->toArray();
-            self::$location = implode(', ',$result);
+            $this->location_name = implode(', ',$result);
 
         }
-        return self::$location;
+        return $this->location_name;
     }
 }
