@@ -237,7 +237,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 </a>
                             @endif
                            <div>
-                            <a href="{{route('store.slug',$store->slug)}}" class="back-shop">{{__('Return to shop')}}</a>
+                            <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a>
                            </div>
                         </div>
                       
@@ -873,10 +873,9 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                         </svg>
                         <h4>{{__('Your cart is empty')}}.</h4>
                         <p>
-                            {{__('Your cart is currently empty. Return to our shop and check out the latest offers. 
-                            We have some great items that are waiting for you')}}.
+                            {{__('Your cart is currently empty. Return to our shop and check out the latest offers. We have some great items that are waiting for you')}}.
                         </p>
-                        <a href="{{route('store.slug',$store->slug)}}" class="cart-btn">
+                        <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">
                             <i class="fas fa-angle-left"></i>
                             {{__('Return to shop')}}
                         </a>

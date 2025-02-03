@@ -46,27 +46,10 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                                 <div class="col-md-6 col-12">
                                     <div class="banner-title">
                                         <h1>{{$theme3_product->name}}</h1>
+
                                     </div>
-                                    <div class="banner-links">
-                                        <ul class="banner-list">
-                                            <li><a href="{{route('store.product.product_view',[$store->slug,$theme3_product->id])}}" class="text-dark">{{__('DESCRIPTION')}}</a></li>
-                                            <li><a href="{{route('store.product.product_view',[$store->slug,$theme3_product->id])}}" class="text-dark">{{__('SPECIFICATION')}}</a></li>
-                                            <li><a href="{{route('store.product.product_view',[$store->slug,$theme3_product->id])}}" class="text-dark">{{__('DETAILS')}}</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="col-md-6 col-12">
-                                    <div class="product-img">
-                                        {{--  @if($theme3_product_image != null && $theme3_product_image->count()>0)
-                                            <img src="{{$catimg .$theme3_product_image[0]['product_images']}}" alt="">
-                                        @endif  --}}
-                                        @if($theme3_product_image != null &&  $theme3_product_image->count()>0)
-                                            <img src="{{$catimg.$theme3_product_image[0]['product_images']}}" alt="">
-                                        @endif
-                                    </div>
-                                    @if($theme3_product_image != null )
-                                        @if($theme3_product['enable_product_variant'] == 'on')
-                                            <div class="price justify-content-center">
+                                    @if($theme3_product['enable_product_variant'] == 'on')
+                                            <div class="price ">
                                                 <ins><span class="currency-type"></span> {{__('In variant')}}</ins>
                                             </div>
                                             <div class="cart-btns">
@@ -82,9 +65,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                                                 @endif
                                             </div>
                                         @else
-                                            <div class="price justify-content-center">
-                                                <ins>{{\App\Models\Utility::priceFormat($theme3_product->price)}}</ins>
-                                            </div>
+                                            
                                             <div class="cart-btns">
                                                 <a class="btn add_to_cart" data-id="{{$theme3_product->id}}">{{__('ADD TO CART')}}<i class="fas fa-shopping-basket"></i></a>
                                                 @if(!empty($wishlist) && isset($wishlist[$theme3_product->id]['product_id']))
@@ -98,6 +79,25 @@ $s_logo = \App\Models\Utility::get_file('uploads/blog_cover_image/');
                                                 @endif
                                             </div>
                                         @endif
+                                    {{-- <div class="banner-links">
+                                        <ul class="banner-list">
+                                            <li><a href="{{route('store.product.product_view',[$store->slug,$theme3_product->id])}}" class="text-dark">{{__('DESCRIPTION')}}</a></li>
+                                            <li><a href="{{route('store.product.product_view',[$store->slug,$theme3_product->id])}}" class="text-dark">{{__('SPECIFICATION')}}</a></li>
+                                            <li><a href="{{route('store.product.product_view',[$store->slug,$theme3_product->id])}}" class="text-dark">{{__('DETAILS')}}</a></li>
+                                        </ul>
+                                    </div> --}}
+                                </div>
+                                <div class="col-md-6 col-12">
+                                    <div class="product-img">
+                                        {{--  @if($theme3_product_image != null && $theme3_product_image->count()>0)
+                                            <img src="{{$catimg .$theme3_product_image[0]['product_images']}}" alt="">
+                                        @endif  --}}
+                                        @if($theme3_product_image != null &&  $theme3_product_image->count()>0)
+                                            <img src="{{$catimg.$theme3_product_image[0]['product_images']}}" alt="">
+                                        @endif
+                                    </div>
+                                    @if($theme3_product_image != null )
+                                        
                                     @endif
                                 </div>
                             </div>

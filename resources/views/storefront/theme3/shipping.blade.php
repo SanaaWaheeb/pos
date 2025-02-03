@@ -23,13 +23,13 @@
             <div class="row align-items-center cart-head" style="margin-bottom: 50px">
                 <div class="col-lg-3 col-md-12 col-12">
                     <div class="cart-title">
-                        <h2>{{ __('Customer') }}</h2>
+                        <h2>{{ __('Shipping information') }}</h2>
                     </div>
                 </div>
                 <div class="col-lg-9 col-md-12 col-12 justify-content-end">
                     <div class="cart-header-btn">
                         <a href="{{ route('store.cart', $store->slug) }}">1 - {{ __('My Cart') }}</a>
-                        <a href="{{ route('user-address.useraddress', $store->slug) }}" class="active-btn">2 -{{ __('Customer') }}</a>
+                        <a href="{{ route('user-address.useraddress', $store->slug) }}" class="active-btn">2 -{{ __('Shipping') }}</a>
                         <a><button style="all: unset" type="submit">3 - {{ __('Payment') }}</button></a>
                     </div>
                 </div>
@@ -182,9 +182,10 @@
                             </div>
                             <div class="col-md-12 col-12">
                                 <div class="pagination-btn d-flex align-items-center justify-content-center ">
-                                    <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a>
+                                    
                                     <button type="submit" class="next-btn btn">{{__('Proceed to checkout')}} <i class="fas fa-shopping-basket"></i></button>
                                     
+                                    <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a>
                                 </div>
                             </div>
                         </div>
@@ -323,7 +324,7 @@
                                 <div class="mini-cart-footer">
                                     <ul class="cart-summery">
                                         <li>
-                                            <span class="cart-sum-left">{{ __('item') }}</span>
+                                            <span class="cart-sum-left">{{ __('Subtotal') }}</span>
                                             <span class="cart-sum-right">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</span>
                                         </li> 
                                         @if($store->enable_shipping == "on")
