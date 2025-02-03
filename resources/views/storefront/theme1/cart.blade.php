@@ -187,7 +187,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                         </table>
                     </div>
                     <div class="checkout-box">
-                        <div class="row align-items-center justify-content-center">
+                        <div class="align-items-center justify-content-center">
                             <div class="col-md-4 col-12">
                                 <div class="price-bar">
                                     <span>{{ __('Total value:') }}</span>

@@ -218,6 +218,12 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                     </div>
                 </div>
                 <div class="checkout-box">
+                    <div class="col-md-4 col-12">
+                        <div class="price-bar">
+                            <span>{{ __('Total value:') }}</span>
+                            <span id="displaytotal">{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}</span>
+                        </div>
+                    </div>
                     <div class="row align-items-center">
                         <div class="col-md-8 col-12">
                             @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
@@ -230,15 +236,11 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                     {{__('Continue to Shipping')}}
                                 </a>
                             @endif
-                           
+                           <div>
                             <a href="{{route('store.slug',$store->slug)}}" class="back-shop">{{__('Return to shop')}}</a>
+                           </div>
                         </div>
-                        <div class="col-md-4 col-12">
-                            <div class="price-bar">
-                                <span>{{ __('Total value:') }}</span>
-                                <span id="displaytotal">{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}</span>
-                            </div>
-                        </div>
+                      
                     </div>
                 </div>
             </div>

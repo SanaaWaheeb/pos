@@ -242,9 +242,9 @@
     text-align: center;
   }
 
-  .checkout-box a{
-    width: 80%; /******** changed **********/
-  }
+  /* .checkout-box a{
+    width: 80%; 
+  } */
   .pdp-summery{
     margin-top: 20px;
   }

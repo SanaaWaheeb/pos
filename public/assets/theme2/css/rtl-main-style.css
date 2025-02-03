@@ -698,7 +698,7 @@ p:not(:last-of-type) {
     }
     .col-md-4 {
         flex: 0 0 auto;
-        width: 33.33333333%;
+        /* width: 33.33333333%; */
     }
     .col-md-5 {
         flex: 0 0 auto;
@@ -787,7 +787,7 @@ p:not(:last-of-type) {
     }
     .col-lg-3 {
         flex: 0 0 auto;
-        width: 25%;
+        /* width: 25%; */
     }
     .col-lg-4 {
         flex: 0 0 auto;

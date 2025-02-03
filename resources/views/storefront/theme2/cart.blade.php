@@ -187,24 +187,27 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                         </table>
                     </div>
                     <div class="checkout-box">
-                        <div class="row align-items-center justify-content-center">
-                            <div class="col-md-4 col-12">
+                        <div class=" align-items-center justify-content-center">
+                           <div class="col-md-4 col-12">
                                 <div class="price-bar">
                                     <span>{{ __('Total value:') }}</span>
                                     <span id="displaytotal">{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}</span>
                                 </div>
-                            </div>
+                            </div> 
+                        
                                 @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
                                     <a href="#" class="checkout-btn modal-target checkout_btn" data-modal="Checkout" id="checkout-btn">
                                         {{__('Proceed to checkout')}}
                                         <i class="fas fa-shopping-basket"></i>
                                     </a>
+                            
                                 @else
                                     <a href="#" class="checkout-btn">
                                         {{__('Proceed to checkout')}}
                                         <i class="fas fa-shopping-basket"></i>
                                     </a>
                                 @endif
+                          
                         </div>
                     </div>
                 </div>

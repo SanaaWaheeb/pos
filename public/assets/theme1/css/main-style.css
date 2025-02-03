@@ -928,7 +928,7 @@ p:not(:last-of-type) {
 
     .col-lg-3 {
         flex: 0 0 auto;
-        width: 25%;
+        /* width: 25%; */
     }
 
     .col-lg-4 {
@@ -4002,13 +4002,7 @@ table tr td img {
     }
 
 
-.checkout-box{
-    background-color: var(--white);
-    padding: 20px;
-    position: fixed; /****** Added ******/
-    bottom: 3rem; /****** Added ******/
-    
-}
+
 
 .checkout-box::before { /****** Added blur effect ******/
     content: '';
@@ -4054,7 +4048,7 @@ table tr td img {
 .price-bar{
     display: flex;
     align-items: center;
-    justify-content: end;
+    /* justify-content: center; */
     
 }
 .price-bar * {
@@ -5041,9 +5035,19 @@ table tr th {
     margin-left: 15px;
 }
 
-.checkout-box {
+
+
+
+.checkout-box{
     background-color: var(--white);
+    position: fixed; /****** Added ******/
+    bottom: 3rem; /****** Added ******/
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
 }
 
 .checkout-btn {
@@ -5080,11 +5084,7 @@ table tr th {
     margin-left: 15px;
 }
 
-.price-bar {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-}
+
 
 table tr:last-of-type {
     border-bottom: 0;

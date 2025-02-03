@@ -242,9 +242,9 @@ table tr td {
 .price-bar{
   justify-content: center;
 }
-.checkout-box a{
-  width: 80%; /******** changed **********/
-}
+/* .checkout-box a{
+  width: 80%; 
+} */
 .addres-btn{
   justify-content: start;
   margin-bottom: 15px;
