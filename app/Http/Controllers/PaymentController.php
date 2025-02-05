@@ -3079,6 +3079,15 @@ class PaymentController extends Controller
         {
             return redirect()->back()->with('error', __('Please add to product into cart'));
         }
+        // Get Coupon
+        if(isset($cart['coupon']['data_id']))
+        {
+            $coupon = ProductCoupon::where('id', $cart['coupon']['data_id'])->first();
+        }
+        else
+        {
+            $coupon = '';
+        }
 
         // Get payment settings
         $store_payment_setting = \Auth::check()
@@ -3171,15 +3180,15 @@ class PaymentController extends Controller
         $order->shipping_data   = $shipping_data;
         $order->product_id      = implode(',', $product_ids);
         $order->price           = $order_amount;
-        // $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
-        // $order->coupon_json     = json_encode($coupon);
-        // $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
+        $order->coupon          = isset($cart['coupon']['data_id']) ? $cart['coupon']['data_id'] : '';
+        $order->coupon_json     = json_encode($coupon);
+        $order->discount_price  = isset($cart['coupon']['discount_price']) ? $cart['coupon']['discount_price'] : '';
         $order->product         = json_encode($products);
         $order->price_currency  = $store->currency_code;
         $order->txn_id          = 'xxxxxx';
         $order->payment_type    = 'edfapay';
         $order->payment_status  = 'pending';
-        //$order->receipt         = '';
+        $order->receipt         = '';
         $order->user_id         = $store['id'];
         $order->is_confirmed    = 0;
         $order->customer_id     = isset($customer->id) ? $customer->id : '';

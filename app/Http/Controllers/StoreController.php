@@ -1924,7 +1924,7 @@ class StoreController extends Controller
             ]
         );
     }
-    public function UserLocation($slug, $location_id)
+    public function UserLocation(Request $request, $slug, $location_id)
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         if (empty($store)) {
@@ -1944,6 +1944,14 @@ class StoreController extends Controller
                 \App::setLocale(isset($storelang) ? $storelang : 'en');
             }
 
+        }
+        // Update final total value for coupon in session
+        $cart = session()->get($store->slug);
+        if(!empty($cart['coupon'])) {
+            $cart['coupon']['final_price'] = Utility::priceFormat($request->updated_total);
+            $cart['coupon']['final_price_data_value'] = number_format($request->updated_total, 2); // price with shipping
+
+            session()->put($store->slug, $cart);
         }
         $shippings = Shipping::where('store_id', $store->id)->whereRaw('FIND_IN_SET("' . $location_id . '", location_id)')->get()->toArray();
 
@@ -1981,7 +1989,8 @@ class StoreController extends Controller
         $shipping_price = Utility::priceFormat($shippings->price);
         $pro_total_price = str_replace(' ', '', str_replace(',', '', str_replace($store->currency, '', $request->pro_total_price)));
         $total_price = $shippings->price + $pro_total_price;
-        if (!empty($request->coupon)) {
+        $cart = session()->get($store->slug);
+        if (!empty($cart['coupon'])) { // it was: !empty($request->coupon
             $coupons = ProductCoupon::where('code', strtoupper($request->coupon))->first();
             if (!empty($coupons)) {
                 if ($coupons->enable_flat == 'on') {
@@ -1993,6 +2002,11 @@ class StoreController extends Controller
                 $discount_value = 0;
             }
             $total_price = $total_price - $discount_value;
+
+            // Update final total value for coupon in session
+            $cart['coupon']['final_price'] = Utility::priceFormat($total_price);
+            $cart['coupon']['final_price_data_value'] = number_format($total_price, 2);
+            session()->put($store->slug, $cart);
         }
 
         return response()->json(

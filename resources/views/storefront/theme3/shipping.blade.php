@@ -526,6 +526,7 @@
             url: '{{ route('user.location', [$store->slug, '_location_id']) }}'.replace('_location_id',
                 location_id),
             data: {
+                "updated_total": updatedTotal,
                 "_token": "{{ csrf_token() }}",
             },
             method: 'POST',
