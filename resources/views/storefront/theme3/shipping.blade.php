@@ -335,7 +335,7 @@
                                         @endif
                                             <li>
                                                 <span class="cart-sum-left">{{__('Coupon')}} </span>
-                                                <span class="cart-sum-right dicount_price">{{\App\Models\Utility::priceFormat(0)}}</span>
+                                                <span class="cart-sum-right dicount_price" data-value="">{{\App\Models\Utility::priceFormat(0)}}</span>
                                             </li>
                                         @foreach($taxArr['tax'] as $k=>$tax)
                                             <li>
@@ -356,7 +356,7 @@
                                             <input type="hidden" class="product_total" value="{{$total}}">
                                             <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
                                             <input type="hidden" name="total" id="total-shipping-price" value="{{ $total }}">
-                                            <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}">  {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
+                                            <span class="pro_total_price" data-value="{{!empty($total)?$total:0}}">  {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -405,6 +405,36 @@
         $("[name='shipping_postalcode']").val($("[name='billing_postalcode']").val());
     }
 
+    function formatPrice(price) {
+        const decimalPlaces = 2;
+        const currency = "{{ $store->currency }}";
+        const currencySymbolPosition = "{{ $store->currency_symbol_position }}";
+        const currencySymbolSpace = "{{ $store->currency_symbol_space }}";
+
+        // Ensure price is formatted with the correct decimal places
+        let formattedPrice = price.toFixed(decimalPlaces);
+        // Determine the space between currency and price
+        let space = currencySymbolSpace === "with" ? " " : "";
+
+        // Format price based on the currency position
+        if (currencySymbolPosition === "pre") {
+            return currency + space + formattedPrice;
+        } else if (currencySymbolPosition === "post") {
+            return formattedPrice + space + currency;
+        }
+        // Default fallback (if no valid position is set)
+        return currency + formattedPrice;
+    }
+
+    function deformatPrice(price) {
+        const decimalPlaces = 2;
+        const currency = "{{ $store->currency }}";
+        const currencySymbolPosition = "{{ $store->currency_symbol_position }}";
+        const currencySymbolSpace = "{{ $store->currency_symbol_space }}";
+
+        return parseFloat(price.replace(currency, '').trim());
+    }
+
     $(document).ready(function() {
         $('.change_location').trigger('change');
 
@@ -414,6 +444,7 @@
         }, 200);
     });
 
+    // Trigger change in shipping option
     $(document).on('change', '.shipping_mode', function() {
         var shipping_id = this.value;
         getTotal(shipping_id);
@@ -421,6 +452,13 @@
 
     function getTotal(shipping_id) {
         var pro_total_price = $('.pro_total_price').attr('data-value');
+        var product_price = deformatPrice(pro_total_price); // product price without formatting
+        var shipping_price = $('.shipping_price').attr('data-value');
+        if (shipping_price) {
+            const total = deformatPrice(pro_total_price);
+            const totalMinusShip = total - shipping_price;
+            pro_total_price = formatPrice(totalMinusShip);
+        }
         if (shipping_id == undefined) {
             $('.shipping_price_add').hide();
             return false
@@ -439,10 +477,12 @@
             dataType: 'json',
 
             success: function(data) {
+                console.log("data: ", data);
                 var price = data.price + pro_total_price;
                 $('.shipping_price').html(data.price);
-                $('.shipping_price').attr('data-value', data.price);
+                $('.shipping_price').attr('data-value', deformatPrice(data.price));
                 $('.pro_total_price').html(data.total_price);
+                $('.pro_total_price').attr('data-value', data.total_price);
 
                 // Update hidden input field
                 $('#total-shipping-price').val(data.total_price);
@@ -450,6 +490,7 @@
         });
     }
 
+    // Trigger change in location option
     $(document).on('change', '.change_location', function() {
         var location_id = $('.change_location').val();
 
@@ -464,10 +505,19 @@
         // Remove checked attribute from all shipping method inputs
         $("input[name='shipping_id']").prop("checked", false);
 
-        // Clear price
+        // Clear shipping price
         $('.shipping_price').html('');
         $('.shipping_price').attr('data-value', '');
-        $('.pro_total_price').html($('.pro_total_price').attr('data-value'));
+
+        // Update total price by removing shipping from it
+        var coupon_price = parseFloat($('.dicount_price').attr('data-value'));
+        var product_price = parseFloat($('.product_total').attr('value'));
+        var updatedTotal = product_price;
+        if (coupon_price) {
+            updatedTotal = product_price-coupon_price;
+        }
+        $('.pro_total_price').html(formatPrice(updatedTotal));
+        $('.pro_total_price').attr('data-value', formatPrice(updatedTotal));
 
         // Update hidden input field
         $('#total-shipping-price').val($('.pro_total_price').attr('data-value'));
@@ -533,13 +583,19 @@
                             $('.hidden_coupon').val(coupon);
                             $('.hidden_coupon').attr(data);
 
+                            // update coupon price in summary
                             $('.dicount_price').html(data.discount_price);
+                            const couponTotal = data.discount_price?.replace('-$', '');
+                            $('.dicount_price').attr('data-value', couponTotal);
 
                             var html = '';
                             html +=
-                                '<span class="text-sm font-weight-bold s-p-total pro_total_price" data-original="' +
+                                '<span class="text-sm font-weight-bold s-p-total pro_total_price" data-value="' +
                                 data.final_price_data_value + '">' + data.final_price + '</span>'
-                            $('.final_total_price').html(html);
+                            $('.final_total_price').find('.pro_total_price').replaceWith(html);
+
+                            // Update hidden input field
+                            $('#total-shipping-price').val(data.final_price);
 
 
                             // $('.coupon-tr').show().find('.coupon-price').text(data.discount_price);

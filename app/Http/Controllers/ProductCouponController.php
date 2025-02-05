@@ -281,7 +281,7 @@ class ProductCouponController extends Controller
                         $shipping_price = str_replace($aa, '', $request->shipping_price);
 
                         $price            = self::formatPrice($requestprice - $discount_value + $shipping_price, $request->store_id);
-                        $data_value_price = $requestprice - floor($discount_value) + $shipping_price;
+                        $data_value_price = $requestprice - $discount_value + $shipping_price; // it was floor($discount_value)
                     }
                     else
                     {

@@ -2681,12 +2681,12 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
     public function customer(Request $request, $slug)
     {
+        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         $totalPrice = null;
         if ($request->total) {
-            $totalPrice = str_replace('$', '', $request->total);
+            $totalPrice = trim(str_replace($store->currency, '', $request->total));
             $totalPrice = floatval($totalPrice);
         }
-        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
 
         if (empty($store)) {
             return redirect()->back()->with('error', __('Store not available'));

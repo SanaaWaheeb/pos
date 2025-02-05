@@ -3150,14 +3150,13 @@ class PaymentController extends Controller
         $cust_details = $cart['customer'] ?? null;
 
         // Store order in DB
-        // Store order object in DB
-        // if (Utility::CustomerAuthCheck($store->slug)) {
-        //     $customer = Auth::guard('customers')->user()->id;
-        // }else{
-        //     $customer = 0;
-        // }
+        if (Utility::CustomerAuthCheck($store->slug)) {
+            $customer = Auth::guard('customers')->user()->id;
+        } else {
+            $customer = 0;
+        }
 
-        //$customer               = Auth::guard('customers')->user();
+        $customer               = Auth::guard('customers')->user();
         $order                  = new Order();
         $order->order_id        = 'xxxxx';
         // theme3 , but theme1 and theme2 only phone number::
@@ -3183,7 +3182,7 @@ class PaymentController extends Controller
         //$order->receipt         = '';
         $order->user_id         = $store['id'];
         $order->is_confirmed    = 0;
-        //$order->customer_id     = isset($customer->id) ? $customer->id : '';
+        $order->customer_id     = isset($customer->id) ? $customer->id : '';
         $order->save();
 
         // Udpate order id
