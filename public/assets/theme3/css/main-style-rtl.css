@@ -4867,11 +4867,14 @@ background: var(--white);
 .mini-cart-details-cart {
     flex: 1;
     width: 100%;
-    display: flex; /******** added **********/
+    display: grid; /******** added **********/
     align-items: center; /******** added **********/
-    justify-content: space-between; /******** added **********/
-    text-align: center; /******** added **********/
+    grid-template-columns: auto auto 1fr auto; /******** added **********/
+    text-align: start; /******** added **********/
     padding: 10px; /******** added **********/
+}
+.mini-cart-details-cart > :last-child {
+    margin-right: 15px;
 }
 
 /* ADDED */ 

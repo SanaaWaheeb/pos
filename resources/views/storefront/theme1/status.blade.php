@@ -366,18 +366,18 @@
                 @foreach($products as $key => $product)
                     <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
                         <div class="mini-cart-details-cart">
-                            <div class="d-flex align-items-center" style="gap: 5px">
-                                <span>{{ $product['quantity'] }} X </span>
-                                <div data-label="Product" class="mini-cart-image">
-                                    <a href="">
-                                        <img src="{{$productImg .$product['image']}}" alt="img">
-                                    </a>
-                                </div>
-                                    <div data-label="Name">
-                                    <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name']}}</a>
-                                </div>
-                            </div>
+                            <span>{{ $product['quantity'] }} X </span>
 
+                            <div data-label="Product" class="mini-cart-image">
+                                <a href="">
+                                    <img src="{{$productImg .$product['image']}}" alt="img">
+                                </a>
+                            </div>
+                            
+                            <div data-label="Name">
+                                <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name']}}</a>
+                            </div>
+                            
                             <div data-label="Total">
                                 @php
                                     $total_tax=0;
@@ -521,16 +521,14 @@
                         productHTML += `
                             <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
                                 <div class="mini-cart-details-cart">
-                                    <div class="d-flex align-items-center" style="gap: 5px">
-                                        <span>${product.quantity} X </span>
-                                        <div data-label="Product" class="mini-cart-image">
-                                            <a href="">
-                                                <img src="{{ $productImg }}${product.image}" alt="img">
-                                            </a>
-                                        </div>
-                                        <div data-label="Name">
-                                            <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
-                                        </div>
+                                    <span>${product.quantity} X </span>
+                                    <div data-label="Product" class="mini-cart-image">
+                                        <a href="">
+                                            <img src="{{ $productImg }}${product.image}" alt="img">
+                                        </a>
+                                    </div>
+                                    <div data-label="Name">
+                                        <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
                                     </div>
                                     <div data-label="Total">
                                         <span class="subtotal">${product.price * product.quantity}</span>

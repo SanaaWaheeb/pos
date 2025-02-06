@@ -85,16 +85,16 @@
                     @if ($product['variant_id'] != 0)
                     <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
                         <div class="mini-cart-details-cart">
-                            <div class="d-flex align-items-center" style="gap: 5px">
-                                <span>{{ $product['quantity'] }} X </span>
-                                <div data-label="Product" class="mini-cart-image">
-                                    <a href="">
-                                        <img src="{{$productImg .$product['image']}}" alt="img">
-                                    </a>
-                                </div>
-                                    <div data-label="Name">
-                                    <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name']}}</a>
-                                </div>
+                            <span>{{ $product['quantity'] }} X </span>
+
+                            <div data-label="Product" class="mini-cart-image">
+                                <a href="">
+                                    <img src="{{$productImg .$product['image']}}" alt="img">
+                                </a>
+                            </div>
+
+                            <div data-label="Name">
+                                <a class="text-dark c-list-title mb-0 cart_word_break">{{$product['product_name']}}</a>
                             </div>
 
                             <div data-label="Total">
@@ -256,8 +256,8 @@
 
                     // Update Shipping Price
                     const shipping_data = JSON.parse(order.shipping_data);
-                    const shipping_price = shipping_data['shipping_price'];
-                    if (!!shipping_price) {
+                    if (!!shipping_data) {
+                        const shipping_price = shipping_data['shipping_price'];
                         $('#shipping-price').text(formatPrice(shipping_price));
                         $('#shipping-container').show();
                     } else {
@@ -290,16 +290,14 @@
                         productHTML += `
                             <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
                                 <div class="mini-cart-details-cart">
-                                    <div class="d-flex align-items-center" style="gap: 5px">
-                                        <span>${product.quantity} X </span>
-                                        <div data-label="Product" class="mini-cart-image">
-                                            <a href="">
-                                                <img src="{{ $productImg }}${product.image}" alt="img">
-                                            </a>
-                                        </div>
-                                        <div data-label="Name">
-                                            <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
-                                        </div>
+                                    <span>${product.quantity} X </span>
+                                    <div data-label="Product" class="mini-cart-image">
+                                        <a href="">
+                                            <img src="{{ $productImg }}${product.image}" alt="img">
+                                        </a>
+                                    </div>
+                                    <div data-label="Name">
+                                        <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
                                     </div>
                                     <div data-label="Total">
                                         <span class="subtotal">${price * product.quantity}</span>
