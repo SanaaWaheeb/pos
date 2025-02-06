@@ -9,6 +9,7 @@
 @endpush
 @section('content')
 @php
+    $cart = session()->get($store->slug);
     $productImg = \App\Models\Utility::get_file('uploads/is_cover_image/'); 
 @endphp
 
@@ -138,9 +139,23 @@
             </div>
 
             <!-- ------------------- Total Value ------------------- -->
-            <div style="padding: 10px">
-                <strong>{{ __('Total value') }}: </strong>
-                <span>{{\App\Models\Utility::priceFormat(!empty($order_amount)?$order_amount:0)}} </span> 
+            <div class="payment-status-summary d-flex direction-column align-items-center justify-content-center">
+                <div style="padding-top: 10px">
+                    <strong>{{ __('Subtotal') }}: </strong>
+                    <span id="sub-total"></span> 
+                </div>
+                <div id="shipping-container" style="display: none;">
+                    <strong>{{ __('Shipping Price') }}: </strong>
+                    <span id="shipping-price"></span> 
+                </div>
+                <div id="coupon-container" style="display: none;">
+                    <strong>{{ __('Coupon') }}: </strong>
+                    <span id="coupon-discount"></span>
+                </div>
+                <div style="padding-bottom: 10px">
+                    <strong>{{ __('Total value') }}: </strong>
+                    <span>{{\App\Models\Utility::priceFormat(!empty($order_amount)?$order_amount:0)}} </span> 
+                </div>
             </div>
         </div>
 
@@ -176,8 +191,29 @@
 
 @push('script-page')
 <script>
+    function formatPrice(price) {
+        price = parseFloat(price);
+        const decimalPlaces = 2;
+        const currency = "{{ $store->currency }}";
+        const currencySymbolPosition = "{{ $store->currency_symbol_position }}";
+        const currencySymbolSpace = "{{ $store->currency_symbol_space }}";
+
+        // Ensure price is formatted with the correct decimal places
+        let formattedPrice = price.toFixed(decimalPlaces);
+        // Determine the space between currency and price
+        let space = currencySymbolSpace === "with" ? " " : "";
+
+        // Format price based on the currency position
+        if (currencySymbolPosition === "pre") {
+            return currency + space + formattedPrice;
+        } else if (currencySymbolPosition === "post") {
+            return formattedPrice + space + currency;
+        }
+        // Default fallback (if no valid position is set)
+        return currency + formattedPrice;
+    }
+
     const code = "{{ $code }}";
-    console.log(code);
     if (code == 200) {
         const order_id = "{{ $dec_order_id }}";
 
@@ -195,14 +231,39 @@
                 if (response.success) {
                     const order = response.data;
 
+                    // Update Shipping Price
+                    const shipping_data = JSON.parse(order.shipping_data);
+                    const shipping_price = shipping_data['shipping_price'];
+                    if (!!shipping_price) {
+                        $('#shipping-price').text(formatPrice(shipping_price));
+                        $('#shipping-container').show();
+                    } else {
+                        $('#shipping-container').hide(); // Hide if no shipping price
+                    }
+
+                    // Update Coupon Discount
+                    const coupon = order.discount_price;
+                    if (!!coupon) {
+                        $('#coupon-discount').text(coupon);
+                        $('#coupon-container').show();
+                    } else {
+                        $('#coupon-container').hide(); // Hide if no coupon discount
+                    }
+
                     // Update product list
                     // Loop through products in the order
                     const products = order.product;
                     let productHTML = '';
+                    let subtotal = 0;
                     const decodedProducts = JSON.parse(products);
 
                     Object.entries(decodedProducts).forEach(([key, product]) => {
-                        const price = product.variant_id==0? product.price : product.variant_price;
+                        const price = product.variant_id==0
+                            ? product.price 
+                            : product.variant_price;
+                        subtotal += product.variant_id==0
+                            ? product.quantity * price
+                            : product.quantity * product.variant_price;
                         productHTML += `
                             <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
                                 <div class="mini-cart-details-cart">
@@ -227,6 +288,9 @@
 
                     // Update the cart-body with the generated HTML
                     $('#cart-body').html(productHTML);
+
+                    // Update subtotal
+                    $('#sub-total').html(formatPrice(subtotal));
                     
                 } else {
                     alert(response.message || "{{ __('An error occurred while fetching the order.') }}");

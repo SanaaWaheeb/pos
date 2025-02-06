@@ -3851,6 +3851,8 @@ table tr th {
     background-color: var(--theme-color);
     text-align: center;
     color: white;
+    width: 90%;
+    max-width: 600px;
     border-radius: 30px;
     -webkit-border-radius: 30px;
     -moz-border-radius: 30px;
@@ -4237,6 +4239,9 @@ object-fit: cover;
 .purchased-tabel thead th{
     background-color: #fafbfe;
     padding: 10px 15px !important;
+}
+.purchased-tabel .view-btn{
+    margin-left: 10px;
 }
 .purchased-tabel tbody td{
     padding: 10px 15px !important;
@@ -4936,12 +4941,23 @@ background: var(--white);
     border: none;
 }
 
+.payment-status-summary > * {
+    width: 100%;
+    padding: 5px;
+}
+
+.payment-status-summary > :last-child {
+    border-top: 1px solid var(--border-color);
+}
+
 .payment-footer {
-    width: 90%;
-    max-width: 600px;
+    width: 100%;
+    /* max-width: 600px; */
     padding: 0.8rem 0;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    background-color: whitesmoke;
     position: fixed;
     bottom: 0;
     gap: 10px;

@@ -51,7 +51,7 @@ if (!empty(session()->get('lang'))) {
                         <thead>
                             <tr>
                                 <th>{{__('Order')}}</th>
-                                <th>{{__('Date')}}</th>
+                                <th>{{__('Order Date')}}</th>
                                 <th>{{__('Value')}}</th>
                                 <th>{{__('Payment Type')}}</th>
                                 <th>{{__("Action")}}</th>

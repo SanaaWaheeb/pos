@@ -15,8 +15,11 @@
             }
         });   
          /********* Wrapper top space ********/
-         var header_hright = $('header').outerHeight();
-         $('header').next('.wrapper').css('margin-top', header_hright + 'px');  
+        var header_hright = $('header').outerHeight();
+        $('header').next('.wrapper').css({
+            'margin-top': header_hright + 'px',
+            'margin-bottom': header_hright + 'px'
+        }); 
         /********* Mobile Menu ********/  
         $('.mobile-menu-button').on('click',function(e){
             e.preventDefault();
