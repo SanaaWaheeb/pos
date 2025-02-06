@@ -3851,13 +3851,16 @@ table tr th {
     background-color: var(--theme-color);
     text-align: center;
     color: white;
-    width: 90%;
+    margin-bottom: 10px;
     max-width: 600px;
     border-radius: 30px;
     -webkit-border-radius: 30px;
     -moz-border-radius: 30px;
     -ms-border-radius: 30px;
     -o-border-radius: 30px;
+}
+.payment-footer .checkout-btn {
+    width: 90%;
 }
 .back-btn{
     border-radius: 30px;

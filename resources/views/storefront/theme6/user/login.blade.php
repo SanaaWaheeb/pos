@@ -39,7 +39,7 @@ if (!empty(session()->get('lang'))) {
                                         <a href=""> {{__('Privacy Policy')}} </a> {{__('and')}} <a href=""> {{__('System Regulations.')}} </a>
                                     </p>
                                 </div>
-                                <p class="register-btn">{{__('Dont have account ?')}} <a href="{{route('store.usercreate',$slug)}}">{{__('Register')}}</a></p>
+                                <p class="register-btn">{{__("Don't have an account? ")}} <a href="{{route('store.usercreate',$slug)}}">{{__('Register')}}</a></p>
                            {{Form::close()}}
                         </div>
                     </div>

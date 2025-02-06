@@ -47,7 +47,7 @@ if (!empty(session()->get('lang'))) {
                                 </p>
                             </div>
                         {!! Form::close() !!}
-                        <p class="register-btn">{{__('Dont have account ?')}}<a href="{{route('store.usercreate',$slug)}}">{{__('Register')}}</a></p>
+                        <p class="register-btn">{{__("Don't have an account? ")}}<a href="{{route('store.usercreate',$slug)}}">{{__('Register')}}</a></p>
                     </div>
                 </div>
             </div>

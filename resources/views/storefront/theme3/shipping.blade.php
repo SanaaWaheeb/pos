@@ -397,6 +397,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id={{$store_settings->google_analytic}}"></script>
 {!! $store_settings->storejs !!}
 <script>
+      var selectCityText = "{{ __('Select city') }}"; // Get translation from Laravel
     function billing_data() {
         $("[name='shipping_address']").val($("[name='billing_address']").val());
         $("[name='shipping_city']").val($("[name='billing_city']").val());
@@ -636,6 +637,7 @@
         }
 
     });
+    
     $(document).on('change','.change_country',function(){
         var country = $('.change_country').val();
         $.ajax({
@@ -647,7 +649,7 @@
             context : this,
             dataType : 'json',
             success : function(data){
-                $('#city').html('<option value="">Select city</option>'); 
+                $('#city').html('<option value="">' + selectCityText + '</option>'); // Use dynamic text
                 $.each(data.cities,function(key,value){
                     $("#city").append('<option value="'+value+'">'+value+'</option>');
                 });

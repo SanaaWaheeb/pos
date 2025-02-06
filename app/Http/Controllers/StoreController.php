@@ -1834,7 +1834,7 @@ class StoreController extends Controller
 
         }
         $locations = Location::where('store_id', $store->id)->get()->pluck('name', 'id');
-        $locations->prepend('Select Location', 0);
+        $locations->prepend(__('Select Location'), 0);
         $shippings = Shipping::where('store_id', $store->id)->get();
         $page_slug_urls = PageOption::where('store_id', $store->id)->get();
         $blog = Blog::where('store_id', $store->id)->first();

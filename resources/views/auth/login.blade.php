@@ -106,7 +106,7 @@
             </div>
         </form>
         @if(Utility::getValByName('signup_button')=='on')
-            <p class="my-4 text-center">{{ __("Don't have an account?") }}
+            <p class="my-4 text-center">{{ __("Don't have an account? ") }}
                 <a href="{{route('register',[0,$lang])}}" tabindex="0">{{__('Register')}}</a>
             </p>
         @endif
