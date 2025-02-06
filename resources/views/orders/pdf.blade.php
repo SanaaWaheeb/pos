@@ -469,7 +469,7 @@ else {
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 col-sm-12 col-lg-6 "  style="flex: 0 0 auto; width: 50%;">
+                            {{-- <div class="col-md-6 col-sm-12 col-lg-6 "  style="flex: 0 0 auto; width: 50%;">
                                 <div class="invoice-preview">
                                     <div class="invoice-header justify-content-between">
                                         <h5 class="">{{ __('Shipping Information') }}</h5>
@@ -506,12 +506,12 @@ else {
                                         </address>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
     
                             <div class="col-md-6 col-sm-12 col-lg-6 " style="flex: 0 0 auto; width: 50%;">
                                 <div class="invoice-preview">
                                     <div class="invoice-header justify-content-between">
-                                        <h5 class="">{{ __('Billing Information') }}</h5>
+                                        <h5 class="">{{ __('Shipping Information') }}</h5>
                                     </div>
                                     <div class="invoice-body pt-0">
                                         <dl class="row mt-4 align-items-center">

@@ -214,8 +214,8 @@ if (!empty(session()->get('lang'))) {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 col-12">
-                    <div class="order-detail-card">
+                {{-- <div class="col-lg-4 col-md-6 col-12"> --}}
+                    {{-- <div class="order-detail-card">
                         <div class="detail-header">
                             <h6>{{__('Shipping Information')}}</h6>
                         </div>
@@ -254,12 +254,12 @@ if (!empty(session()->get('lang'))) {
                                 @endif
                             </ul>
                         </div>
-                    </div>
-                </div>
+                    </div> --}}
+                {{-- </div> --}}
                 <div class="col-lg-4 col-md-6 col-12">
                     <div class="order-detail-card">
                         <div class="detail-header">
-                            <h6>{{__('Billing Information')}}</h6>
+                            <h6>{{__('Shipping Information')}}</h6>
                         </div>
                         <div class="detail-card-body">
                             <ul class="address-info">

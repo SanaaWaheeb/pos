@@ -375,7 +375,7 @@ if($currantLang == 'ar' || $currantLang == 'he'){
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-lg-4">
+                        {{-- <div class="col-lg-4">
                             <div class="card">
                                 <div class="card-header">
                                     <h5>{{__('Shipping Information')}}</h5>
@@ -408,11 +408,11 @@ if($currantLang == 'ar' || $currantLang == 'he'){
                                     </ul>
                                 </div>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-lg-4">
                             <div class="card">
                                 <div class="card-header">
-                                    <h5>{{__('Billing Information')}}</h5>
+                                    <h5>{{__('Shipping Information')}}</h5>
                                 </div>
                                 <div class="">
                                     <ul class="mb-0 text-sm">
