@@ -1582,5 +1582,8 @@
   "Zipcode": "الرمز البريدي",
   "SKU (Barcode)":"الباكورد",
   "Continue to Shipping":"المتابعة إلى الشحن",
-  "“Attention is the new currency”": "\"الانتباه هو العملة الجديدة\""
+  "“Attention is the new currency”": "\"الانتباه هو العملة الجديدة\"",
+  "Fridge lock is enable": "تفعيل قفل الثلاجة",
+  "Board ID": "معرّف اللوحة",
+  "Enter Board ID": "أدخل معرّف اللوحة"
 }

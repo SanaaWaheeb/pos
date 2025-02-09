@@ -84,5 +84,16 @@
             $('#password').removeAttr("required");
         }
     });
+
+    $(document).on('change', '#door_switch', function() {
+        if ($(this).is(':checked')) {
+            $('.board_id_div').removeClass('d-none');
+            $('#board_id').attr("required", true);
+        } else {
+            $('.board_id_div').addClass('d-none');
+            $('#board_id_div').val(null);
+            $('#board_id_div').removeAttr("required");
+        }
+    });
 </script>
 @endpush

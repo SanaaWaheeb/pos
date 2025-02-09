@@ -78,6 +78,8 @@ class Store extends Model
         'enable_cod',
         'enable_bank',
         'bank_number',
+        'door',
+        'board_id'
     ];
 
     public static function create($data)

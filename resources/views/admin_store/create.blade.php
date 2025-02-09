@@ -88,7 +88,7 @@
                 {{Form::email('email',null,array('class'=>'form-control','placeholder'=>__('Enter Email'),'required'=>'required'))}}
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-12">
             <div class="form-group">
                 <label for="password_switch">{{ __('Login is enable') }}</label>
                 <div class="form-check form-switch custom-switch-v1 float-end">
@@ -99,13 +99,28 @@
         </div>
         <div class="col-12 ps_div d-none">
             <div class="form-group">
-                {{Form::label('password',__('Password'),array('class'=>'form-label'))}}<x-required></x-required>
+                {{Form::label('pwd',__('Password'),array('class'=>'form-label'))}}<x-required></x-required>
                 {{Form::password('password',array('class'=>'form-control','placeholder'=>__('Enter Password')))}}
                 @error('password')
                     <small class="invalid-password" role="alert">
                         <strong class="text-danger">{{ $message }}</strong>
                     </small>
                 @enderror
+            </div>
+        </div>
+        <div class="col-12">
+            <div class="form-group">
+                <label for="door_switch">{{ __('Fridge lock is enable') }}</label>
+                <div class="form-check form-switch custom-switch-v1 float-end">
+                    <input type="checkbox" name="door_switch" class="form-check-input input-primary pointer" value="on" id="door_switch">
+                    <label class="form-check-label" for="door_switch"></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 board_id_div d-none">
+            <div class="form-group">
+                {{Form::label('board_id',__('Board ID'),array('class'=>'form-label'))}}<x-required></x-required>
+                {{Form::text('board_id',null,array('class'=>'form-control','placeholder'=>__('Enter Board ID')))}}
             </div>
         </div>
     @endif

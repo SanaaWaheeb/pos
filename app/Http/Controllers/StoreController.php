@@ -175,6 +175,8 @@ class StoreController extends Controller
                         'lang' => !empty($settings['default_language']) ? $settings['default_language'] : 'en',
                         'currency' => !empty($settings['currency_symbol']) ? $settings['currency_symbol'] : '$',
                         'currency_code' => !empty($settings->currency) ? $settings->currency : 'USD',
+                        'door' => !empty($request['door_switch'])? $request['door_switch'] : 'off',
+                        'board_id' => !empty($request['door_switch']) && $request['door_switch'] == 'on' ? $request['board_id'] : null,
                         'paypal_mode' => 'sandbox',
                         'created_by' => $objUser->id,
                     ]
@@ -364,6 +366,9 @@ class StoreController extends Controller
 
                 $store['name'] = $request->store_name;
                 $store['email'] = $request->email;
+                // Handle Fridge Locker logic
+                $store['door'] = $request->has('door_switch') ? $request->door_switch : 'off';
+                $store['board_id'] = $request->board_id;
                 $store->update();
 
                 $user['name'] = $request->name;
