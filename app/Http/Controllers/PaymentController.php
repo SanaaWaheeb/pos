@@ -3168,6 +3168,7 @@ class PaymentController extends Controller
         $customer               = Auth::guard('customers')->user();
         $order                  = new Order();
         $order->order_id        = 'xxxxx';
+        $order->board           = $store->board_id;
         // theme3 , but theme1 and theme2 only phone number::
         $order->name            = $cust_details['name'] ?? 'Guest';
         $order->email           =  $cust_details['email'] ?? 'guest@example.com';

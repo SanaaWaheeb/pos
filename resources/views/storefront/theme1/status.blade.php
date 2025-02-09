@@ -365,7 +365,7 @@
                 @endphp
                 @foreach($products as $key => $product)
                     <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
-                        <div class="mini-cart-details-cart">
+                        <div class="mini-cart-details-status">
                             <span>{{ $product['quantity'] }} X </span>
 
                             <div data-label="Product" class="mini-cart-image">
@@ -520,7 +520,7 @@
                     Object.entries(decodedProducts).forEach(([key, product]) => {
                         productHTML += `
                             <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
-                                <div class="mini-cart-details-cart">
+                                <div class="mini-cart-details-status">
                                     <span>${product.quantity} X </span>
                                     <div data-label="Product" class="mini-cart-image">
                                         <a href="">

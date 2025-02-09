@@ -84,7 +84,7 @@
                 @foreach($products as $key => $product)
                     @if ($product['variant_id'] != 0)
                     <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
-                        <div class="mini-cart-details-cart">
+                        <div class="mini-cart-details-status">
                             <span>{{ $product['quantity'] }} X </span>
 
                             <div data-label="Product" class="mini-cart-image">
@@ -122,7 +122,7 @@
 
                     @else
                     <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
-                        <div class="mini-cart-details-cart">
+                        <div class="mini-cart-details-status">
                             <div class="d-flex align-items-center" style="gap: 5px">
                                 <span>{{ $product['quantity'] }} X </span>
                                 <div data-label="Product" class="mini-cart-image">
@@ -289,7 +289,7 @@
                             : product.quantity * product.variant_price;
                         productHTML += `
                             <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
-                                <div class="mini-cart-details-cart">
+                                <div class="mini-cart-details-status">
                                     <span>${product.quantity} X </span>
                                     <div data-label="Product" class="mini-cart-image">
                                         <a href="">
