@@ -578,7 +578,8 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         $(".add_to_cart").click(function(e) {
             e.preventDefault();
             var id = $(this).attr('data-id');
-            var total = "{{ $total }}";
+            // var total = "{{ $total }}";
+            var displayTotal = $('#displaytotal').text(); // Get the text content
             var variants = [];
             $(".variant-selection").each(function(index, element) {
                 variants.push(element.value);
@@ -605,7 +606,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                         if (cartItemsCountElements) {
                             cartItemsCountElements.textContent = `(${response.item_count})`
                         }
-                        total = parseFloat(total) + parseFloat(response.price);
+                        const total = parseFloat(displayTotal) + parseFloat(response.price);
                         $('#displaytotal').text(addCommas(total));
 
                         // Show/hide checkout box based on total
