@@ -2625,7 +2625,7 @@ button, input {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
-    margin-bottom: 3rem;
+    margin-bottom: 25vh;
 }
 
 .product-card .card-img a:not(.wishlist-icon) {
