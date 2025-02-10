@@ -3393,16 +3393,32 @@ table tr th {
     color: var(--theme-color);
     cursor: pointer;
 }
-.checkout-box{
+/* .checkout-box{
     background-color: var(--white);
     padding: 20px;
-    position: fixed; /****** Added ******/
-    bottom: 3rem; /****** Added ******/
+    position: fixed; 
+    bottom: 3rem; 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+} */
+
+.checkout-box {
+    background-color: var(--white);
+    position: fixed;
+    bottom: 3rem;
+    left: 0; /* Start from the left edge */
+    width: 100%; /* Full width of the page */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* Ensure text inside is centered */
 }
+
+
 
 .checkout-box::before { /****** Added blur effect ******/
     content: '';
@@ -3448,6 +3464,9 @@ table tr th {
     display: flex;
     align-items: center;
     /* justify-content: center; */
+}
+.price-bar * {
+    color: black !important; /* Force black color on all child elements */
 }
 .bg-image {
     position: absolute;

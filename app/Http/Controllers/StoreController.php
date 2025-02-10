@@ -2453,6 +2453,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                         'status' => 'Success',
                         'success' => $productname . __('added to cart successfully!'),
                         'cart' => $cart['products'],
+                        'price' => $productprice,
                         'item_count' => $cart_items, // count($cart['products'])
                     ]
                 );
@@ -2493,6 +2494,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                 'status' => 'Success',
                                 'success' => $productname . __('   added to cart successfully!'),
                                 'cart' => $cart['products'],
+                                'price' => $productprice,
                                 'item_count' => $cart_items, // count($cart['products'])
                             ]
                         );
@@ -2532,6 +2534,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                 'status' => 'Success',
                                 'success' => $productname . __('   added to cart successfully!'),
                                 'cart' => $cart['products'],
+                                'price' => $productprice,
                                 'item_count' => $cart_items, // count($cart['products'])
                             ]
                         );
@@ -2584,6 +2587,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     'status' => 'Success',
                     'success' => $productname . __('   added to cart successfully!'),
                     'cart' => $cart['products'],
+                    'price' => $productprice,
                     'item_count' => $cart_items, // count($cart['products'])
                 ]
             );

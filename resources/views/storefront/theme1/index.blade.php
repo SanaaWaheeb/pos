@@ -14,6 +14,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
 @endphp
 
 @section('content')
+
 <div class="wrapper">
     {{-- @foreach ($pixelScript as $script)
         <?= $script; ?>
@@ -96,7 +97,24 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
 </section>
 @endif --}}
 
+@php
+    $total = 0;
+    $cart = session()->get($store->slug);
+    // Check if the cart and products are available
+    if (isset($cart['products'])) {
+        foreach ($cart['products'] as $product) {
+            // Get price and quantity for each product
+            $price = $product['price'];
+            $quantity = $product['quantity'];
 
+            // Calculate the subtotal for the current product
+            $subtotal = $price * $quantity;
+
+            // Add the product subtotal to the total
+            $total += $subtotal;
+        }
+    }
+@endphp
 <!-- Products -->
 
     @if ($products['Start shopping']->count() > 0)
@@ -359,6 +377,27 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         </div>
     </section>
 @endif
+<div class="checkout-box" style="{{ $total == 0 ? 'display: none;' : '' }}">
+    <div class="align-items-center justify-content-center">
+        <div class="col-md-4 col-12">
+            <div class="price-bar">
+                <span>{{ __('Total value:') }}</span>
+                <span id="displaytotal">{{\App\Models\Utility::priceFormat(price: !empty($total)?$total:0)}}</span>
+            </div>
+        </div>
+            {{-- @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
+                <a href="#" class="checkout-btn modal-target checkout_btn" data-modal="Checkout" id="checkout-btn">
+                    {{__('Proceed to checkout')}}
+                    <i class="fas fa-shopping-basket"></i>
+                </a>
+            @else --}}
+                <a href="{{ route('payment.checkout', ['slug' => $store->slug, 'order_amount' => $total]) }}" class="checkout-btn">
+                    {{__('Proceed to checkout')}}
+                    <i class="fas fa-shopping-basket"></i>
+                </a>
+            {{-- @endif --}}
+    </div>
+</div>
 {{-- @foreach ($getStoreThemeSetting as $storethemesetting)
     @if (isset($storethemesetting['section_name']) && $storethemesetting['section_name'] == 'Home-Categories' && $storethemesetting['section_enable'] == 'on' && !empty($pro_categories))
         @php
@@ -539,6 +578,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
         $(".add_to_cart").click(function(e) {
             e.preventDefault();
             var id = $(this).attr('data-id');
+            var total = "{{ $total }}";
             var variants = [];
             $(".variant-selection").each(function(index, element) {
                 variants.push(element.value);
@@ -564,6 +604,24 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                         const cartItemsCountElements = document.getElementById('cart-item-count');
                         if (cartItemsCountElements) {
                             cartItemsCountElements.textContent = `(${response.item_count})`
+                        }
+                        total = parseFloat(total) + parseFloat(response.price);
+                        $('#displaytotal').text(addCommas(total));
+
+                        // Show/hide checkout box based on total
+                        if (total > 0) {
+                            $('.checkout-box').fadeIn(); // Show if total > 0
+                        } else {
+                            $('.checkout-box').fadeOut(); // Hide if total is 0
+                        }
+
+                        const checkoutBtn = document.querySelector('.checkout-btn');
+                        if (checkoutBtn) {
+                            let url = new URL(checkoutBtn.href, window.location.origin);
+                            let segments = url.pathname.split('/'); 
+                            segments[segments.length - 1] = total; // Replace the last segment with the updated total
+                            url.pathname = segments.join('/');
+                            checkoutBtn.href = url.toString(); 
                         }
                         show_toastr('Success', response.success, 'success');
                         $("#shoping_counts").html(response.item_count);
@@ -614,5 +672,16 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                 scrollTop: $("#pro_items").offset().top
             }, 1000);
         });
+    </script>
+    <script>
+        var site_currency_symbol_position = '{{ $store->currency_symbol_position }}';
+        var site_currency_symbol_space = '{{ $store->currency_symbol_space }}'
+        var site_currency_symbol = '{{ $store->currency }}';
+         window.translations = {
+            yes: "{{ __('Yes') }}",
+            cancel: "{{ __('CANCEL') }}"
+        };
+    
+    
     </script>
 @endpush
