@@ -19,6 +19,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
+
 
 class ProductController extends Controller
 {
@@ -39,10 +41,10 @@ class ProductController extends Controller
     {
         if(\Auth::user()->can('Manage Products')){
             $user = \Auth::user();
-            $store_id = Store::where('id', $user->current_store)->first();
-            $products = Product::where('store_id', $store_id->id)->orderBy('id', 'DESC')->get();
-            $productcategorie = ProductCategorie::where('store_id', $store_id->id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-            return view('product.index', compact('products', 'productcategorie'));
+            $store = Store::where('id', $user->current_store)->first();
+            $products = Product::where('store_id', $store->id)->orderBy('id', 'DESC')->get();
+            $productcategorie = ProductCategorie::where('store_id', $store->id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
+            return view('product.index', compact('products', 'productcategorie', 'store'));
         }
         else{
             return redirect()->back()->with('error', 'Permission denied.');
@@ -894,6 +896,66 @@ class ProductController extends Controller
         else{
             return redirect()->back()->with('error', 'Permission denied.');
         }
+    }
+
+    public function updateStockQuantity(Request $request) {
+        // Validate the incoming data
+        $validator = Validator::make($request->all(), [
+            'id'       => 'required|exists:products,id',
+            'quantity' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'flag' => 'error',
+                'msg'  => $validator->errors()->first(),
+            ]);
+        }
+
+        // Retrieve the product and update the quantity
+        $product = Product::find($request->id);
+        if (!$product) {
+            return response()->json([
+                'flag' => 'error',
+                'msg'  => __('Product not found'),
+            ]);
+        }
+        $product->quantity = $request->quantity;
+        $product->save();
+        return response()->json([
+            'flag' => 'success',
+            'msg'  => __('Product Successfully Updated'),
+        ]);
+    }
+
+    public function updatePrice(Request $request) {
+        // Validate the incoming data
+        $validator = Validator::make($request->all(), [
+            'id'       => 'required|exists:products,id',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'flag' => 'error',
+                'msg'  => $validator->errors()->first(),
+            ]);
+        }
+
+        // Retrieve the product and update the price
+        $product = Product::find($request->id);
+        if (!$product) {
+            return response()->json([
+                'flag' => 'error',
+                'msg'  => __('Product not found'),
+            ]);
+        }
+        $product->price = $request->price;
+        $product->save();
+        return response()->json([
+            'flag' => 'success',
+            'msg'  => __('Product Successfully Updated'),
+        ]);
     }
 
     /**

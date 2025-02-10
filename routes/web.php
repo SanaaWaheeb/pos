@@ -490,6 +490,8 @@ Route::post('stor_rating/{slug?}/product/{id}', [RattingController::class, 'stor
 
 Route::post('subscriptions/{id}', [SubscriptionController::class, 'store_email'])->name('subscriptions.store_email')->middleware('SetLocale');
 Route::get('get-products-variant-quantity', [ProductController::class, 'getProductsVariantQuantity'])->name('get.products.variant.quantity');
+Route::post('/product/update-quantity', [ProductController::class, 'updateStockQuantity'])->name('product.updateQuantity');
+Route::post('/product/update-price', [ProductController::class, 'updatePrice'])->name('product.updatePrice');
 // customer side
 Route::get('page/{slug?}', [StoreController::class, 'pageOptionSlug'])->name('pageoption.slug')->middleware('DomainCheck');
 Route::get('store-blog/{slug?}', [StoreController::class, 'StoreBlog'])->name('store.blog');

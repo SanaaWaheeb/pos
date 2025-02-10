@@ -92,17 +92,22 @@
                                         @if ($product->enable_product_variant == 'on')
                                             {{ __('In Variant') }}
                                         @else
-                                            {{ \App\Models\Utility::priceFormat($product->price) }}
+                                            <!-- {{ \App\Models\Utility::priceFormat($product->price) }} -->
+                                            <div class="d-flex align-items-center" style="gap: 5px">
+                                                <input type="number" class="form-control editable-price" data-id="{{ $product->id }}" value="{{ $product->price }}" min="0" style="max-width: 85px; min-width: 50px"> 
+                                                <span> {{ $store->currency }} </span>
+                                            </div>
                                         @endif
                                     </td>
                                     <td>
                                         @if ($product->enable_product_variant == 'on')
                                             {{ __('In Variant') }}
                                         @else
-                                            {{ $product->quantity }}
+                                            <!-- {{ $product->quantity }} -->
+                                            <input type="number" class="form-control editable-quantity" data-id="{{ $product->id }}" value="{{ $product->quantity }}" min="0" style="max-width: 85px">
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="product-stock" data-id="{{ $product->id }}">
                                         @if ($product->enable_product_variant == 'on')
                                         <span class="badge rounded p-2 f-w-600  bg-light-primary">{{ __('In Variant') }}</span>
                                         @else
@@ -163,6 +168,86 @@
             $("[name='shipping_state']").val($("[name='billing_state']").val());
             $("[name='shipping_country']").val($("[name='billing_country']").val());
             $("[name='shipping_postalcode']").val($("[name='billing_postalcode']").val());
-        })
+        });
+
+        // Track changes in product quantity
+        $(document).on('change', '.editable-quantity', function() {
+            const quantity = $(this).val();
+            const productId = $(this).data('id');
+
+            $.ajax({
+                url: '{{ route("product.updateQuantity") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: productId,
+                    quantity: quantity
+                },
+                success: function(data) {
+                    if (data.flag == "success") {
+                        show_toastr('success', data.msg, 'success');
+
+                        // Find the row for this product
+                        var row = $('.editable-quantity[data-id="'+ productId +'"]').closest('tr');
+                        // Determine the new stock badge based on quantity
+                        var stockHtml = '';
+                        if (quantity == 0) {
+                            stockHtml = '<span class="badge rounded p-2 f-w-600 bg-light-danger">{{ __("Out of stock") }}</span>';
+                        } else {
+                            stockHtml = '<span class="badge rounded p-2 f-w-600 bg-light-primary">{{ __("In stock") }}</span>';
+                        }
+                        // Update the stock cell
+                        row.find('.product-stock').html(stockHtml);
+                    } else {
+                        show_toastr('Error', data.msg, 'error');
+                        // Refresh page after showing error for 3 seconds
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, 1500);
+                    }
+                },
+                error: function(data) {
+                    if (data.error) {
+                        show_toastr('Error', data.error, 'error');
+                    } else {
+                        show_toastr('Error', data, 'error');
+                    }
+                },
+            })
+        });
+
+        // Track changes in product price
+        $(document).on('change', '.editable-price', function() {
+            const price = $(this).val();
+            const productId = $(this).data('id');
+
+            $.ajax({
+                url: '{{ route("product.updatePrice") }}',
+                method: 'POST',
+                data: {
+                    _token: '{{ csrf_token() }}',
+                    id: productId,
+                    price: price
+                },
+                success: function(data) {
+                    if (data.flag == "success") {
+                        show_toastr('success', data.msg, 'success');
+                    } else {
+                        show_toastr('Error', data.msg, 'error');
+                        // Refresh page after showing error for 3 seconds
+                        setTimeout(function(){
+                            window.location.reload();
+                        }, 1500);
+                    }
+                },
+                error: function(data) {
+                    if (data.error) {
+                        show_toastr('Error', data.error, 'error');
+                    } else {
+                        show_toastr('Error', data, 'error');
+                    }
+                },
+            })
+        });
     </script>
 @endpush
