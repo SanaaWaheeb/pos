@@ -7,6 +7,9 @@
 <li class="breadcrumb-item active" aria-current="page">{{ __('Products') }}</li>
 @endsection
 @section('action-btn')
+@php
+    $user = \Auth::user()->currentuser();
+@endphp
 <div class="pr-2">
     <a class="btn btn-sm btn-icon  bg-light-secondary me-2" href="{{ route('product.export') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Export') }}"> 
         <i  data-feather="download"></i>
@@ -16,10 +19,25 @@
             <i  data-feather="upload"></i>
         </a>
     @endcan
+    
     @can('Create Products')
+        @if (count($user->stores) > 1)
+        <div class="dropdown dash-h-item" style="display: inline-block">
+            <a class="btn btn-sm btn-icon btn-primary me-2 dash-head-link dropdown-toggle arrow-none me-0 cust-btn" data-bs-toggle="dropdown" href="" role="button" aria-haspopup="false" aria-expanded="false" title="{{ __('Create') }}">
+                <i  data-feather="plus"></i>
+            </a>
+            <ul class="dropdown-menu dash-h-dropdown dropdown-menu-end">
+                <li> <a href="{{ route('product.create') }}" class="dropdown-item"> {{__('Add new product')}} </a></li>
+                <li> 
+                    <a href="#!" class="dropdown-item" data-ajax-popup="true" data-size="lg" data-url="{{ route('copy-products.modal') }}" data-title="{{ __('Copy from my other stores') }}"> {{__('Copy from my other stores')}} </a>
+                </li>
+            </ul>
+        </div>
+        @else
         <a class="btn btn-sm btn-icon  btn-primary me-2" href="{{ route('product.create') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
             <i  data-feather="plus"></i>
         </a>
+        @endif
     @endcan
     <a class="btn btn-sm btn-icon  bg-light-secondary" href="{{ route('product.grid') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Grid View') }}">
         <i  class="ti ti-grid-dots f-30"></i>
@@ -249,5 +267,59 @@
                 },
             })
         });
+    </script>
+
+    <!-- Logic for display products in modal of copy products -->
+    <script>
+        var productImagePath = "{{ $logo }}";
+        document.addEventListener('DOMContentLoaded', function() {
+            $('body').on('shown.bs.modal', '#commonModal', function () {
+                var storeSelector = document.getElementById("store-selector");
+                var productList = document.getElementById("product-list");
+                var selectAllCheckboxContainer = document.getElementById('select-all-products');
+                var selectAllCheckbox = document.querySelector('#select-all-products input[type="checkbox"]');
+                var allProducts = @json($storesWithProducts);
+
+                // Function to update product list
+                function updateProductList(storeId) {
+                    productList.innerHTML = ""; // Clear existing products
+                    let selectedStore = allProducts.find(store => store.id == storeId);
+
+                    if (selectedStore && selectedStore.products.length > 0) {
+                        selectedStore.products.forEach(product => {
+                            let imagePath = product.is_cover ? `${productImagePath}${product.is_cover}` : 'default-image.jpg';
+                            selectAllCheckbox.checked = false; // Reset checkbox state
+                            let productHtml = `
+                                <div class="d-flex justify-content-between align-items-center" style="padding: 10px 0;">
+                                    <div class="d-flex align-items-center" style="gap: 10px">
+                                         <img src="${imagePath}" alt="img" class="theme-avtar">
+                                        <span>${product.name}</span>
+                                    </div>
+                                    <input type="checkbox" class="form-check-input product-checkbox" name="selected_products[]" value="${product.id}">
+                                </div>`;
+                            
+                            productList.innerHTML += productHtml;
+                            selectAllCheckboxContainer.style.display = "flex";
+                        });
+                    } else {
+                        productList.innerHTML = `<p class="text-center text-muted">{{ __('No products available for this store') }}</p>`;
+                        selectAllCheckboxContainer.style.display = "none";
+                    }
+                }
+
+                // Trigger update on store selection change
+                storeSelector.addEventListener('change', function() {
+                    updateProductList(this.value);
+                });
+
+                // Trigger choosing "Select All"
+                selectAllCheckbox.addEventListener('change', function() {
+                    let productCheckboxes = document.querySelectorAll(".product-checkbox");
+                    productCheckboxes.forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+            })
+        })
     </script>
 @endpush

@@ -293,6 +293,8 @@ Route::group(['middleware' => ['verified']], function () {
         Route::post('/product-variants-possibilities/{product_id}', [ProductController::class, 'getProductVariantsPossibilities'])->name('product.variants.possibilities');
         Route::get('/get-product-variants-possibilities', [ProductController::class, 'getProductVariantsPossibilities'])->name('get.product.variants.possibilities');
         Route::get('products/grid', [ProductController::class, 'grid'])->name('product.grid');
+        Route::get('copy-products-modal', [ProductController::class, 'getCopyProductsModal'])->name('copy-products.modal')->middleware(['auth', 'XSS']);
+        Route::post('copy-products', [ProductController::class, 'copyStoreProducts'])->name('copy-products.copy'); // For handling form submission
         Route::delete('product/{id}/delete', [ProductController::class, 'fileDelete'])->name('products.file.delete');
         Route::delete('product/variant/{id}/{product_id}', [ProductController::class, 'VariantDelete'])->name('products.variant.delete');
     });

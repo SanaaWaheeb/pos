@@ -611,7 +611,6 @@
     "In stock": "In stock",
     "IN STOCK": "IN STOCK",
     "In Variant": "In Variant",
-    "In variant": "In variant",
     "Industry Type": "Industry Type",
     "Info": "Info",
     "Instagram": "Instagram",
@@ -1582,5 +1581,13 @@
     "“Attention is the new currency”": "“Attention is the new currency”",
     "Fridge lock is enable": "Fridge lock is enable",
     "Board ID": "Board ID",
-    "Enter Board ID": "Enter Board ID"
+    "Enter Board ID": "Enter Board ID",
+    "Copy from my other stores": "Copy from my other stores",
+    "Select Store": "Select Store",
+    "Select All": "Select All",
+    "No products available for this store": "No products available for this store",
+    "Please Select a store": "Please Select a store",
+    "Please select products": "Please select products",
+    "Product Successfully Copied": "Product Successfully Copied",
+    "Copy": "Copy"
 }

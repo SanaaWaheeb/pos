@@ -611,8 +611,7 @@
   "Import Shipping CSV File": "استيراد ملف الشحن CSV",
   "In stock": "متوفر",
   "IN STOCK": "متوفر",
-  "In Variant": "في البديل",
-  "In variant": "متوفر بعدة خيارات",
+  "In Variant": "متوفر بعدة خيارات",
   "Industry Type": "نوع الصناعة",
   "Info": "معلومات",
   "Instagram": "انستغرام",
@@ -1585,5 +1584,13 @@
   "“Attention is the new currency”": "\"الانتباه هو العملة الجديدة\"",
   "Fridge lock is enable": "تفعيل قفل الثلاجة",
   "Board ID": "معرّف اللوحة",
-  "Enter Board ID": "أدخل معرّف اللوحة"
+  "Enter Board ID": "أدخل معرّف اللوحة",
+  "Copy from my other stores": "النسخ من متاجري الأخرى",
+  "Select Store": "اختر المتجر",
+  "Select All": "حدد الكل",
+  "No products available for this store": "لا يوجد منتجات لهذا المتجر",
+  "Please Select a store": "قم باختيار المتجر",
+  "Please select products": "الرجاء اختيار منتجات",
+  "Product Successfully Copied": "تم نسخ المنتجات بنجاح",
+  "Copy": "نسخ"
 }

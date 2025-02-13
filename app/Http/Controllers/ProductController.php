@@ -44,7 +44,20 @@ class ProductController extends Controller
             $store = Store::where('id', $user->current_store)->first();
             $products = Product::where('store_id', $store->id)->orderBy('id', 'DESC')->get();
             $productcategorie = ProductCategorie::where('store_id', $store->id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
-            return view('product.index', compact('products', 'productcategorie', 'store'));
+
+            // Get all user's stores product in order to copy them if he wants
+            $stores = $user->stores->where('is_store_enabled', 1)->where('id', '!=', $user->current_store)->pluck('name', 'id'); // Exclude the current store from the lis
+            $storesWithProducts = [];
+            if ($stores->isNotEmpty()) {
+                foreach ($stores as $id => $name) {
+                    $storesWithProducts[] = [
+                        'id' => $id,
+                        'products' => Product::where('store_id', $id)->orderBy('id', 'DESC')->get()->toArray()
+                    ];
+                }
+            }
+
+            return view('product.index', compact('products', 'productcategorie', 'store', 'storesWithProducts'));
         }
         else{
             return redirect()->back()->with('error', 'Permission denied.');
@@ -70,6 +83,73 @@ class ProductController extends Controller
         else{
             return redirect()->back()->with('error', 'Permission denied.');
         }
+    }
+
+    /**
+     * Copy products from another store.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getCopyProductsModal() {
+        if(\Auth::user()->can('Create Products')){
+            // Fetch all the stores to this user
+            $user = \Auth::user()->currentuser();
+            $stores = $user->stores->where('is_store_enabled', 1)->where('id', '!=', $user->current_store)->pluck('name', 'id'); // Exclude the current store from the list
+            
+            return view('product.copyProducts', compact('stores'));
+        }
+        else{
+            return redirect()->back()->with('error', 'Permission denied.');
+        }
+    }
+
+    /**
+     * Create a copy of choosen products
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copyStoreProducts(Request $request) {
+        if (!isset($request->selected_products)) {
+            return redirect()->back()->with('error', __('Please select products'));
+        }
+
+        foreach( $request->selected_products as $product_id) {
+            $user = \Auth::user();
+            $product = Product::find($product_id);
+            $store_id = Store::where('id', $user->current_store)->first();
+
+            // Create a copy
+            $coppied_product = new Product();
+            $coppied_product['store_id'] = $store_id->id;
+            $coppied_product['name'] = $product->name;
+            $coppied_product['product_categorie'] = $product->product_categorie;
+            $coppied_product['price'] = $product->price;
+            $coppied_product['last_price'] = $product->last_price;
+            $coppied_product['quantity'] = $product->quantity;
+            $coppied_product['SKU'] = $product->SKU;
+            $coppied_product['product_tax'] = $product->product_tax;
+            $coppied_product['expiry_date'] = $product->expiry_date;
+            $coppied_product['custom_field_1'] = $product->custom_field_1;
+            $coppied_product['custom_value_1'] = $product->custom_value_1;
+            $coppied_product['custom_field_2'] = $product->custom_field_2;
+            $coppied_product['custom_value_2'] = $product->custom_value_2;
+            $coppied_product['custom_field_3'] = $product->custom_field_3;
+            $coppied_product['custom_value_3'] = $product->custom_value_3;
+            $coppied_product['custom_field_4'] = $product->custom_field_4;
+            $coppied_product['custom_value_4'] = $product->custom_value_4;
+            $coppied_product['product_display'] = $product->product_display;
+            $coppied_product['enable_product_variant'] = $product->enable_product_variant;
+            $coppied_product['variants_json'] = $product->variants_json;
+            $coppied_product['is_cover'] = $product->is_cover;
+            $coppied_product['attachment'] = $product->attachment;
+            $coppied_product['downloadable_prodcut'] = $product->downloadable_prodcut;
+            $coppied_product['description'] = $product->description;
+            $coppied_product['specification'] = $product->specification;
+            $coppied_product['detail'] = $product->detail;
+            $coppied_product['created_by'] = \Auth::user()->creatorId();
+            $coppied_product->save();
+        }
+        return redirect()->back()->with('success', __('Products Successfully Copied'));
     }
 
     /**
