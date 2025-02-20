@@ -854,6 +854,16 @@ class StoreController extends Controller
         $store['metakeyword'] = $request->metakeyword;
         $store['metadesc'] = $request->metadesc;
         $store['decimal_number'] = $request->decimal_number;
+        // Handle Fridge Locker logic
+        $store->door = $request->has('door_switch') ? $request->door_switch : 'off';
+
+        if ($store->door == 'on') {
+            $store->board_id = $request->board_id;
+        } else {
+            // Clear board_id if door is off
+            $store->board_id = null;
+        }
+        
 
         if (!empty($fileNameToStore)) {
             $store['logo'] = $fileNameToStore;

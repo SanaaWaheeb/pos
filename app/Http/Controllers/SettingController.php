@@ -56,7 +56,8 @@ class SettingController extends Controller
                         $domainip = gethostbyname($domain);
                         $domainPointing = 0;
                     }
-
+                    $door = $store_settings->door;
+                    $board_id= $store_settings->board_id;
                     $store_payment_setting = Utility::getPaymentSetting();
                     $serverName = str_replace(
                         [

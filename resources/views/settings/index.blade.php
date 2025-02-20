@@ -3882,6 +3882,28 @@
                                                         </span>
                                                     @enderror
                                                 </div>
+                                                 <!-- Fridge Locker Switch -->
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label for="door_switch">{{ __('Fridge lock is enable') }}</label>
+                                                        <div class="form-check form-switch custom-switch-v1 float-end">
+                                                            <input type="checkbox" name="door_switch" class="form-check-input input-primary pointer" value="on" id="door_switch" {{ $store_settings->door == 'on' ? 'checked' : '' }}>
+                                                            <label class="form-check-label" for="door_switch"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Board ID Input (Initially Hidden if Door is Off) -->
+                                                <div class="col-12 board_id_div {{ $store_settings->door == 'on' ? '' : 'd-none' }}" >
+                                                    <div class="form-group">
+                                                        {{Form::label('board_id',__('Board ID'),array('class'=>'form-label'))}}<x-required></x-required>
+                                                        {{ Form::text('board_id', $store_settings->board_id, [
+                                                            'class' => 'form-control',
+                                                            'placeholder' => __('Enter Board ID'),
+                                                            'id' => 'board_id_input',
+                                                            ($store_settings->door == 'on' ? 'required' : '') => ($store_settings->door == 'on' ? 'required' : '') 
+                                                        ]) }}
+                                                    </div>
+                                                </div>
                                                 @if ($plan->enable_custdomain == 'on' || $plan->enable_custsubdomain == 'on')
                                                     <div class="col-md-6 py-4">
                                                         <div class="radio-button-group row gy-2 mts">
@@ -7550,5 +7572,15 @@
            }).join(' ');
        });
    };
+   $(document).on('change', '#door_switch', function() {
+        if ($(this).is(':checked')) {
+            $('.board_id_div').removeClass('d-none');
+            $('#board_id').attr("required", true);
+        } else {
+            $('.board_id_div').addClass('d-none');
+            $('#board_id_div').val(null);
+            $('#board_id_div').removeAttr("required");
+        }
+    });
    </script>
 @endpush

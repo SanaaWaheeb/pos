@@ -33,6 +33,7 @@
             @enderror
         </div>
     </div>
+    
     <!-- Fridge Locker Switch -->
     <div class="col-12">
         <div class="form-group">
