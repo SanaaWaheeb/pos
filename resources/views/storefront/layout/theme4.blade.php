@@ -169,7 +169,7 @@ if (empty($getStoreThemeSetting)) {
                                 <div class="count" id="shoping_counts">{{ !empty($total_item) ? $total_item : '0' }}</div>
                             </a>
                         </li> --}}
-                        <li class="language-header set has-children has-item">
+                        {{-- <li class="language-header set has-children has-item">
                             <a href="#" class="acnav-label">
                                 {{ ucFirst($langName->fullName) }}
                             </a>
@@ -184,7 +184,7 @@ if (empty($getStoreThemeSetting)) {
                                     
                                 </ul>
                             </div>
-                        </li>
+                        </li> --}}
                         {{-- <li class="shoping-btn">
                             <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}">
                                {{ __(' Start shopping') }}
@@ -229,16 +229,33 @@ if (empty($getStoreThemeSetting)) {
                             </li>
                         @endif --}}
                     </ul>
+                     <!----------------- Select Language ------------------->
+                     <li class="language-header-2 set has-children has-item" style="border: none; margin: 0">
+                        <a href="javascript:void(0)" class="acnav-label" style="padding: 0">
+                            <i class="fas fa-language"></i>
+                            <span class="select">{{ ucFirst($langName->fullName) }}</span>
+                        </a>
+                        <div class="menu-dropdown acnav-list">
+                            <ul>
+                                @foreach ($specific_langs as $code => $language)
+                                    <li><a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
+                                            class="dropdown-item @if ($language == $currantLang) active-language text-primary @endif">{{  ucFirst($language) }}</a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </li>
+                    
                 </div>
-                <div class="mobile-menu mobile-only">
+                {{-- <div class="mobile-menu mobile-only">
                     <button class="mobile-menu-button" id="menu">
                         <div class="one"></div>
                         <div class="two"></div>
                         <div class="three"></div>
                     </button>
-                </div>
+                </div> --}}
             </div>
-            <div class="mobile-menu-bottom">
+            {{-- <div class="mobile-menu-bottom">
                 <ul>
                     @if (Utility::CustomerAuthCheck($store->slug) == true)
                         <li class="profile-header-2 set has-children has-item">
@@ -289,7 +306,7 @@ if (empty($getStoreThemeSetting)) {
                         </div>
                     </li>
                 </ul>
-            </div>
+            </div> --}}
         </div>
     </header>
 
