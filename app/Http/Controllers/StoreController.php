@@ -1870,7 +1870,20 @@ class StoreController extends Controller
         $i = 0;
 
         if (!empty($products)) {
-            if ((!empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'on') || $store->is_checkout_login_required == 'off') {
+            // if ((!empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'on') || $store->is_checkout_login_required == 'off') {
+            // } else {
+            // }
+
+            if(
+                $store->theme_dir=='theme3' 
+                && (
+                    (empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'off')
+                    || $store->is_checkout_login_required == 'on'
+                )
+            ) {
+                $is_cart = true;
+                return view('storefront.' . $store->theme_dir . '.user.login', compact('blog', 'slug', 'store', 'page_slug_urls', 'is_cart'));
+            } else {
                 foreach ($products as $product) {
                     if ($product['variant_id'] != 0) {
                         foreach ($product['tax'] as $key => $taxs) {
@@ -1910,9 +1923,6 @@ class StoreController extends Controller
                     $wishlist = [];
                 }
                 return view('storefront.' . $store->theme_dir . '.shipping', compact('countries','store_payment_setting', 'products', 'store', 'taxArr', 'total_item', 'cust_details', 'locations', 'shippings', 'page_slug_urls', 'blog','wishlist'));
-            } else {
-                $is_cart = true;
-                return view('storefront.' . $store->theme_dir . '.user.login', compact('blog', 'slug', 'store', 'page_slug_urls', 'is_cart'));
             }
 
         } else {

@@ -1,6 +1,6 @@
 @extends('storefront.layout.theme4')
 @section('page-title')
-    {{ __('Product Details') }}
+    {{__('Product Details')}}
 @endsection
 @php
 $imgpath=\App\Models\Utility::get_file('uploads/product_image/');
@@ -16,101 +16,15 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
 @endpush
 @section('content')
 <div class="wrapper">
-    <section class="product-detail-section padding-top">
+    <section class="product-main-section padding-bottom padding-top">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-12">
-                    <div class="product-slider">
-                        <div class="pdp-det-slider">
-                            @foreach ($products_image as $key => $productss)
-                                <div class="pdp-main-itm {{ $key == 0 ? 'active' : '' }}"  data-slide-number="{{ $key }}">
-                                    @if (!empty($products_image[$key]->product_images))
-                                    <div class="pdp-itm-inner">
-                                        <img src="{{ $imgpath. $products_image[$key]->product_images }}"  data-remote="{{ $imgpath. $products_image[$key]->product_images }}" data-type="image" data-toggle="lightbox" data-gallery="example-gallery" alt="product">
-                                    </div>    
-                                    @else
-                                    <div class="pdp-itm-inner">
-                                        <img src="{{ asset(Storage::url('uploads/product_image/default.jpg')) }}"  data-remote="{{ $imgpath. $products_image[$key]->product_images }}" data-type="image" data-toggle="lightbox" data-gallery="example-gallery" alt="product">
-                                    </div>
-                                    @endif
-                                </div>
-                            @endforeach
+            <div class="row row-gap">
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="pdp-summery">
+                        <div class="section-title">
+                            <h2>{{ $products->name }}</h2>
                         </div>
-                        <div class="pdp-thumb-slider">
-                            @foreach ($products_image as $key => $productss)
-                                <div class="pdp-thumb-itm" data-slide-to="{{ $key }}">
-                                    <div class="pdp-thumb-inner">
-                                        @if (!empty($products_image[$key]->product_images))
-                                            <img src="{{ $imgpath. $products_image[$key]->product_images}}" alt="...">
-                                        @else
-                                            <img src="{{ asset(Storage::url('uploads/product_image/default.jpg')) }}" alt="...">
-                                        @endif
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6 col-12">
-                    <div class="product-detail">
-                        <div class="product-review">
-                            <a href="#">
-                                @if ($products->quantity = 0)
-                                    {{ __('OUT OF STOCK') }}
-                                @else
-                                    {{ __('IN STOCK') }}
-                                @endif
-                            </a>
-                            <span class="static-rating static-rating-sm d-block">
-                                @if ($store_setting->enable_rating == 'on')
-                                    @for ($i = 1; $i <= 5; $i++)
-                                        @php
-                                            $icon = 'fa-star';
-                                            $color = '';
-                                            $newVal1 = $i - 0.5;
-                                            if ($avg_rating < $i && $avg_rating >= $newVal1) {
-                                                $icon = 'fa-star-half-alt';
-                                            }
-                                            if ($avg_rating >= $newVal1) {
-                                                $color = 'text-primary';
-                                            }
-                                        @endphp
-                                        <i class="star fas {{ $icon . ' ' . $color }}"></i>
-                                    @endfor
-                                @endif
-                            </span>
-                            <p>{{ $avg_rating }}/5 ({{ $user_count }} reviews)</p>
-                            @if (Auth::guard('customers')->check())
-                                @if (!empty($wishlist) && isset($wishlist[$products->id]['product_id']))
-                                    @if ($wishlist[$products->id]['product_id'] != $products->id)
-                                        <a
-                                            class="add_to_wishlist wishlist_{{ $products->id }}"
-                                            data-id="{{ $products->id }}">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                    @else
-                                        <a class="add_to_wishlist wishlist_{{ $products->id }}"
-                                            data-id="{{ $products->id }}" disabled>
-                                            <i class="fas fa-heart"></i>
-                                        </a>
-                                    @endif
-                                @else
-                                    <a
-                                        class="add_to_wishlist wishlist_{{ $products->id }}"
-                                        data-id="{{ $products->id }}">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                @endif
-                            @else
-                                <a
-                                    class="add_to_wishlist wishlist_{{ $products->id }}"
-                                    data-id="{{ $products->id }}">
-                                    <i class="far fa-heart"></i>
-                                </a>
-                            @endif
-                        </div>
-                        <h2>{{ $products->name }}</h2>
-                        <p>{!! $products->detail !!}
+                        <p>{!! $products->description !!}
                         </p>
                         @if ($products->enable_product_variant == 'on')
                             <input type="hidden" id="product_id" value="{{ $products->id }}">
@@ -118,6 +32,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                             <input type="hidden" id="variant_qty" value="">
                             <div class="p-color mt-3">
                                 <p class="mb-0">{{ __('VARIATION:') }}</p>
+
                                 @foreach ($product_variant_names as $key => $variant)
                                     <div class="col-sm-6 mb-4 mb-sm-0">
                                         <p class="d-block h6 mb-0">
@@ -139,7 +54,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 @endforeach
                             </div>
                         @endif
-                        <div class="product-price">
+                        <div class="cart-price d-flex align-items-center product-price">
                             <div class="price variation_price">
                                 <ins>
                                     @if ($products->enable_product_variant == 'on')
@@ -148,107 +63,84 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                         {{ \App\Models\Utility::priceFormat($products->price) }}
                                     @endif
                                 </ins>
+                                @if($products->last_price>0)
                                 <del>{{ \App\Models\Utility::priceFormat($products->last_price) }}</del>
+                                @endif
                             </div>
-                            <a href="#" class="cart-btn add_to_cart"  data-id="{{ $products->id }}">{{ __('Add to cart') }}</a>
+                            <!-- <a href="#" class="btn add_to_cart" data-id="{{ $products->id }}">{{ __('Add to cart') }} <i class="fas fa-shopping-basket"></i></a> -->
                         </div>
                         <span class=" mb-0 text-danger product-price-error"></span>
-                        <ul>
-                            <li><span>{{ __('Category') }}:</span> {{ $products->product_category() }} <span>{{ __('ID') }}:</span>  {{ $products->SKU }}</li>
+                        <ul class="product-variables">
+                            @if(!empty($products->product_category()))
+                            <li>
+                                <span class="var-left"><b>{{ __('Category') }}:</b></span>
+                                <span class="var-right">{{ $products->product_category() }}</span>
+                            </li>
+                            @endif
+                            <!-- <li>
+                                <span class="var-left"><b>{{ __('SKU') }}:</b> </span>
+                                <span class="var-right">{{ $products->SKU }}</span>
+                            </li> -->
                             @if (!empty($products->custom_field_1) && !empty($products->custom_value_1))
-                                <li><span>{{ $products->custom_field_1 }} :</span>{{ $products->custom_value_1 }}</li>
+                                <li>
+                                    <span class="var-left"><b>{{ $products->custom_field_1 }} :</b> </span>
+                                    <span class="var-right">{{ $products->custom_value_1 }}</span>
+                                </li>
                             @endif
                             @if (!empty($products->custom_field_2) && !empty($products->custom_value_2))
-                                <li><span>{{ $products->custom_field_2 }} :</span> {{ $products->custom_value_2 }}</li>
+                                <li>
+                                    <span class="var-left"><b>{{ $products->custom_field_2 }} :</b> </span>
+                                    <span class="var-right">{{ $products->custom_value_2 }}</span>
+                                </li>
                             @endif
                             @if (!empty($products->custom_field_3) && !empty($products->custom_value_3))
-                                <li><span>{{ $products->custom_field_3 }} :</span> {{ $products->custom_value_3 }}</li>
+                                <li>
+                                    <span class="var-left"><b>{{ $products->custom_field_3 }} :</b> </span>
+                                    <span class="var-right">{{ $products->custom_value_3 }}</span>
+                                </li>
                             @endif
                             @if (!empty($products->custom_field_4) && !empty($products->custom_value_4))
-                                <li><span>{{ $products->custom_field_4 }} :</span> {{ $products->custom_value_4 }}</li>
+                                <li>
+                                    <span class="var-left"><b>{{ $products->custom_field_4 }} :</b> </span>
+                                    <span class="var-right">{{ $products->custom_value_4 }}</span>
+                                </li>
                             @endif
                         </ul>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>    
-    <section class="product-detail padding-bottom">
-        <div class="container">
-            <div class="row product-row align-items-center">
-                <div class="col-md-6 col-12">
-                    <div class="descripction">
-                        @if (!empty($products->description))
-                            <div class="set has-children">
-                                <a href="javascript:;" class="acnav-label">
-                                    <span>{{ __('DESCRIPTION') }}</span> 
-                                </a>
-                                <div class="acnav-list" style=" overflow-y: scroll; max-height: 290px;">
-                                    <p> {!! $products->description !!}</p>
-                                </div>
+                    @if(count($product_ratings) > 0)
+                    <div class="customer-product-review">
+                        <div class="review-title">{{__('Reviews')}}: <span class="total-rates">{{$avg_rating}}/5</span><span
+                                class="t-gray"> ({{__('reviews')}})</span></div>
+                        <div class="review-btn-star d-flex align-items-center">
+                            <div class="product-rating">
+                                @if($store_setting->enable_rating == 'on')
+                                    @for($i =1;$i<=5;$i++)
+                                        @php
+                                            $icon = 'fa-star';
+                                            $color = '';
+                                            $newVal1 = ($i-0.5);
+                                            if($avg_rating < $i && $avg_rating >= $newVal1)
+                                            {
+                                                $icon = 'fa-star-half-alt';
+                                            }
+                                            if($avg_rating >= $newVal1)
+                                            {
+                                                $color = 'text-primary';
+                                            }
+                                        @endphp
+                                        <i class="star fas {{$icon .' '. $color}}"></i>
+                                    @endfor
+                                @endif
                             </div>
-                        @endif
-                        @if (!empty($products->specification))
-                            <div class="set has-children">
-                                <a href="javascript:;" class="acnav-label">
-                                    <span>{{ __('SPECIFICATION') }}</span> 
-                                </a>
-                                <div class="acnav-list" style=" overflow-y: scroll; max-height: 290px;">
-                                    <p> {!! $products->specification !!}</p>
-                                </div>
-                            </div>
-                        @endif
-                        @if (!empty($products->detail))
-                            <div class="set has-children">
-                                <a href="javascript:;" class="acnav-label">
-                                    <span>{{ __('DETAILS') }}</span> 
-                                </a>
-                                <div class="acnav-list" style=" overflow-y: scroll; max-height: 290px;">
-                                    <p> {!! $products->detail !!}</p>
-                                </div>
-                            </div>
-                        @endif
-                        @if (!empty($products->attachment))
-                            <div class="set has-children">
-                                <a href="{{ asset(Storage::url('uploads/is_cover_image/' . $products->attachment)) }}" class="acnav-label" download="{{ $products->attachment }}">
-                                    <span> {{ __('Download instruction .pdf') }}</span> 
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-                <div class="col-md-6 col-12">
-                    <div class="pdp-img">
-                        @if (!empty($products->is_cover) )
-                        <img src="{{ $proimg . $products->is_cover }}">
-                        @else
-                        <img src="{{ asset(Storage::url('uploads/is_cover_image/default.jpg')) }}">
-                        @endif
-                    </div>
-                </div>
-                <div class="col-md-6 col-12">
-                    <div class="pdp-img">
-                        @if (!empty($products->is_cover) )
-                            <img src="{{ $proimg . $products->is_cover }}">
-                        @else
-                            <img src="{{ asset(Storage::url('uploads/is_cover_image/default.jpg')) }}">
-                        @endif
-                    </div>
-                </div>
-                <div class="col-md-6 col-12">
-                    <div class="pdp-review">
-                        <div class="review-box-2">
-                            <h5>{{ __('Reviews') }}:
-                                 <b>{{ $avg_rating }}/5</b>
-                                <span>  ({{ $user_count }} {{ __('reviews') }}) </span>
-                            </h5>
-                            @if (Auth::guard('customers')->check())
-                                <a href="#" class="btn btn-sm btn-primary btn-icon-only rounded-circle float-right text-white" data-size="lg" data-toggle="modal" data-url="{{ route('rating', [$store->slug, $products->id]) }}" data-ajax-popup="true" data-title="{{ __('Create New Rating') }}">
-                                    <i class="fas fa-plus"></i>
-                                </a>
+                            @if(Auth::guard('customers')->check())
+                            <a href="#" class="btn btn-primary rounded-pill btn-icon shadow hover-shadow-lg hover-translate-y-n3" data-size="lg" data-toggle="modal" data-url="{{route('rating',[$store->slug,$products->id])}}" data-ajax-popup="true" data-title="{{__('Create New Rating')}}">
+                                <i class="fas fa-plus"></i>
+                            </a>
                             @endif
                         </div>
                     </div>
+                    @endif
+                    @if(count($product_ratings) > 0)
                     <div class="review-box-bottom">
                         @foreach ($product_ratings as $product_key => $product_rating)
                             @if ($product_rating->rating_view == 'on')
@@ -268,11 +160,86 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                             @endif
                         @endforeach
                     </div>
+                    @endif
                 </div>
+                <div class="col-lg-6 col-md-6 col-12">
+                    <div class="pdp-sliders-wrapper">
+                        <div class="pdp-main-slider">
+                            @foreach($products_image as $key => $productss)
+                                <div class="pdp-main-itm">
+                                    <div class="pdp-main-media">
+                                        @if(!empty($products_image[$key]->product_images))
+                                            <img src="{{$imgpath.$products_image[$key]->product_images}}" alt="">
+                                        @else
+                                            <img src="{{asset(Storage::url('uploads/product_image/default.jpg'))}}" alt="">
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="pdp-thumb-slider">
+                            @foreach($products_image as $key => $productss)
+                                <div class="pdp-thumb-itm">
+                                    <div class="pdp-thumb-media">
+                                        @if(!empty($products_image[$key]->product_images) )
+                                            <img src="{{$imgpath.$products_image[$key]->product_images}}" alt="">
+                                        @else
+                                            <img src="{{asset(Storage::url('uploads/product_image/default.jpg'))}}" alt="">
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="description-accordion">
+                        <div class="set has-children">
+                            <a href="javascript:;" class="acnav-label">
+                                <span>{{__('DESCRIPTION')}}</span>
+                            </a>
+                            <div class="acnav-list" style=" overflow-y: scroll; max-height: 290px;">
+                                <p>  {!! $products->description !!}</p>
+                            </div>
+                        </div>
+                        <div class="set has-children">
+                            <a href="javascript:;" class="acnav-label">
+                                <span> {{__('SPECIFICATION')}}</span>
+                            </a>
+                            <div class="acnav-list" style=" overflow-y: scroll; max-height: 290px;">
+                                <p> {!! $products->specification !!}</p>
+                            </div>
+                        </div>
+                        <div class="set has-children">
+                            <a href="javascript:;" class="acnav-label">
+                                <span> {{__('DETAILS')}}</span>
+                            </a>
+                            <div class="acnav-list" style=" overflow-y: scroll; max-height: 290px;">
+                                <p>{!! $products->detail !!}</p>
+                            </div>
+                        </div>
+                        @if(!empty($products->attachment))
+                            <div class="set has-children">
+                                <a href="javascript:;" class="acnav-label">
+                                    <span> {{__('Download instruction .pdf')}}</span>
+                                </a>
+                                <div class="acnav-list">
+                                    <div class="btn">
+                                        <a href="{{asset(Storage::url('uploads/is_cover_image/'.$products->attachment))}}" class="btn-instruction" download="{{$products->attachment}}">
+                                            <span class="btn-inner--icon">
+                                                <i class="fas fa-shopping-basket"></i>
+                                            </span>
+                                            {{__('Download instruction .pdf')}}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+                </div>
+               
             </div>
         </div>
     </section>
-    <section class="related-product padding-bottom">
+    <!-- <section class="related-product padding-bottom">
         <div class="container">
             <div class="section-title">
                 <h2>{{ __('Related products') }}</h2>
@@ -366,8 +333,14 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                 @endforeach
             </div>
         </div>
-    </section>
-</div> 
+    </section> -->
+
+    <div class="checkout-box">
+        <a href="{{route('user-address.useraddress',$store->slug)}}" class="checkout-btn">
+            {{__('Continue to Booking')}}
+        </a>
+    </div>
+</div>
 @endsection
 @push('script-page')
     <script>

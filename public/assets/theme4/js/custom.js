@@ -16,7 +16,10 @@ $(document).ready(function() {
     });   
      /********* Wrapper top space ********/
      var header_hright = $('header').outerHeight();
-     $('header').next('.wrapper').css('margin-top', header_hright + 'px');  
+     $('header').next('.wrapper').css({
+        'margin-top': header_hright + 'px',
+        'margin-bottom': header_hright + 'px'
+    }); 
     /********* Mobile Menu ********/  
     $('.mobile-menu-button').on('click',function(e){
         e.preventDefault();
@@ -221,43 +224,52 @@ $(document).ready(function() {
     }
 
       /** PDP slider **/
-      $('.pdp-det-slider').slick({
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: false,
+      $('.pdp-main-slider').slick({
         dots: false,
-        prevArrow: '<button class="slick-prev slick-arrow"><span class="slickbtn"><svg><use xlink:href="#slickarrow"></use></svg></span></button>',
-        nextArrow: '<button class="slick-next slick-arrow"><span class="slickbtn"><svg><use xlink:href="#slickarrow"></use></svg></span></button>',
         infinite: true,
         speed: 1000,
         loop: true,
+        slidesToShow: 1,
+        arrows: false,
         asNavFor: '.pdp-thumb-slider',
-        autoplay: false,
     });
     $('.pdp-thumb-slider').slick({
-        slidesToShow: 5,
-        arrows: false,
-        asNavFor: '.pdp-det-slider',
+        prevArrow: '<button class="slide-arrow slick-prev"><i class="fa fa-chevron-right"></i></button>',
+        nextArrow: '<button class="slide-arrow slick-next"><i class="fa fa-chevron-right"></i></button>',
         dots: false,
-        touchMove: true,
-        speed: 1000,
+        asNavFor: '.pdp-main-slider', 
+        speed: 1000, 
         slidesToScroll: 1,
         touchMove: true,
         focusOnSelect: true,
         loop: true,
         infinite: true,
-        vertical: false,
-        verticalSwiping: false,
-        prevArrow: '<button class="slide-arrow slick-prev"><svg viewBox="0 0 10 5"><path d="M2.37755e-08 2.57132C-3.38931e-06 2.7911 0.178166 2.96928 0.397953 2.96928L8.17233 2.9694L7.23718 3.87785C7.07954 4.031 7.07589 4.28295 7.22903 4.44059C7.38218 4.59824 7.63413 4.60189 7.79177 4.44874L9.43039 2.85691C9.50753 2.78197 9.55105 2.679 9.55105 2.57146C9.55105 2.46392 9.50753 2.36095 9.43039 2.28602L7.79177 0.69418C7.63413 0.541034 7.38218 0.544682 7.22903 0.702329C7.07589 0.859976 7.07954 1.11192 7.23718 1.26507L8.1723 2.17349L0.397965 2.17336C0.178179 2.17336 3.46059e-06 2.35153 2.37755e-08 2.57132Z"></path></svg></button>',
-        nextArrow: '<button class="slide-arrow slick-next"><svg viewBox="0 0 10 5"><path d="M2.37755e-08 2.57132C-3.38931e-06 2.7911 0.178166 2.96928 0.397953 2.96928L8.17233 2.9694L7.23718 3.87785C7.07954 4.031 7.07589 4.28295 7.22903 4.44059C7.38218 4.59824 7.63413 4.60189 7.79177 4.44874L9.43039 2.85691C9.50753 2.78197 9.55105 2.679 9.55105 2.57146C9.55105 2.46392 9.50753 2.36095 9.43039 2.28602L7.79177 0.69418C7.63413 0.541034 7.38218 0.544682 7.22903 0.702329C7.07589 0.859976 7.07954 1.11192 7.23718 1.26507L8.1723 2.17349L0.397965 2.17336C0.178179 2.17336 3.46059e-06 2.35153 2.37755e-08 2.57132Z"></path></svg></button>',
-        responsive: [
-            {
-            breakpoint: 768,
+        arrows:false,
+        focusOnSelect: true,
+        vertical: true,
+        verticalSwiping: true,
+        slidesToShow: 4,
+        responsive: [{
+                breakpoint: 1261,
                 settings: {
-                    vertical: false,
+                    slidesToShow: 4
                 }
-            }
-        ]
+            }, 
+            {
+                breakpoint: 1260,
+                    settings: {
+                        vertical: false,
+                        verticalSwiping:false,
+                    }
+                },
+            {
+                breakpoint: 992,
+                    settings: {
+                        vertical: false,
+                        verticalSwiping:false,
+                    }
+                }
+        ]   
     });
     
             // Modal Window

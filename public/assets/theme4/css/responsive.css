@@ -64,7 +64,13 @@
   }
   .mobile-menu {
     display: block !important;
-}
+  }
+  .pdp-sliders-wrapper {
+    flex-direction: column;
+  }
+  .pdp-main-slider {
+    width: 100%;
+  }
 }
 @media screen and (max-width:1199px){
   :root .theme4-v1,:root .theme4-v2,:root .theme4-v3,:root .theme4-v4,:root .theme4-v5{ 
@@ -408,8 +414,17 @@
     margin-right: 0;
     margin-bottom: 10px;
   }
-  .pdp-thumb-slider {
+  /* .pdp-thumb-slider {
     margin: 0px auto 0;
+  } */
+  .pdp-thumb-slider {
+    margin-left: 0;
+    margin-top: 20px;
+    width: 100%;
+  }
+
+  .pdp-thumb-slider .pdp-thumb-itm {
+    margin: 0 5px;
   }
 } 
 
