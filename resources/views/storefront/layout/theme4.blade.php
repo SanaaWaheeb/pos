@@ -115,6 +115,10 @@ if (empty($getStoreThemeSetting)) {
         }
 
         $languages = \App\Models\Utility::languages();
+        $specific_langs = [
+            "ar" => "Arabic",
+            "en" => "English",
+        ];
         $langName = \App\Models\Languages::where('code',$currantLang)->first();
         $storethemesetting = \App\Models\Utility::demoStoreThemeSetting($store->id, $store->theme_dir);
     @endphp
@@ -129,9 +133,9 @@ if (empty($getStoreThemeSetting)) {
                 </div>
                 <div class="main-nav">
                     <ul>
-                        <li class="menu-link">
+                        {{-- <li class="menu-link">
                             <a class="{{ route('store.slug') ?: 'text-dark' }} {{ Request::segment(1) == 'store-blog' ? 'text-dark' : '' }}" href="{{ route('store.slug', $store->slug) }}">{{ ucfirst($store->name) }}</a>
-                        </li>
+                        </li> --}}
                         @if (!empty($page_slug_urls))
                             @foreach ($page_slug_urls as $k => $page_slug_url)
                                 @if ($page_slug_url->enable_page_header == 'on')
@@ -150,41 +154,43 @@ if (empty($getStoreThemeSetting)) {
                 </div>
                 <div class="right-menu">
                     <ul>
-                        <li class="search-header">
+                        {{-- <li class="search-header">
                             <a href="#"><i class="fas fa-search"></i></a>
-                        </li>
-                        @if (Utility::CustomerAuthCheck($store->slug) == true)
+                        </li> --}}
+                        {{-- @if (Utility::CustomerAuthCheck($store->slug) == true)
                             <li>
                                 <a href="{{ route('store.wishlist', $store->slug) }}"><i class="fas fa-heart"></i></a>
                                 <span class="count wishlist_count">{{ !empty($wishlist) ? count($wishlist) : '0' }}</span>
                             </li>
-                        @endif
-                        <li>
+                        @endif --}}
+                        {{-- <li>
                             <a href="{{ route('store.cart', $store->slug) }}">
                                 <i class="fas fa-shopping-basket"></i>
                                 <div class="count" id="shoping_counts">{{ !empty($total_item) ? $total_item : '0' }}</div>
                             </a>
-                        </li>
+                        </li> --}}
                         <li class="language-header set has-children has-item">
                             <a href="#" class="acnav-label">
                                 {{ ucFirst($langName->fullName) }}
                             </a>
                             <div class="menu-dropdown acnav-list">
                                 <ul>
-                                    <li>
-                                        @foreach ($languages as $code => $language)
-                                            <li><a class="@if ($language == $currantLang) active-language text-primary @endif" href="{{ route('change.languagestore', [$store->slug, $code]) }}">{{  ucFirst($language) }}</a></li>
+                                    
+                                        @foreach ($specific_langs as $code => $language)
+                                        <li><a class="@if ($language == $currantLang) active-language text-primary @endif"
+                                                href="{{ route('change.languagestore', [$store->slug, $code]) }}">{{  ucFirst($language) }}</a>
+                                        </li>
                                         @endforeach
-                                    </li>
+                                    
                                 </ul>
                             </div>
                         </li>
-                        <li class="shoping-btn">
+                        {{-- <li class="shoping-btn">
                             <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}">
                                {{ __(' Start shopping') }}
                                 <i class="fas fa-shopping-basket"></i>
-                        </li>
-                        @if (Utility::CustomerAuthCheck($store->slug) == true)
+                        </li> --}}
+                        {{-- @if (Utility::CustomerAuthCheck($store->slug) == true)
                             <li class="profile-header set has-children has-item">
                                 <a href="javascript:void(0)" class="acnav-label">
                                     <span class="login-text" style="display: block;">{{ ucFirst(Auth::guard('customers')->user()->name) }}</span>
@@ -221,7 +227,7 @@ if (empty($getStoreThemeSetting)) {
                             <li class="profile-header set has-children has-item">
                                 <a href="{{ route('customer.login', $store->slug) }}" class="acnav-label"><span class="login-text">{{ __('Log in') }}</span></a>
                             </li>
-                        @endif
+                        @endif --}}
                     </ul>
                 </div>
                 <div class="mobile-menu mobile-only">
@@ -289,8 +295,8 @@ if (empty($getStoreThemeSetting)) {
 
     @yield('content')
 
-    <footer class="footer">
-        <div class="container">
+    {{-- <footer class="footer"> 
+         <div class="container">
             <div class="row footer-top">
                 <div class="col-12 footer-link-1">
                     @if ($getStoreThemeSetting[8]['section_enable'] == 'on')
@@ -389,8 +395,8 @@ if (empty($getStoreThemeSetting)) {
                 </div>
 
             </div>
-        </div>
-    </footer>
+        </div> 
+     </footer> --}}
     @if ($getStoreThemeSetting[17]['section_enable'] == 'on')
         <script>
             {!! $getStoreThemeSetting[18]['inner-list'][1]['field_default_text'] !!}
@@ -437,13 +443,13 @@ if (empty($getStoreThemeSetting)) {
             <form class="omnisearch-form"  action="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" method="get">
             @csrf
                 <div class="form-group focused">
-                    <div class="input-group input-group-merge input-group-flush">
+                    {{-- <div class="input-group input-group-merge input-group-flush">
                         <div class="input-group-prepend">
                             <span class="input-group-text"><i class="fas fa-search"></i></span>
                         </div>
                         <input type="text" name="search_data" class="form-control form-control-flush" placeholder="Type your product...">
 
-                    </div>
+                    </div> --}}
                 </div>
             </form>
         </div>

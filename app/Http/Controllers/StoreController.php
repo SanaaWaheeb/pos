@@ -2711,7 +2711,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
         return redirect()->back()->with('success', __('Item successfully Deleted.'));
     }
-
+  
     public function customer(Request $request, $slug)
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
@@ -2774,7 +2774,64 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 'shipping_id' => $request->shipping_id,
             ];
         }
-        
+        if ($store->theme_dir == 'theme4') {
+            $userdetail = new UserDetail();
+            $userdetail['store_id'] = $store->id;
+            // $userdetail['customer_id'] = isset($customer->id) ? $customer->id : '';
+            $userdetail['name'] = $request->name;
+            $userdetail['last_name'] = $request->last_name;
+            $userdetail['email'] = $request->email;
+            $userdetail['phone'] = $request->phone;
+            $userdetail['check_in_date'] = $request->check_in_date;
+            $userdetail['number_of_nights'] = $request->number_of_nights;
+    
+            // $userdetail['custom_field_title_1'] = $request->custom_field_title_1;
+            // $userdetail['custom_field_title_2'] = $request->custom_field_title_2;
+            // $userdetail['custom_field_title_3'] = $request->custom_field_title_3;
+            // $userdetail['custom_field_title_4'] = $request->custom_field_title_4;
+    
+            // $userdetail['billing_address'] = $request->billing_address;
+            // $userdetail['billing_country'] = $request->billing_country;
+            // $userdetail['billing_city'] = $request->billing_city;
+            // $userdetail['billing_postalcode'] = $request->billing_postalcode;
+            // $userdetail['shipping_address'] = $request->shipping_address;
+            // $userdetail['shipping_country'] = $request->shipping_country;
+            // $userdetail['shipping_city'] = $request->shipping_city;
+            // $userdetail['shipping_postalcode'] = $request->shipping_postalcode;
+            // $userdetail['location_id'] = $request->location_id;
+            // $userdetail['shipping_id'] = $request->shipping_id;
+            $userdetail->save();
+            $userdetail->id;
+    
+            $cart['customer'] = [
+                "id" => $userdetail->id,
+                "name" => $request->name,
+                "last_name" => $request->last_name,
+                "phone" => $request->phone,
+                "email" => $request->email,
+                "check_in_date" => $request->check_in_date,
+                "number_of_nights" => $request->number_of_nights,
+    
+    
+                // "custom_field_title_1" => $request->custom_field_title_1,
+                // "custom_field_title_2" => $request->custom_field_title_2,
+                // "custom_field_title_3" => $request->custom_field_title_3,
+                // "custom_field_title_4" => $request->custom_field_title_4,
+    
+                // "billing_address" => $request->billing_address,
+                // "billing_country" => $request->billing_country,
+                // "billing_city" => $request->billing_city,
+                // "billing_postalcode" => $request->billing_postalcode,
+                // "shipping_address" => $request->shipping_address,
+                // "shipping_country" => $request->shipping_country,
+                // "shipping_city" => $request->shipping_city,
+                // "shipping_postalcode" => $request->shipping_postalcode,
+                // "location_id" => $request->location_id,
+                // "shipping_id" => $request->shipping_id,
+            ];
+
+        }
+     else{
         $customer = \Auth::guard('customers')->user();
        
         if (!empty($cart['customer']['id'])) {
@@ -2831,7 +2888,9 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             "location_id" => $request->location_id,
             "shipping_id" => $request->shipping_id,
         ];
-
+        
+     }
+    
         $total_item = 0;
         if (isset($cart['products'])) {
             if (isset($cart) && !empty($cart['products'])) {

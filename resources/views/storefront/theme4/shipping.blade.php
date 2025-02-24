@@ -12,16 +12,16 @@
             <div class="row align-items-center cart-head">
                 <div class="col-lg-3 col-md-12 col-12">
                     <div class="cart-title">
-                        <h2>{{ __('Customer') }}</h2>
+                        <h2>{{ __('Hotel Booking') }}</h2>
                     </div>
                 </div>
-                <div class="col-lg-9 col-md-12 col-12 justify-content-end">
+                {{-- <div class="col-lg-9 col-md-12 col-12 justify-content-end">
                     <div class="cart-btns">
                         <a href="{{ route('store.cart', $store->slug) }}">1 - {{ __('My Cart') }}</a>
                         <a href="{{ route('user-address.useraddress', $store->slug) }}" class="active-btn">2 -{{ __('Customer') }}</a>
                         <a href="{{ route('store-payment.payment', $store->slug) }}">3 - {{ __('Payment') }}</a>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
             {{ Form::model($cust_details, ['route' => ['store.customer', $store->slug], 'method' => 'POST']) }}
@@ -47,13 +47,26 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     {{Form::label('phone',__('Phone'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    {{Form::text('phone',old('phone'),array('class'=>'form-control','placeholder'=>'(99) 12345 67890','required'=>'required'))}}
+                                    {{Form::text('phone',old('phone'),array('class'=>'form-control','placeholder'=>'(+966) 560747785','required'=>'required'))}}
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     {{Form::label('email',__('Email'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
                                     {{Form::email('email',(Utility::CustomerAuthCheck($store->slug) ? Auth::guard('customers')->user()->email : ''),array('class'=>'form-control','placeholder'=>__('Enter Your Email Address'),'required'=>'required'))}}
+                                </div>
+                            </div>
+                            {{-- added --}}
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    {{ Form::label('check_in_date', __('Check-in Date'), ['class' => 'form-label']) }}<span style="color:red">*</span>
+                                    {{ Form::date('Check_in_Date', null, ['class' => 'form-control', 'placeholder' => __('Enter Check-in Date'), 'min' => date('Y-m-d',),'required'=>'required']) }}
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    {{Form::label('number_of_nights',__('Number of Nights'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
+                                    {{Form::text('Number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
                                 </div>
                             </div>
                             @if(!empty($store_payment_setting['custom_field_title_1']))
@@ -80,6 +93,7 @@
                                         </div>
                                     </div>
                             @endif
+                            
                             @if(!empty($store_payment_setting['custom_field_title_4']))
                                 <div class="col-md-6 col-12">
                                     <div class="form-group">
@@ -88,13 +102,21 @@
                                     </div>
                                 </div>
                             @endif
-                            <div class="col-md-12 col-12">
+                            <div class="col-md-12 col-12"  style="margin-top: 80px">
+                                <div class="pagination-btn d-flex align-items-center justify-content-center ">
+                                    
+                                    <button type="submit" class="next-btn btn">{{__('Proceed to Checkout')}} <i class="fas fa-shopping-basket"></i></button>
+                                    
+                                    {{-- <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a> --}}
+                                </div>
+                            </div>
+                            {{-- <div class="col-md-12 col-12">
                                 <div class="form-group">
                                     {{Form::label('billingaddress',__('Address'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
                                     {{Form::text('billing_address',old('billing_address'),array('class'=>'form-control','placeholder'=>__('Billing Address'),'required'=>'required'))}}
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-12">
+                            </div> --}}
+                            {{-- <div class="col-md-6 col-12">
                                 <div class="form-group focused">
                                     {{Form::label('billing_country',__('Country'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
                                     <select name="billing_country" id="" class="form-control change_country" required>
@@ -118,16 +140,16 @@
                                     {{Form::label('billing_postalcode',__('Postal Code'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
                                     {{Form::text('billing_postalcode',old('billing_postalcode'),array('class'=>'form-control','placeholder'=>__('Billing Postal Code'),'required'=>'required'))}}
                                 </div>
-                            </div>
-                            @if($store->enable_shipping == "on" && $shippings->count() > 0)
+                            </div> --}}
+                            {{-- @if($store->enable_shipping == "on" && $shippings->count() > 0)
                                 <div class="col-md-6 col-12">
                                     <div class="form-group">
                                         {{Form::label('location_id',__('Location'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
                                         {{ Form::select('location_id', $locations, null,array('class' => 'form-control change_location','required'=>'required')) }}
                                     </div>
                                 </div>
-                            @endif
-
+                            @endif --}}
+{{-- 
                             <div class="col-md-12 col-12">
                                 <div class="row align-items-center">
                                     <div class="col-md-6 col-12">
@@ -144,8 +166,8 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-12 col-12">
+                            </div> --}}
+                            {{-- <div class="col-md-12 col-12">
                                 <div class="form-group">
                                     {{Form::label('shipping_address',__('Address'),array("class"=>"form-control-label")) }}
                                     {{Form::text('shipping_address',old('shipping_address'),array('class'=>'form-control','placeholder'=>__('Shipping Address')))}}
@@ -174,15 +196,16 @@
                                     <a href="{{route('store.slug',$store->slug)}}" class="cart-btn">{{__('Return to shop')}}</a>
                                     <button type="submit" class="cart-btn btn">{{__('Next step')}}</button>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                     </div>
+                    
                     <div class="col-lg-4 col-12">
-                        <div class="shiping-type">
+                        {{-- <div class="shiping-type">
                             <h5>{{__('Select Shipping')}}</h5>
                             <div class="radio-group" id="shipping_location_content">
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="coupon-form">
                             <div class="coupon-header">
                                 <h4>{{__('Coupon')}}</h4>
@@ -308,19 +331,19 @@
                                 </div>
                                 <div class="mini-cart-footer">
                                     <div class="u-save d-flex justify-content-between">
-                                        <div class="cpn-lbl">{{ __('item') }}</div>
+                                        <div class="cpn-lbl">{{ __('Subtotal') }}</div>
                                         <div class="cpn-price">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</div>
                                     </div>
                                     <div class="u-save d-flex justify-content-between">
-                                        <div class="cpn-lbl">{{ __('Coupan') }}</div>
+                                        <div class="cpn-lbl">{{ __('Coupon') }}</div>
                                         <div class="cpn-price dicount_price">{{\App\Models\Utility::priceFormat(0)}}</div>
                                     </div>
-                                    @if($store->enable_shipping == "on")
+                                    {{-- @if($store->enable_shipping == "on")
                                         <div class="u-save d-flex justify-content-between">
                                             <div class="cpn-lbl">{{__('Shipping Price')}} </div>
                                             <div class="cpn-price shipping_price" data-value=""></div>
                                         </div>
-                                    @endif
+                                    @endif --}}
                                     @foreach($taxArr['tax'] as $k=>$tax)
                                         <div class="u-save d-flex justify-content-between">
                                             @php
