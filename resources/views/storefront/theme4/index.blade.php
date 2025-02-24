@@ -128,7 +128,11 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                             {!! $storethemesetting['homepage-promotions-font-icon'][$i] !!}
                                             <div class="store-text">
                                                 <h4> {{ $storethemesetting['homepage-promotions-title'][$i] }}</h4>
-                                                <p> {{ $storethemesetting['homepage-promotions-description'][$i] }}</p>
+                                                <@if(isset($storethemesetting['homepage-promotions-description'][$i]))  
+                                                <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>  
+                                                @else  
+                                                <p>Default promotion description</p>  
+                                                 @endif
                                             </div>
                                         </div>
                                         @if ($i == 2)
@@ -520,9 +524,11 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                     @if($storethemesetting['homepage-testimonial-card-enable'][$i] == 'on')
                                         <div class="testimonial-card">
                                             <div class="testimonial-inner">
-                                                <p>
-                                                    {{ $storethemesetting['homepage-testimonial-card-description'][$i] }}
-                                                </p>
+                                                <@if(isset($storethemesetting['homepage-promotions-description'][$i]))  
+                                                <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>  
+                                                 @else  
+                                                <p>Default promotion description</p>  
+                                                @endif
                                                 <div class="review-box">
                                                     <img src="{{ $imgpath. (!empty($storethemesetting['homepage-testimonial-card-image'][$i]['field_prev_text']) ? $storethemesetting['homepage-testimonial-card-image'][$i]['field_prev_text'] : 'qo.png') }}">
 
