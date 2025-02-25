@@ -127,9 +127,9 @@ if (empty($getStoreThemeSetting)) {
         <div class="container">
             <div class="main-navigationbar">
                 <div class="logo-col">
-                    <a href="{{ route('store.slug', $store->slug) }}">
+                    <!-- <a href="{{ route('store.slug', $store->slug) }}"> -->
                         <img src="{{ $s_logo . (!empty($store->logo) ? $store->logo : 'logo.png') . '?timestamp='. time() }}" alt="">
-                    </a>
+                    <!-- </a> -->
                 </div>
                 <div class="main-nav">
                     <ul>

@@ -3521,7 +3521,7 @@ form .row {
     -moz-border-radius: 30px;
     -ms-border-radius: 30px;
     -o-border-radius: 30px;
-    margin: 30px;
+    /* margin: 30px; */
 }
 .mini-cart .mini-cart-header {
     border-bottom: 1px solid var(--border-color);
@@ -3536,7 +3536,6 @@ form .row {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
-    width: 90%;
     text-align: start;
     border: 1px solid var(--border-color);
 }

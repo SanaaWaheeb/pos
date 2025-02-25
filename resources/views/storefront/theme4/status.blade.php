@@ -83,7 +83,7 @@
                 @endphp
                 @foreach($products as $key => $product)
                     @if ($product['variant_id'] != 0)
-                    <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
+                    <div class="mini-cart-item" style="margin: 0; width: 90%;" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
                         <div class="mini-cart-details-status">
                             <span>{{ $product['quantity'] }} __('Night') </span>
 
@@ -121,7 +121,7 @@
                     </div>  
 
                     @else
-                    <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
+                    <div class="mini-cart-item" style="margin: 0; width: 90%;" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
                         <div class="mini-cart-details-status">
                             <div class="d-flex align-items-center" style="gap: 5px">
                                 <span>{{ $product['quantity'] }} __('Nights') </span>
@@ -291,7 +291,7 @@
                         const formattedPrice = formatPrice(price * product.quantity);
                         
                         productHTML += `
-                            <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
+                            <div class="mini-cart-item" style="margin: 0; width: 90%;" data-id="${key}" id="product-id-${product.product_id}">
                                 <div class="mini-cart-image">
                                     <a href="#">
                                         <img src="{{ $productImg }}${product.image}" alt="img">

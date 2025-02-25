@@ -13,6 +13,7 @@
                 <div class="col-lg-3 col-md-12 col-12">
                     <div class="cart-title">
                         <h2>{{ __('Hotel Booking') }}</h2>
+                        <p style="margin-top: 10px"> {{ __('Fill the form below so we can send you the orders invoice.') }}</p>
                     </div>
                 </div>
                 {{-- <div class="col-lg-9 col-md-12 col-12 justify-content-end">
@@ -26,10 +27,184 @@
             </div>
             {{ Form::model($cust_details, ['route' => ['store.customer', $store->slug], 'method' => 'POST']) }}
                 <div class="row">
+                    <!-- Booking Information -->
                     <div class="col-lg-8 col-12">
                         <div class="customer-info">
-                            <h5>{{ __('Billing information') }}</h5>
-                            <p> {{ __('Fill the form below so we can send you the orders invoice.') }}</p>
+                            <h5>{{ __('Booking Information') }}</h5>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    {{Form::label('number_of_nights',__('Number of Nights'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
+                                    {{Form::text('number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-12">
+                                <div class="form-group">
+                                    {{ Form::label('check_in_date', __('Check-in Date'), ['class' => 'form-label']) }}<span style="color:red">*</span>
+                                    {{ Form::date('check_in_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Check-in Date'), 'min' => date('Y-m-d',),'required'=>'required']) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Summary -->
+                    <div class="col-lg-4 col-12">
+                        <div class="mini-cart" id="card-summary" style="margin: 40px 0px">
+                            <div class="mini-cart-header">
+                                <h4>{{ __('Summary') }}</h4>
+                            </div>
+                            <div id="cart-body" class="mini-cart-has-item">
+                                <div class="mini-cart-body">
+                                    @if (!empty($products))
+                                        @php
+                                            $total = 0;
+                                            $sub_tax = 0;
+                                            $sub_total = 0;
+                                        @endphp
+                                        @foreach ($products as $product)
+                                            @if (isset($product['variant_id']) && !empty($product['variant_id']))
+                                                <div class="mini-cart-item">
+                                                    <div class="mini-cart-image">
+                                                        <a href="#">
+                                                            <img src="{{$productImg .$product['image']}}" alt="img">
+                                                        </a>
+                                                    </div>
+                                                    <div class="mini-cart-details">
+                                                        <p class="mini-cart-title">
+                                                            <a href="#">{{$product['product_name'].' - ( ' . $product['variant_name'] .' ) '}}</a>
+                                                        </p>
+                                                        @php
+                                                            $total_tax=0;
+                                                        @endphp
+                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
+                                                            <div class="price">
+                                                                <small>
+                                                                    {{__('Night')}}
+                                                                    @if(!empty($product['tax']))
+                                                                        +
+                                                                        @foreach($product['tax'] as $tax)
+                                                                            @php
+                                                                                $sub_tax = ($product['variant_price'] * $product['quantity'] * $tax['tax']) / 100;
+                                                                                $total_tax += $sub_tax;
+                                                                            @endphp
+    
+                                                                            {{\App\Models\Utility::priceFormat($sub_tax).' ('.$tax['tax_name'].' '.($tax['tax']).'%)'}}
+                                                                        @endforeach
+                                                                    @endif
+                                                                </small>
+                                                                @php
+                                                                    $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
+                                                                    $subtotal = $product['variant_price'] * $product['quantity'];
+                                                                    $sub_total += $subtotal;
+                                                                @endphp
+                                                            </div>
+                                                            <a class="remove_item">
+                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @php
+                                                    $total += $totalprice;
+                                                @endphp
+                                            @else
+                                                <div class="mini-cart-item">
+                                                    <div class="mini-cart-image">
+                                                        <a href="#">
+                                                            <img src="{{$productImg .$product['image']}}" alt="img">
+                                                        </a>
+                                                    </div>
+                                                    <div class="mini-cart-details">
+                                                        <p class="mini-cart-title">
+                                                            <a href="#">{{$product['product_name']}}</a>
+                                                        </p>
+                                                        @php
+                                                            $total_tax=0;
+                                                        @endphp
+                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
+                                                            <div class="price">
+                                                                <small>
+                                                                    {{__('Night')}}
+                                                                    @if(!empty($product['tax']))
+                                                                        +
+                                                                        @foreach($product['tax'] as $tax)
+                                                                            @php
+                                                                                $sub_tax = ($product['price'] * $product['quantity'] * $tax['tax']) / 100;
+                                                                                $total_tax += $sub_tax;
+                                                                            @endphp
+        
+                                                                            {{\App\Models\Utility::priceFormat($sub_tax).' ('.$tax['tax_name'].' '.($tax['tax']).'%)'}}
+                                                                        @endforeach
+                                                                    @endif
+                                                                </small>
+                                                                @php
+                                                                    $totalprice = $product['price'] * $product['quantity'] + $total_tax;
+                                                                    $subtotal = $product['price'] * $product['quantity'];
+                                                                    $sub_total += $subtotal;
+                                                                @endphp
+                                                            </div>
+                                                            <a class="remove_item" href="#">
+                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
+                                                            </a>
+                                                            @php
+                                                            $total += $totalprice;
+                                                            @endphp
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </div>
+                                <div class="mini-cart-footer">
+                                    {{-- <div class="u-save d-flex justify-content-between">
+                                        <div class="cpn-lbl">{{ __('Subtotal') }}</div>
+                                        <div class="cpn-price">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</div>
+                                    </div> --}}
+                                    {{-- <div class="u-save d-flex justify-content-between">
+                                        <div class="cpn-lbl">{{ __('Coupon') }}</div>
+                                        <div class="cpn-price dicount_price">{{\App\Models\Utility::priceFormat(0)}}</div>
+                                    </div> --}}
+                                    {{-- @if($store->enable_shipping == "on")
+                                        <div class="u-save d-flex justify-content-between">
+                                            <div class="cpn-lbl">{{__('Shipping Price')}} </div>
+                                            <div class="cpn-price shipping_price" data-value=""></div>
+                                        </div>
+                                    @endif --}}
+                                    @foreach($taxArr['tax'] as $k=>$tax)
+                                        <div class="u-save d-flex justify-content-between">
+                                            @php
+                                                $rate = $taxArr['rate'][$k];
+                                            @endphp
+                                            <div class="cpn-lbl">{{$tax}}</div>
+                                            <div class="cpn-price">{{\App\Models\Utility::priceFormat($rate)}}</div>
+                                        </div>
+                                    @endforeach
+                                    <div
+                                        class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
+                                        <div class="mini-total-lbl">
+                                            {{__('Total')}}
+                                        </div>
+                                        <div class="mini-total-price final_total_price" id="total_value" data-value="666">
+                                            <input type="hidden" class="product_total" value="{{$total}}">
+                                            <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
+                                            <input type="hidden" name="total" id="total-booking-price" value="{{ $total }}">
+                                            <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}"> {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <!-- Billing Information -->
+                    <div class="col-lg-8 col-12">
+                        <div class="customer-info">
+                            <h5>{{ __('Customer Information') }}</h5>
                         </div>
                         <div class="row">
                             <div class="col-md-6 col-12">
@@ -55,20 +230,7 @@
                                     {{Form::label('email',__('Email'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
                                     {{Form::email('email',(Utility::CustomerAuthCheck($store->slug) ? Auth::guard('customers')->user()->email : ''),array('class'=>'form-control','placeholder'=>__('Enter Your Email Address'),'required'=>'required'))}}
                                 </div>
-                            </div>
-                            {{-- added --}}
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{ Form::label('check_in_date', __('Check-in Date'), ['class' => 'form-label']) }}<span style="color:red">*</span>
-                                    {{ Form::date('check_in_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Check-in Date'), 'min' => date('Y-m-d',),'required'=>'required']) }}
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{Form::label('number_of_nights',__('Number of Nights'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    {{Form::text('number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
-                                </div>
-                            </div>
+                            </div>                            
                             @if(!empty($store_payment_setting['custom_field_title_1']))
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
@@ -215,157 +377,7 @@
                                     </div>
                                 </form>
                             </div>
-                        </div> --}}
-                        <div class="mini-cart" id="card-summary" style="margin-top: 40px">
-                            <div class="mini-cart-header">
-                                <h4>{{ __('Summary') }}</h4>
-                            </div>
-                            <div id="cart-body" class="mini-cart-has-item">
-                                <div class="mini-cart-body">
-                                    @if (!empty($products))
-                                        @php
-                                            $total = 0;
-                                            $sub_tax = 0;
-                                            $sub_total = 0;
-                                        @endphp
-                                        @foreach ($products as $product)
-                                            @if (isset($product['variant_id']) && !empty($product['variant_id']))
-                                                <div class="mini-cart-item">
-                                                    <div class="mini-cart-image">
-                                                        <a href="#">
-                                                            <img src="{{$productImg .$product['image']}}" alt="img">
-                                                        </a>
-                                                    </div>
-                                                    <div class="mini-cart-details">
-                                                        <p class="mini-cart-title">
-                                                            <a href="#">{{$product['product_name'].' - ( ' . $product['variant_name'] .' ) '}}</a>
-                                                        </p>
-                                                        @php
-                                                            $total_tax=0;
-                                                        @endphp
-                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
-                                                            <div class="price">
-                                                                <small>
-                                                                    <!-- {{$product['quantity']}} x {{\App\Models\Utility::priceFormat($product['variant_price'])}} -->
-                                                                    {{__('Night')}}
-                                                                    @if(!empty($product['tax']))
-                                                                        +
-                                                                        @foreach($product['tax'] as $tax)
-                                                                            @php
-                                                                                $sub_tax = ($product['variant_price'] * $product['quantity'] * $tax['tax']) / 100;
-                                                                                $total_tax += $sub_tax;
-                                                                            @endphp
-    
-                                                                            {{\App\Models\Utility::priceFormat($sub_tax).' ('.$tax['tax_name'].' '.($tax['tax']).'%)'}}
-                                                                        @endforeach
-                                                                    @endif
-                                                                </small>
-                                                                @php
-                                                                    $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
-                                                                    $subtotal = $product['variant_price'] * $product['quantity'];
-                                                                    $sub_total += $subtotal;
-                                                                @endphp
-                                                            </div>
-                                                            <a class="remove_item">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @php
-                                                    $total += $totalprice;
-                                                @endphp
-                                            @else
-                                                <div class="mini-cart-item">
-                                                    <div class="mini-cart-image">
-                                                        <a href="#">
-                                                            <img src="{{$productImg .$product['image']}}" alt="img">
-                                                        </a>
-                                                    </div>
-                                                    <div class="mini-cart-details">
-                                                        <p class="mini-cart-title">
-                                                            <a href="#">{{$product['product_name']}}</a>
-                                                        </p>
-                                                        @php
-                                                            $total_tax=0;
-                                                        @endphp
-                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
-                                                            <div class="price">
-                                                                <small>
-                                                                    <!-- {{$product['quantity']}} Nights
-                                                                     {{-- x {{\App\Models\Utility::priceFormat($product['price'])}} --}} -->
-                                                                    {{__('Night')}}
-                                                                    @if(!empty($product['tax']))
-                                                                        +
-                                                                        @foreach($product['tax'] as $tax)
-                                                                            @php
-                                                                                $sub_tax = ($product['price'] * $product['quantity'] * $tax['tax']) / 100;
-                                                                                $total_tax += $sub_tax;
-                                                                            @endphp
-        
-                                                                            {{\App\Models\Utility::priceFormat($sub_tax).' ('.$tax['tax_name'].' '.($tax['tax']).'%)'}}
-                                                                        @endforeach
-                                                                    @endif
-                                                                </small>
-                                                                @php
-                                                                    $totalprice = $product['price'] * $product['quantity'] + $total_tax;
-                                                                    $subtotal = $product['price'] * $product['quantity'];
-                                                                    $sub_total += $subtotal;
-                                                                @endphp
-                                                            </div>
-                                                            <a class="remove_item" href="#">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
-                                                            </a>
-                                                            @php
-                                                            $total += $totalprice;
-                                                            @endphp
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endif
-                                </div>
-                                <div class="mini-cart-footer">
-                                    {{-- <div class="u-save d-flex justify-content-between">
-                                        <div class="cpn-lbl">{{ __('Subtotal') }}</div>
-                                        <div class="cpn-price">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</div>
-                                    </div> --}}
-                                    {{-- <div class="u-save d-flex justify-content-between">
-                                        <div class="cpn-lbl">{{ __('Coupon') }}</div>
-                                        <div class="cpn-price dicount_price">{{\App\Models\Utility::priceFormat(0)}}</div>
-                                    </div> --}}
-                                    {{-- @if($store->enable_shipping == "on")
-                                        <div class="u-save d-flex justify-content-between">
-                                            <div class="cpn-lbl">{{__('Shipping Price')}} </div>
-                                            <div class="cpn-price shipping_price" data-value=""></div>
-                                        </div>
-                                    @endif --}}
-                                    @foreach($taxArr['tax'] as $k=>$tax)
-                                        <div class="u-save d-flex justify-content-between">
-                                            @php
-                                                $rate = $taxArr['rate'][$k];
-                                            @endphp
-                                            <div class="cpn-lbl">{{$tax}}</div>
-                                            <div class="cpn-price">{{\App\Models\Utility::priceFormat($rate)}}</div>
-                                        </div>
-                                    @endforeach
-                                    <div
-                                        class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
-                                        <div class="mini-total-lbl">
-                                            {{__('Total')}}
-                                        </div>
-                                        <div class="mini-total-price final_total_price" id="total_value" data-value="666">
-                                            <input type="hidden" class="product_total" value="{{$total}}">
-                                            <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
-                                            <input type="hidden" name="total" id="total-booking-price" value="{{ $total }}">
-                                            <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}"> {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                     
+                        </div> --}}                     
                     </div>
                     <div class="col-md-12 col-12"  style="margin-top: 80px">
                         <div class="pagination-btn d-flex align-items-center justify-content-center " style="width:100% ">

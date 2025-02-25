@@ -3549,7 +3549,7 @@ form .row {
     -moz-border-radius: 30px;
     -ms-border-radius: 30px;
     -o-border-radius: 30px;
-    margin: 30px;
+    /* margin: 30px; */
 }
 .mini-cart .mini-cart-header {
     border-bottom: 1px solid var(--border-color);
@@ -3565,7 +3565,6 @@ form .row {
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     border: 1px solid var(--border-color);
-    width: 90%;
     text-align: start;
 }
 .mini-cart-image {
@@ -3857,7 +3856,7 @@ del {
     color: var(--third-color);
     font-family: var(--second-font);
 }
-.set .acnav-label:after {
+/* .set .acnav-label:after {
     content: '';
     position: absolute;
     height: 12px;
@@ -3880,7 +3879,7 @@ del {
     -moz-transition: all ease-in-out 0.5s;
     -ms-transition: all ease-in-out 0.5s;
     -o-transition: all ease-in-out 0.5s;
-}
+} */
 .set.is-open .acnav-label::after {
     top: 50%;
     transform: translateY(-50%) rotate(-135deg);
