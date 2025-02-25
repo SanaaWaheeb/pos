@@ -3536,10 +3536,13 @@ form .row {
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+    width: 90%;
+    text-align: start;
     border: 1px solid var(--border-color);
 }
 .mini-cart-image {
     width: 80px;
+    align-self: center;
 }
 .mini-cart-image a {
     display: block;
@@ -4309,6 +4312,9 @@ del {
 .payment-status #cart-body {
     overflow-y: auto;
     max-height: 20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .payment-status .details > *:not(:last-child) {
@@ -4336,7 +4342,7 @@ del {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: whitesmoke;
+    background-color: inherit;
     position: fixed;
     bottom: 0;
     gap: 10px;

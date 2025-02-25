@@ -60,8 +60,8 @@
             <!-- ------------------- Order details ------------------- -->
             <div class="order-details">
                 <diV class="d-flex direction-column align-items-center" style="font-size: 12px">
-                    <strong>{{ __('Date') }}: </strong>
-                    <span>{{ explode(' ', $trans_date)[0] }}</span>
+                    <strong>{{ __('Check-in Date') }}: </strong>
+                    <span>{{  $order_checkin }}</span>
                 </div>
                 <diV class="d-flex direction-column align-items-center" style="font-size: 12px">
                     <strong>{{ __('Time') }}: </strong>
@@ -85,7 +85,7 @@
                     @if ($product['variant_id'] != 0)
                     <div class="mini-cart-item" style="margin: 0" ata-id="{{$key}}" id="product-id-{{ $product['product_id'] }}">
                         <div class="mini-cart-details-status">
-                            <span>{{ $product['quantity'] }} __('Nights') </span>
+                            <span>{{ $product['quantity'] }} __('Night') </span>
 
                             <div data-label="Product" class="mini-cart-image">
                                 <a href="">
@@ -281,29 +281,38 @@
                     const decodedProducts = JSON.parse(products);
 
                     Object.entries(decodedProducts).forEach(([key, product]) => {
+                        const nights = "{{$order_num_nights}}";
                         const price = product.variant_id==0
                             ? product.price 
                             : product.variant_price;
                         subtotal += product.variant_id==0
                             ? product.quantity * price
                             : product.quantity * product.variant_price;
+                        const formattedPrice = formatPrice(price * product.quantity);
+                        
                         productHTML += `
                             <div class="mini-cart-item" style="margin: 0" data-id="${key}" id="product-id-${product.product_id}">
-                                <div class="mini-cart-details-status">
-                                    <span>${product.quantity}{{__('Nights')}}  </span>
-                                    <div data-label="Product" class="mini-cart-image">
-                                        <a href="">
-                                            <img src="{{ $productImg }}${product.image}" alt="img">
+                                <div class="mini-cart-image">
+                                    <a href="#">
+                                        <img src="{{ $productImg }}${product.image}" alt="img">
+                                    </a>
+                                </div>
+                                <div class="mini-cart-details">
+                                    <p class="mini-cart-title">
+                                        <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
+                                    </p>
+                                    <div class="pvarprice d-flex align-items-center justify-content-between">
+                                        <div class="price">
+                                            <small>
+                                            ${nights} ${nights > 1? "{{__('Nights')}}" : "{{__('Night')}}"}
+                                            </small>
+                                        </div>
+                                        <a class="remove_item">
+                                            <span class="subtotal">${formattedPrice}</span>
                                         </a>
                                     </div>
-                                    <div data-label="Name">
-                                        <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
-                                    </div>
-                                    <div data-label="Total">
-                                        <span class="subtotal">${price * product.quantity}</span>
-                                    </div>
                                 </div>
-                            </div>
+                            </div>      
                         `;
                     });
 

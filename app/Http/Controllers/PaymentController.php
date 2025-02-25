@@ -3354,14 +3354,15 @@ class PaymentController extends Controller
 
             $code = 200; // success code
             $order_amount = $order->price;
+            $order_checkin = $order->check_in_date;
+            $order_num_nights = $order->number_of_nights;
 
             // Store transaction date in session to prevent updates on refresh
-         if (!session()->has('trans_date_' . $dec_order_id)) {
-            session(['trans_date_' . $dec_order_id => Carbon::now('Asia/Riyadh')]);
-        }
+            if (!session()->has('trans_date_' . $dec_order_id)) {
+                    session(['trans_date_' . $dec_order_id => Carbon::now('Asia/Riyadh')]);
+            }
 
-        $trans_date = session('trans_date_' . $dec_order_id);
-            // $is_confirmed = $order->is_confirmed;
+            $trans_date = session('trans_date_' . $dec_order_id);
 
             // Forwards to payment status page with 'success code 200'
             return view('storefront.' . $store->theme_dir . '.status', compact(
@@ -3370,8 +3371,9 @@ class PaymentController extends Controller
                 'code', 
                 'order_amount', 
                 'trans_date',
-                // 'is_confirmed',
-                'products'
+                'products',
+                'order_checkin',
+                'order_num_nights'
             ));
 
             // ---------- Case2: un-successful status ----------
