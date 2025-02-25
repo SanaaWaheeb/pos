@@ -3066,6 +3066,23 @@ class PaymentController extends Controller
 
     }
 
+    /*
+        Customized function for theme4 to get total price based on number of nights
+    */
+    public function getTotalBookingPrice(Request $request)
+    {
+        $nights = $request->input('nights', 1);
+        $price = $request->input('price', 0);
+
+        $total_price = $nights * $price;
+
+        return response()->json([
+            'code' => 200,
+            'status' => 'Success',
+            'total_price' => Utility::priceFormat($total_price),
+        ]);
+    }
+
     public function processCheckout(Request $request, $slug, $order_amount)
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();

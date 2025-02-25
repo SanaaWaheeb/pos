@@ -510,6 +510,7 @@ Route::get('/generate-barcode/{sku}', [StoreController::class, 'generateBarcode'
 
 // The testing route
 Route::get('payment-checkout/{slug}/{order_amount}', [PaymentController::class, 'processCheckout'])->name(name: 'payment.checkout')->middleware('SetLocale');
+Route::post('total-booking', [PaymentController::class, 'getTotalBookingPrice'])->name('payment.total_booking');
 Route::get('payment-status/{slug}/{order_id}', [PaymentController::class, 'paymentStatus'])->name('payment.status')->middleware('SetLocale');
 Route::get('edfapay-payment/callback', [PaymentController::class, 'edfaPayPaymentCallback'])->name('edfapay.callback')->middleware('SetLocale');
 Route::get('confirm-order/{order}', [OrderController::class, 'storeConfirmOrder'])->name('confirm.order');

@@ -246,7 +246,8 @@
                                                         <div class="pvarprice d-flex align-items-center justify-content-between">
                                                             <div class="price">
                                                                 <small>
-                                                                    {{$product['quantity']}} x {{\App\Models\Utility::priceFormat($product['variant_price'])}}
+                                                                    <!-- {{$product['quantity']}} x {{\App\Models\Utility::priceFormat($product['variant_price'])}} -->
+                                                                    {{__('Night')}}
                                                                     @if(!empty($product['tax']))
                                                                         +
                                                                         @foreach($product['tax'] as $tax)
@@ -291,8 +292,9 @@
                                                         <div class="pvarprice d-flex align-items-center justify-content-between">
                                                             <div class="price">
                                                                 <small>
-                                                                    {{$product['quantity']}} Nights
-                                                                     {{-- x {{\App\Models\Utility::priceFormat($product['price'])}} --}}
+                                                                    <!-- {{$product['quantity']}} Nights
+                                                                     {{-- x {{\App\Models\Utility::priceFormat($product['price'])}} --}} -->
+                                                                    {{__('Night')}}
                                                                     @if(!empty($product['tax']))
                                                                         +
                                                                         @foreach($product['tax'] as $tax)
@@ -356,6 +358,7 @@
                                         <div class="mini-total-price final_total_price" id="total_value" data-value="666">
                                             <input type="hidden" class="product_total" value="{{$total}}">
                                             <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
+                                            <input type="hidden" name="total" id="total-booking-price" value="{{ $total }}">
                                             <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}"> {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
                                         </div>
                                     </div>
@@ -402,6 +405,46 @@
         //     getTotal(shipping_id);
         // });
 
+        // Triger changes in number of nights input field
+        document.addEventListener("DOMContentLoaded", function() {
+            const price = "{{ $total }}";
+            var nightsInput = document.querySelector('[name="number_of_nights"]');
+
+            nightsInput.addEventListener("input", function() {
+                var nights = parseInt(nightsInput.value) || 1;
+                var updatedTotal = nights * price;
+                
+                // Update displayed number of nights
+                const numNightsElement = document.querySelector('.pvarprice .price small');
+                if (numNightsElement) {
+                    const nightText = "{{ __('Night') }}";
+                    const nightsText = "{{ __('Nights') }}";
+                    numNightsElement.innerHTML = `${nights > 1 ? `${nights} ${nightsText}` : nightText}`;
+                    // Update hidden input field
+                    $('#total-booking-price').val(updatedTotal);
+                }
+
+                // Update displayed total price
+                $.ajax({
+                    url: "{{ route('payment.total_booking') }}",
+                    data: {
+                        "_token": $('meta[name="csrf-token"]').attr('content'),
+                        nights,
+                        price
+                    },
+                    method: 'POST',
+                    dataType: 'json',
+
+                    success: function (data) {
+                        $('.pro_total_price').html(data.total_price);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Error:", error);
+                    }
+                });
+            });
+        });
+        
         function getTotal(shipping_id) {
             var pro_total_price = $('.pro_total_price').attr('data-value');
             if (shipping_id == undefined) {
