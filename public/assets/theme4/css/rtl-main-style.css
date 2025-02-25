@@ -3156,7 +3156,7 @@ table tr th {
 .checkout-box {
     background-color: var(--white);
     position: fixed;
-    bottom: 1rem;
+    bottom: 0;
     left: 0; /* Start from the left edge */
     width: 100%; /* Full width of the page */
     padding: 20px;
@@ -3476,9 +3476,9 @@ form .row {
     padding: 12px 26px;
     margin: 10px 0;
 }
-.cart-head{
+/* .cart-head{
     margin-bottom: 50px;
-}
+} */
 .customer-info{
     margin: 20px 0;
 }
@@ -3549,6 +3549,7 @@ form .row {
     -moz-border-radius: 30px;
     -ms-border-radius: 30px;
     -o-border-radius: 30px;
+    margin: 30px;
 }
 .mini-cart .mini-cart-header {
     border-bottom: 1px solid var(--border-color);

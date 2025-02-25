@@ -1408,6 +1408,7 @@ class StoreController extends Controller
     public function productView($slug, $id)
     {
         $product_ratings = Ratting::where('slug', $slug)->where('product_id', $id)->get();
+        $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         $store_setting = Store::where('slug', $slug)->first();
         $cart = session()->get($slug);
         $page_slug_urls = PageOption::where('store_id', $store_setting->id)->get();
@@ -1480,6 +1481,10 @@ class StoreController extends Controller
         }
         $product_categorie = ProductCategorie::where('id', $products->product_categorie)->pluck('name')->first();
 
+        // Clear cart when opening a new product link in theme4
+        if($store->theme_dir=='theme4') {
+            session()->forget($slug);
+        }
         return view('storefront.' . $store->theme_dir . '.view', compact('wishlist', 'products', 'store', 'user_count', 'avg_rating', 'products_image', 'total_item', 'product_ratings', 'store_setting', 'product_variant_names', 'page_slug_urls', 'blog', 'all_products', 'product_categorie'));
     }
 
