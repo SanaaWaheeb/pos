@@ -336,7 +336,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
     </section> -->
 
     <div class="checkout-box">
-        <a href="{{route('user-address.useraddress',$store->slug)}}" class="checkout-btn">
+        <a href="!#" data-id="{{ $products->id }}" class="btn add_to_cart">
             {{__('Continue to Booking')}}
         </a>
     </div>
@@ -394,8 +394,9 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                 },
                 success: function(response) {
                     if (response.status == "Success") {
-                        show_toastr('Success', response.success, 'success');
-                        $("#shoping_counts").html(response.item_count);
+                        // show_toastr('Success', response.success, 'success');
+                        window.location.href = "{{route('user-address.useraddress',$store->slug)}}";
+
                     } else {
                         show_toastr('Error', response.error, 'error');
                     }
