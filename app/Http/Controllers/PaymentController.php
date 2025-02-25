@@ -3156,15 +3156,14 @@ class PaymentController extends Controller
                 $shipping_data = '';
             }
         }
-        $cust_details = $cart['customer'] ?? null;
-
+        
         // Store order in DB
         if (Utility::CustomerAuthCheck($store->slug)) {
             $customer = Auth::guard('customers')->user()->id;
         } else {
             $customer = 0;
         }
-
+        $cust_details = $cart['customer'] ?? null;
         $customer               = Auth::guard('customers')->user();
         $order                  = new Order();
         $order->order_id        = 'xxxxx';
@@ -3193,6 +3192,9 @@ class PaymentController extends Controller
         $order->user_id         = $store['id'];
         $order->is_confirmed    = 0;
         $order->customer_id     = isset($customer->id) ? $customer->id : '';
+        $order->check_in_date = $cust_details['check_in_date'] ?? null;
+        $order->number_of_nights = $cust_details['number_of_nights'] ?? 1;
+         
         $order->save();
 
         // Udpate order id

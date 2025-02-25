@@ -60,13 +60,13 @@
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     {{ Form::label('check_in_date', __('Check-in Date'), ['class' => 'form-label']) }}<span style="color:red">*</span>
-                                    {{ Form::date('Check_in_Date', null, ['class' => 'form-control', 'placeholder' => __('Enter Check-in Date'), 'min' => date('Y-m-d',),'required'=>'required']) }}
+                                    {{ Form::date('check_in_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Check-in Date'), 'min' => date('Y-m-d',),'required'=>'required']) }}
                                 </div>
                             </div>
                             <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     {{Form::label('number_of_nights',__('Number of Nights'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    {{Form::text('Number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
+                                    {{Form::text('number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
                                 </div>
                             </div>
                             @if(!empty($store_payment_setting['custom_field_title_1']))
@@ -102,14 +102,7 @@
                                     </div>
                                 </div>
                             @endif
-                            <div class="col-md-12 col-12"  style="margin-top: 80px">
-                                <div class="pagination-btn d-flex align-items-center justify-content-center ">
-                                    
-                                    <button type="submit" class="next-btn btn">{{__('Proceed to Checkout')}} <i class="fas fa-shopping-basket"></i></button>
-                                    
-                                    {{-- <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a> --}}
-                                </div>
-                            </div>
+                            
                             {{-- <div class="col-md-12 col-12">
                                 <div class="form-group">
                                     {{Form::label('billingaddress',__('Address'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
@@ -199,6 +192,7 @@
                             </div> --}}
                         </div>
                     </div>
+                   
                     
                     <div class="col-lg-4 col-12">
                         {{-- <div class="shiping-type">
@@ -206,7 +200,7 @@
                             <div class="radio-group" id="shipping_location_content">
                             </div>
                         </div> --}}
-                        <div class="coupon-form">
+                        {{-- <div class="coupon-form">
                             <div class="coupon-header">
                                 <h4>{{__('Coupon')}}</h4>
                             </div>
@@ -221,8 +215,8 @@
                                     </div>
                                 </form>
                             </div>
-                        </div>
-                        <div class="mini-cart" id="card-summary">
+                        </div> --}}
+                        <div class="mini-cart" id="card-summary" style="margin-top: 40px">
                             <div class="mini-cart-header">
                                 <h4>{{ __('Summary') }}</h4>
                             </div>
@@ -297,7 +291,8 @@
                                                         <div class="pvarprice d-flex align-items-center justify-content-between">
                                                             <div class="price">
                                                                 <small>
-                                                                    {{$product['quantity']}} x {{\App\Models\Utility::priceFormat($product['price'])}}
+                                                                    {{$product['quantity']}} Nights
+                                                                     {{-- x {{\App\Models\Utility::priceFormat($product['price'])}} --}}
                                                                     @if(!empty($product['tax']))
                                                                         +
                                                                         @foreach($product['tax'] as $tax)
@@ -330,14 +325,14 @@
                                     @endif
                                 </div>
                                 <div class="mini-cart-footer">
-                                    <div class="u-save d-flex justify-content-between">
+                                    {{-- <div class="u-save d-flex justify-content-between">
                                         <div class="cpn-lbl">{{ __('Subtotal') }}</div>
                                         <div class="cpn-price">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</div>
-                                    </div>
-                                    <div class="u-save d-flex justify-content-between">
+                                    </div> --}}
+                                    {{-- <div class="u-save d-flex justify-content-between">
                                         <div class="cpn-lbl">{{ __('Coupon') }}</div>
                                         <div class="cpn-price dicount_price">{{\App\Models\Utility::priceFormat(0)}}</div>
-                                    </div>
+                                    </div> --}}
                                     {{-- @if($store->enable_shipping == "on")
                                         <div class="u-save d-flex justify-content-between">
                                             <div class="cpn-lbl">{{__('Shipping Price')}} </div>
@@ -367,6 +362,15 @@
                                 </div>
                             </div>
                         </div>
+                     
+                    </div>
+                    <div class="col-md-12 col-12"  style="margin-top: 80px">
+                        <div class="pagination-btn d-flex align-items-center justify-content-center " style="width:100% ">
+                            
+                            <button type="submit" class="next-btn btn">{{__('Proceed to Checkout')}} <i class="fas fa-shopping-basket"></i></button>
+                            
+                            {{-- <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a> --}}
+                        </div>
                     </div>
                 </div>
             {{ Form::close() }}
@@ -384,19 +388,19 @@
             $("[name='shipping_postalcode']").val($("[name='billing_postalcode']").val());
         }
 
-        $(document).ready(function () {
-            $('.change_location').trigger('change');
+        // $(document).ready(function () {
+        //     $('.change_location').trigger('change');
 
-            setTimeout(function () {
-                var shipping_id = $("input[name='shipping_id']:checked").val();
-                getTotal(shipping_id);
-            }, 200);
-        });
+        //     setTimeout(function () {
+        //         var shipping_id = $("input[name='shipping_id']:checked").val();
+        //         getTotal(shipping_id);
+        //     }, 200);
+        // });
 
-        $(document).on('change', '.shipping_mode', function () {
-            var shipping_id = this.value;
-            getTotal(shipping_id);
-        });
+        // $(document).on('change', '.shipping_mode', function () {
+        //     var shipping_id = this.value;
+        //     getTotal(shipping_id);
+        // });
 
         function getTotal(shipping_id) {
             var pro_total_price = $('.pro_total_price').attr('data-value');
@@ -426,132 +430,132 @@
             });
         }
 
-        $(document).on('change', '.change_location', function () {
-            var location_id = $('.change_location').val();
+        // $(document).on('change', '.change_location', function () {
+        //     var location_id = $('.change_location').val();
 
-            if (location_id == 0) {
-                $('#location_hide').hide();
+        //     if (location_id == 0) {
+        //         $('#location_hide').hide();
 
-            } else {
-                $('#location_hide').show();
+        //     } else {
+        //         $('#location_hide').show();
 
-            }
+        //     }
 
-            $.ajax({
-                url: '{{ route('user.location', [$store->slug,'_location_id'])}}'.replace('_location_id', location_id),
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                },
-                method: 'POST',
-                context: this,
-                dataType: 'json',
+        //     $.ajax({
+        //         url: '{{ route('user.location', [$store->slug,'_location_id'])}}'.replace('_location_id', location_id),
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //         },
+        //         method: 'POST',
+        //         context: this,
+        //         dataType: 'json',
 
-                success: function (data) {
-                    var html = '';
-                    var shipping_id = '{{(isset($cust_details['shipping_id']) ? $cust_details['shipping_id'] : '')}}';
-                    $.each(data.shipping, function (key, value) {
-                        var checked = '';
-                        if (shipping_id != '' && shipping_id == value.id) {
-                            checked = 'checked';
-                        }
+        //         success: function (data) {
+        //             var html = '';
+        //             var shipping_id = '{{(isset($cust_details['shipping_id']) ? $cust_details['shipping_id'] : '')}}';
+        //             $.each(data.shipping, function (key, value) {
+        //                 var checked = '';
+        //                 if (shipping_id != '' && shipping_id == value.id) {
+        //                     checked = 'checked';
+        //                 }
 
-                        html += '<div class="shipping_location"><input type="radio" name="shipping_id" data-id="' + value.price + '" value="' + value.id + '" id="shipping_price' + key + '" class="shipping_mode" ' + checked + '>' +
-                            ' <label name="shipping_label" for="shipping_price' + key + '" class="shipping_label"> ' + value.name + '</label></div>';
+        //                 html += '<div class="shipping_location"><input type="radio" name="shipping_id" data-id="' + value.price + '" value="' + value.id + '" id="shipping_price' + key + '" class="shipping_mode" ' + checked + '>' +
+        //                     ' <label name="shipping_label" for="shipping_price' + key + '" class="shipping_label"> ' + value.name + '</label></div>';
 
-                    });
-                    $('#shipping_location_content').html(html);
-                }
-            });
-        });
+        //             });
+        //             $('#shipping_location_content').html(html);
+        //         }
+        //     });
+        // });
 
-        $(document).on('click', '.apply-coupon', function (e) {
-            e.preventDefault();
+        // $(document).on('click', '.apply-coupon', function (e) {
+        //     e.preventDefault();
 
-            var ele = $(this);
-            var coupon = ele.closest('.row').find('.coupon').val();
-            var hidden_field = $('.hidden_coupon').val();
-            var price = $('#card-summary .product_total').val();
-            var shipping_price = $('#card-summary .shipping_price').attr('data-value');
+        //     var ele = $(this);
+        //     var coupon = ele.closest('.row').find('.coupon').val();
+        //     var hidden_field = $('.hidden_coupon').val();
+        //     var price = $('#card-summary .product_total').val();
+        //     var shipping_price = $('#card-summary .shipping_price').attr('data-value');
 
-            if (coupon == hidden_field && coupon != "") {
-                show_toastr('Error', 'Coupon Already Used', 'error');
-            } else {
-                if (coupon != '') {
-                    $.ajax({
-                        url: '{{route('apply.productcoupon')}}',
-                        datType: 'json',
-                        data: {
-                            price: price,
-                            shipping_price: shipping_price,
-                            store_id: {{$store->id}},
-                            coupon: coupon
-                        },
-                        success: function (data) {
-                            $('#stripe_coupon, #paypal_coupon').val(coupon);
-                            if (data.is_success) {
-                                $('.hidden_coupon').val(coupon);
-                                $('.hidden_coupon').attr(data);
+        //     if (coupon == hidden_field && coupon != "") {
+        //         show_toastr('Error', 'Coupon Already Used', 'error');
+        //     } else {
+        //         if (coupon != '') {
+        //             $.ajax({
+        //                 url: '{{route('apply.productcoupon')}}',
+        //                 datType: 'json',
+        //                 data: {
+        //                     price: price,
+        //                     shipping_price: shipping_price,
+        //                     store_id: {{$store->id}},
+        //                     coupon: coupon
+        //                 },
+        //                 success: function (data) {
+        //                     $('#stripe_coupon, #paypal_coupon').val(coupon);
+        //                     if (data.is_success) {
+        //                         $('.hidden_coupon').val(coupon);
+        //                         $('.hidden_coupon').attr(data);
 
-                                $('.dicount_price').html(data.discount_price);
+        //                         $('.dicount_price').html(data.discount_price);
 
-                                var html = '';
-                                html += '<span class="text-sm font-weight-bold s-p-total pro_total_price" data-original="' + data.final_price_data_value + '">' + data.final_price + '</span>'
-                                $('.final_total_price').html(html);
+        //                         var html = '';
+        //                         html += '<span class="text-sm font-weight-bold s-p-total pro_total_price" data-original="' + data.final_price_data_value + '">' + data.final_price + '</span>'
+        //                         $('.final_total_price').html(html);
 
 
-                                // $('.coupon-tr').show().find('.coupon-price').text(data.discount_price);
-                                // $('.final-price').text(data.final_price);
-                                show_toastr('Success', data.message, 'success');
-                            } else {
-                                // $('.coupon-tr').hide().find('.coupon-price').text('');
-                                // $('.final-price').text(data.final_price);
-                                show_toastr('Error', data.message, 'error');
-                            }
-                        }
-                    })
-                } else {
-                    $.ajax({
-                        url: '{{route('apply.removecoupn')}}',
-                        datType: 'json',
-                        data: {
-                            price: "price",
-                            shipping_price: "shipping_price",
-                            slug:{{$store->id}} ,
-                            coupon: "coupon"
-                        },
-                        success: function (data) {
-                        }
-                    });
-                    var hidd_cou = $('.hidd_val').val();
+        //                         // $('.coupon-tr').show().find('.coupon-price').text(data.discount_price);
+        //                         // $('.final-price').text(data.final_price);
+        //                         show_toastr('Success', data.message, 'success');
+        //                     } else {
+        //                         // $('.coupon-tr').hide().find('.coupon-price').text('');
+        //                         // $('.final-price').text(data.final_price);
+        //                         show_toastr('Error', data.message, 'error');
+        //                     }
+        //                 }
+        //             })
+        //         } else {
+        //             $.ajax({
+        //                 url: '{{route('apply.removecoupn')}}',
+        //                 datType: 'json',
+        //                 data: {
+        //                     price: "price",
+        //                     shipping_price: "shipping_price",
+        //                     slug:{{$store->id}} ,
+        //                     coupon: "coupon"
+        //                 },
+        //                 success: function (data) {
+        //                 }
+        //             });
+        //             var hidd_cou = $('.hidd_val').val();
 
-                    if(hidd_cou == ""){
-                       var total_pa_val =  $(".total_pay_price").val();
-                       $(".final_total_price").html(total_pa_val);
-                       $(".dicount_price").html(0.00);
+        //             if(hidd_cou == ""){
+        //                var total_pa_val =  $(".total_pay_price").val();
+        //                $(".final_total_price").html(total_pa_val);
+        //                $(".dicount_price").html(0.00);
 
-                    }
-                    show_toastr('Error', '{{__('Invalid Coupon Code.')}}', 'error');
-                }
-            }
+        //             }
+        //             show_toastr('Error', '{{__('Invalid Coupon Code.')}}', 'error');
+        //         }
+        //     }
 
-        });
-        $(document).on('change','.change_country',function(){
-            var country = $('.change_country').val();
-            $.ajax({
-                url : '{{ route('user.city',[$store->slug,'_country']) }}'.replace('_country',country),
-                method : 'POST',
-                data : {
-                    "_token":"{{ csrf_token() }}",
-                },
-                context : this,
-                dataType : 'json',
-                success : function(data){
-                    $('#city').html('<option value="">Select city</option>'); 
-                    $.each(data.cities,function(key,value){
-                        $("#city").append('<option value="'+value+'">'+value+'</option>');
-                    });
-                }
-            }); 
-        });
+        // });
+        // $(document).on('change','.change_country',function(){
+        //     var country = $('.change_country').val();
+        //     $.ajax({
+        //         url : '{{ route('user.city',[$store->slug,'_country']) }}'.replace('_country',country),
+        //         method : 'POST',
+        //         data : {
+        //             "_token":"{{ csrf_token() }}",
+        //         },
+        //         context : this,
+        //         dataType : 'json',
+        //         success : function(data){
+        //             $('#city').html('<option value="">Select city</option>'); 
+        //             $.each(data.cities,function(key,value){
+        //                 $("#city").append('<option value="'+value+'">'+value+'</option>');
+        //             });
+        //         }
+        //     }); 
+        // });
     </script>
 @endpush
