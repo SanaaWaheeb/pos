@@ -3364,6 +3364,17 @@ class PaymentController extends Controller
 
             $trans_date = session('trans_date_' . $dec_order_id);
 
+            // Send email to the customer and owner
+            $owner = User::find($store->created_by);
+            $encrypt_order_id = Crypt::encrypt($order->id);
+            $order_email = $order->email;
+            $owner_email = $owner->email;
+            $dArr = [
+                'order_name' => $order->name,
+            ];
+            $resp = Utility::sendEmailTemplate('Order Created', $order_email, $dArr, $store, $encrypt_order_id);
+            $resp1 = Utility::sendEmailTemplate('Order Created For Owner', $owner_email, $dArr, $store, $encrypt_order_id);
+
             // Forwards to payment status page with 'success code 200'
             return view('storefront.' . $store->theme_dir . '.status', compact(
                 'store', 
