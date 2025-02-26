@@ -3202,7 +3202,7 @@ table tr th {
 }
 .fade:not(.show) {
     opacity: 0;
-}*/
+}
 .modal {
     position: fixed;
     top: 0;
