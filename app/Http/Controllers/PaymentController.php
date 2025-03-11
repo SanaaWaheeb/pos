@@ -3391,10 +3391,12 @@ class PaymentController extends Controller
         } else {
             // Forwards to payment status page with 'failur code 400'
             $code = 400;
+            $order_num_nights = 0;
             return view('storefront.' . $store->theme_dir . '.status', compact(
                 'dec_order_id', 
                 'store', 
                 'code', 
+                'order_num_nights'
             ));
         }
 

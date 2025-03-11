@@ -15,6 +15,258 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
 
 @section('content')
 
+
+
+@if ($store->door == "on" )
+{{ $store->board_id }}
+
+
+
+
+
+       <style>
+            #overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                z-index: 9999;  /*Set a high z-index to ensure it's on top of other elements */
+    
+            }
+            svg {
+              position: absolute;
+              width: 240px;
+              height: 120px;
+              top: 0; right: 0;
+              bottom: 0; left: 0; 
+              margin: auto;
+            }
+    
+            svg #plug,
+            svg #socket {
+              fill:var(--primary);
+            }
+    
+            svg #loop-normal {
+              fill: none;
+              stroke: var(--primary);
+              stroke-width: 12;
+            }
+    
+            svg #loop-offset {
+              display: none;
+            }
+    
+            .credit {
+              position: absolute;
+              padding: 20px;
+              bottom: 150px;
+              width: 100%;
+              text-align: center;
+              color: #000;
+              font: 800 150% "Open Sans", sans-serif;
+              text-transform: uppercase;
+              text-decoration: none;
+              z-index: 10000;  /*Set a high z-index to ensure it's on top of other elements */
+            }
+    </style>
+
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        .modal3 {
+          display: none;
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          padding: 20px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          z-index: 10001;    
+    
+        }
+        .overlay3 {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 10000;
+        }
+        .close-btn3 {
+          cursor: pointer;
+          position: absolute;
+          top: 10px;
+          right: 10px;
+          font-size: 18px;
+        }
+    </style>
+
+
+    <!-- Modal -->
+    <div id="myModal" class="modal3">
+    <div style="width: 350px; top: 50%; left: 50%;">
+      <img src="https://media.tenor.com/LGkgbxFuywEAAAAM/plug-in.gif" alt="Machine Issue Image" style="width: 350px;"></br></br>
+      <h2>{{ __('Machine Issue') }}</h2>
+      </br>
+      <p>{{ __('We apologize for the inconvenience. There is a malfunction in the device. You can try the following steps:') }}</p>
+      <ol>
+        <li>{{ __('Step 1: Check the power socket to ensure it is connected to the device.') }}</li>
+        <li>{{ __('Step 2: Inspect the power button if available.') }}</li>
+        <li>{{ __('Step 3: Turn off the device, wait for a minute, and then turn it on again.') }}</li>
+        <li>{{ __('Step 4: Retry scanning the barcode.') }}</li>
+      </ol>
+      </br>
+      <p>{{ __('If the issue persists, please contact technical support.') }}</p>
+      <p>{{ __('Thank you.') }}</p>
+    </div>
+    </div>
+
+    <!-- Overlay -->
+    <div id="overlay3" class="overlay3"></div> 
+
+    <div id="overlay">
+    <div id="ConnectionSVG">
+        <!-- Content within the overlay (if needed) -->
+        <svg id="preloader" width="240px" height="120px" viewBox="0 0 240 120" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  
+      <path id="loop-normal" class="st1" d="M120.5,60.5L146.48,87.02c14.64,14.64,38.39,14.65,53.03,0s14.64-38.39,0-53.03s-38.39-14.65-53.03,0L120.5,60.5
+    L94.52,87.02c-14.64,14.64-38.39,14.64-53.03,0c-14.64-14.64-14.64-38.39,0-53.03c14.65-14.64,38.39-14.65,53.03,0z">
+        <animate attributeName="stroke-dasharray" from="500, 50" to="450 50" begin="0s" dur="2s" repeatCount="indefinite" />
+        <animate attributeName="stroke-dashoffset" from="-40" to="-540" begin="0s" dur="2s" repeatCount="indefinite" />
+      </path>
+
+      <path id="loop-offset" d="M146.48,87.02c14.64,14.64,38.39,14.65,53.03,0s14.64-38.39,0-53.03s-38.39-14.65-53.03,0L120.5,60.5L94.52,87.02c-14.64,14.64-38.39,14.64-53.03,0c-14.64-14.64-14.64-38.39,0-53.03c14.65-14.64,38.39-14.65,53.03,0L120.5,60.5L146.48,87.02z"></path>
+
+      <path id="socket" d="M7.5,0c0,8.28-6.72,15-15,15l0-30C0.78-15,7.5-8.28,7.5,0z">
+        <animateMotion
+          dur="2s"
+          repeatCount="indefinite"
+          rotate="auto"
+          keyTimes="0;1"
+          keySplines="0.42, 0.0, 0.58, 1.0"
+        >
+          <mpath xlink:href="#loop-offset"/>
+        </animateMotion>
+      </path>
+      
+    <path id="plug" d="M0,9l15,0l0-5H0v-8.5l15,0l0-5H0V-15c-8.29,0-15,6.71-15,15c0,8.28,6.71,15,15,15V9z">
+      <animateMotion
+        dur="2s"
+          rotate="auto"
+          repeatCount="indefinite"
+          keyTimes="0;1"    
+          keySplines="0.42, 0, 0.58, 1"
+      >
+        <mpath xlink:href="#loop-normal"/>
+      </animateMotion>
+    </path>   
+      
+    </svg>
+    </div>
+    
+    <div class="credit">
+        {{ __('We are checking if the machine is powered on') }}
+    </div>
+
+    </div>    
+
+<!--===============================================================================================-->
+	<script src="https://ava.com.sa/connection/jquery-1.11.3.min.js"></script>
+<!--===============================================================================================-->
+	<script src="https://ava.com.sa/connection/mqttws31.js"></script>
+<!--===============================================================================================-->
+<!--===============================================================================================-->
+    <script src="https://ava.com.sa/connection/creapp.js"></script>
+<!--===============================================================================================-->
+
+
+<script>
+    var rac_id = "{{ $store->board_id }}";
+
+    $(document).ready(function(e) {
+        client = new Paho.MQTT.Client(config2.mqtt_server2, config2.mqtt_websockets_port2, "web_" + parseInt(Math.random() * 100, 10));
+
+        client.connect({
+            useSSL: true,
+            userName: config2.mqtt_user2,
+            password: config2.mqtt_password2,
+            onSuccess: function() {
+                console.log("MQTT Connected");
+                client.subscribe("/PING/" + rac_id);
+                client.subscribe("/RESPONSE/" + rac_id);
+                
+                setTimeout(function() {
+                    mqttSend("/PING/" + rac_id, "ping");
+                }, 500); // Delay to ensure subscription is active
+            },
+            onFailure: function(e) {
+                console.log("MQTT Connection Failed: ", e);
+            }
+        });
+
+        client.onConnectionLost = function(responseObject) {
+            if (responseObject.errorCode !== 0) {
+                console.log("Connection Lost: " + responseObject.errorMessage);
+                $("#machineStatus").text("NOT CONNECTED");
+
+                setTimeout(function() { 
+                    client.connect({
+                        useSSL: true,
+                        userName: config2.mqtt_user2,
+                        password: config2.mqtt_password2,
+                        onSuccess: function() {
+                            console.log("Reconnected");
+                            client.subscribe("/PING/" + rac_id);
+                            setTimeout(function() {
+                                mqttSend("/PING/" + rac_id, "ping");
+                            }, 500);
+                        }
+                    }); 
+                }, 1000);
+            }
+        };
+
+        client.onMessageArrived = function(message) {
+            console.log("MQTT Message Arrived: " + message.payloadString);
+
+            if (!isNaN(message.payloadString)) {
+                console.log("Received number: " + message.payloadString);
+            } else {
+                if (message.payloadString === 'connected') {
+                    $("#machineStatus").text("CONNECTED");
+                    document.getElementById('overlay').style.display = 'none';
+                    
+                } else {
+                    $("#machineStatus").text("NOT CONNECTED");
+                }
+            }
+        };
+
+    });
+
+    var mqttSend = function(topic, msg) {
+        var message = new Paho.MQTT.Message(msg);
+        message.destinationName = topic;
+        client.send(message);
+        console.log("Sent MQTT Message:", topic, msg);
+    };
+</script>
+
+
+
+@endif
+
 <div class="wrapper">
     {{-- @foreach ($pixelScript as $script)
         <?= $script; ?>
@@ -234,7 +486,14 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                 </div>
                             </div>
                         @endif
-
+                    
+                    
+                    
+                    <div>
+                        <button id="machineStatus" style="display: none;">
+                            NOT CONNECTED
+                        </button>
+                    </div>
                     </div>
                 @endforeach
             </div>
