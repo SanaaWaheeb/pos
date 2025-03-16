@@ -10,7 +10,7 @@
     <section class="cart-section padding-bottom padding-top">
         <div class="container">
             <div class="row align-items-center cart-head">
-                <div class="col-lg-3 col-md-12 col-12">
+                <div class="col-md-12 col-12">
                     <div class="cart-title">
                         <h2>{{ __('Hotel Booking') }}</h2>
                         <p style="margin-top: 10px"> {{ __('Fill the form below so we can send you the orders invoice.') }}</p>
@@ -34,16 +34,19 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 col-12">
+                            <!-- <div class="col-md-6 col-12">
                                 <div class="form-group">
                                     {{Form::label('number_of_nights',__('Number of Nights'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
                                     {{Form::text('number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
                                 </div>
-                            </div>
-                            <div class="col-md-6 col-12">
+                            </div> -->
+                            <div class="col-12">
                                 <div class="form-group">
-                                    {{ Form::label('check_in_date', __('Check-in Date'), ['class' => 'form-label']) }}<span style="color:red">*</span>
-                                    {{ Form::date('check_in_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Check-in Date'), 'min' => date('Y-m-d',),'required'=>'required']) }}
+                                    {{ Form::label('date_range', __('Choose Dates'), ['class' => 'form-label']) }} <span style="color:red">*</span>
+                                    <input type="text" id="date-range" name="date_range" class="form-control" placeholder="{{__('Check-in - Check-out')}}" required>
+                                    <input type="hidden" id="check-in-date" name="check_in_date">
+                                    <input type="hidden" id="check-out-date" name="check_out_date">
+                                    <input type="hidden" id="number_of_nights" name="number_of_nights">
                                 </div>
                             </div>
                         </div>
@@ -81,7 +84,7 @@
                                                         <div class="pvarprice d-flex align-items-center justify-content-between">
                                                             <div class="price">
                                                                 <small>
-                                                                    {{__('Night')}}
+                                                                    {{$product['quantity']}} × {{\App\Models\Utility::priceFormat($product['variant_price'])}}
                                                                     @if(!empty($product['tax']))
                                                                         +
                                                                         @foreach($product['tax'] as $tax)
@@ -100,8 +103,8 @@
                                                                     $sub_total += $subtotal;
                                                                 @endphp
                                                             </div>
-                                                            <a class="remove_item">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
+                                                            <a class="remove_item" style="margin: 10px 0 5px 0" data-price="{{ $totalprice }}">
+                                                                {{\App\Models\Utility::priceFormat($totalprice)}} / {{__('Night')}}
                                                             </a>
                                                         </div>
                                                     </div>
@@ -126,7 +129,7 @@
                                                         <div class="pvarprice d-flex align-items-center justify-content-between">
                                                             <div class="price">
                                                                 <small>
-                                                                    {{__('Night')}}
+                                                                    {{$product['quantity']}} × {{\App\Models\Utility::priceFormat($product['price'])}}
                                                                     @if(!empty($product['tax']))
                                                                         +
                                                                         @foreach($product['tax'] as $tax)
@@ -145,8 +148,8 @@
                                                                     $sub_total += $subtotal;
                                                                 @endphp
                                                             </div>
-                                                            <a class="remove_item" href="#">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}}
+                                                            <a class="remove_item" href="#" style="margin: 10px 0 5px 0" data-price="{{ $totalprice }}">
+                                                                {{\App\Models\Utility::priceFormat($totalprice)}} / {{__('Night')}}
                                                             </a>
                                                             @php
                                                             $total += $totalprice;
@@ -182,6 +185,13 @@
                                             <div class="cpn-price">{{\App\Models\Utility::priceFormat($rate)}}</div>
                                         </div>
                                     @endforeach
+                                    <!-- Display service per night -->
+                                     <ul class="cart-summery">
+                                        <li>
+                                            <span class="cart-sum-left"> {{__('Number of Nights')}} </span>
+                                            <span id="num-nights"> {{__('Night')}} </span>
+                                        </li>
+                                     </ul>
                                     <div
                                         class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
                                         <div class="mini-total-lbl">
@@ -394,6 +404,10 @@
 </div>
 @endsection
 @push('script-page')
+    <script src="https://cdn.jsdelivr.net/npm/moment/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    
     <script>
         function billing_data() {
             $("[name='shipping_address']").val($("[name='billing_address']").val());
@@ -403,102 +417,128 @@
             $("[name='shipping_postalcode']").val($("[name='billing_postalcode']").val());
         }
 
-        // $(document).ready(function () {
-        //     $('.change_location').trigger('change');
+        // Handle select check-in and check-out dates
+        $(document).ready(function() {
+            $('#date-range').daterangepicker({
+                minDate: moment().format('YYYY-MM-DD'),
+                locale: {
+                    format: 'YYYY-MM-DD',
+                    cancelLabel: 'Clear',
+                },
+                singleDatePicker: false,
+                alwaysShowCalendars: true, 
+                opens: 'center',
+                showCustomRangeLabel: false, 
+                linkedCalendars: false, // Ensures only one month is shown
+                autoUpdateInput: false
+            });
 
-        //     setTimeout(function () {
-        //         var shipping_id = $("input[name='shipping_id']:checked").val();
-        //         getTotal(shipping_id);
-        //     }, 200);
-        // });
+            $('#date-range').on('apply.daterangepicker', function(ev, picker) {
+                let checkInDate = picker.startDate.format('YYYY-MM-DD');
+                let checkOutDate = picker.endDate.format('YYYY-MM-DD');
+                let nights = picker.endDate.diff(picker.startDate, 'days');
 
-        // $(document).on('change', '.shipping_mode', function () {
-        //     var shipping_id = this.value;
-        //     getTotal(shipping_id);
-        // });
-
-        // Triger changes in number of nights input field
-        document.addEventListener("DOMContentLoaded", function() {
-            const price = "{{ $total }}";
-            var nightsInput = document.querySelector('[name="number_of_nights"]');
-
-            nightsInput.addEventListener("input", function() {
-                var nights = parseInt(nightsInput.value) || 1;
-                var updatedTotal = nights * price;
-                
-                // Update displayed number of nights
-                const numNightsElement = document.querySelector('.pvarprice .price small');
-                if (numNightsElement) {
-                    const nightText = "{{ __('Night') }}";
-                    const nightsText = "{{ __('Nights') }}";
-                    numNightsElement.innerHTML = `${nights > 1 ? `${nights} ${nightsText}` : nightText}`;
-                    // Update hidden input field
-                    $('#total-booking-price').val(updatedTotal);
+                // Prevent applying if no check-out date is selected
+                if (nights < 1) {
+                    show_toastr('Error', "{{ __('Please select a valid check-out date') }}", 'error');
+                    return false; // Stop execution
                 }
 
-                // Update displayed total price
+                // Update input values
+                $(this).val(checkInDate + ' - ' + checkOutDate);
+                $('#check-in-date').val(checkInDate);
+                $('#check-out-date').val(checkOutDate);
+                $('#number_of_nights').val(nights);
+                $('#num-nights').text(nights + ' ' + (nights > 1 ? "{{ __('Nights') }}" : "{{ __('Night') }}"));
+
+                // Get prices from .remove_item elements
+                let removeItems = document.querySelectorAll(".remove_item");
+                let prices = [];
+                removeItems.forEach(function (item) {
+                    prices.push(item.dataset.price);
+                });
+
+                // Send AJAX request to update total price
                 $.ajax({
                     url: "{{ route('payment.total_booking') }}",
                     data: {
                         "_token": $('meta[name="csrf-token"]').attr('content'),
                         nights,
-                        price
+                        prices
                     },
                     method: 'POST',
                     dataType: 'json',
-
                     success: function (data) {
                         $('.pro_total_price').html(data.total_price);
+                        $('#total-booking-price').val(data.total_price); // Update hidden input field
                     },
                     error: function(xhr, status, error) {
                         console.error("Error:", error);
                     }
                 });
             });
-        });
-        
-        function getTotal(shipping_id) {
-            var pro_total_price = $('.pro_total_price').attr('data-value');
-            if (shipping_id == undefined) {
-                $('.shipping_price_add').hide();
-                return false
-            } else {
-                $('.shipping_price_add').show();
-            }
 
-            $.ajax({
-                url: '{{ route('user.shipping', [$store->slug,'_shipping'])}}'.replace('_shipping', shipping_id),
-                data: {
-                    "pro_total_price": pro_total_price,
-                    "_token": "{{ csrf_token() }}",
-                },
-                method: 'POST',
-                context: this,
-                dataType: 'json',
-
-                success: function (data) {
-                    var price = data.price + pro_total_price;
-                    $('.shipping_price').html(data.price);
-                    $('.shipping_price').attr('data-value', data.price);
-                    $('.pro_total_price').html(data.total_price);
-                }
+            $('#date-range').on('cancel.daterangepicker', function(ev, picker) {
+                $(this).val('');
+                $('#check-in-date').val('');
+                $('#check-out-date').val('');
+                $('#number_of_nights').val('');
             });
-        }
+        });
 
-        // $(document).on('change', '.change_location', function () {
-        //     var location_id = $('.change_location').val();
+        // Triger changes in number of nights input field (old code)
+        // document.addEventListener("DOMContentLoaded", function() {
+        //     const price = "{{ $total }}";
+        //     var nightsInput = document.querySelector('[name="number_of_nights"]');
 
-        //     if (location_id == 0) {
-        //         $('#location_hide').hide();
+        //     nightsInput.addEventListener("input", function() {
+        //         var nights = parseInt(nightsInput.value) || 1;
+        //         var updatedTotal = nights * price;
+                
+        //         // Update displayed number of nights
+        //         const numNightsElement = document.querySelector('.pvarprice .price small');
+        //         if (numNightsElement) {
+        //             const nightText = "{{ __('Night') }}";
+        //             const nightsText = "{{ __('Nights') }}";
+        //             numNightsElement.innerHTML = `${nights > 1 ? `${nights} ${nightsText}` : nightText}`;
+        //             // Update hidden input field
+        //             $('#total-booking-price').val(updatedTotal);
+        //         }
 
+        //         // Update displayed total price
+        //         $.ajax({
+        //             url: "{{ route('payment.total_booking') }}",
+        //             data: {
+        //                 "_token": $('meta[name="csrf-token"]').attr('content'),
+        //                 nights,
+        //                 price
+        //             },
+        //             method: 'POST',
+        //             dataType: 'json',
+
+        //             success: function (data) {
+        //                 $('.pro_total_price').html(data.total_price);
+        //             },
+        //             error: function(xhr, status, error) {
+        //                 console.error("Error:", error);
+        //             }
+        //         });
+        //     });
+        // });
+        
+        // function getTotal(shipping_id) {
+        //     var pro_total_price = $('.pro_total_price').attr('data-value');
+        //     if (shipping_id == undefined) {
+        //         $('.shipping_price_add').hide();
+        //         return false
         //     } else {
-        //         $('#location_hide').show();
-
+        //         $('.shipping_price_add').show();
         //     }
 
         //     $.ajax({
-        //         url: '{{ route('user.location', [$store->slug,'_location_id'])}}'.replace('_location_id', location_id),
+        //         url: '{{ route('user.shipping', [$store->slug,'_shipping'])}}'.replace('_shipping', shipping_id),
         //         data: {
+        //             "pro_total_price": pro_total_price,
         //             "_token": "{{ csrf_token() }}",
         //         },
         //         method: 'POST',
@@ -506,111 +546,12 @@
         //         dataType: 'json',
 
         //         success: function (data) {
-        //             var html = '';
-        //             var shipping_id = '{{(isset($cust_details['shipping_id']) ? $cust_details['shipping_id'] : '')}}';
-        //             $.each(data.shipping, function (key, value) {
-        //                 var checked = '';
-        //                 if (shipping_id != '' && shipping_id == value.id) {
-        //                     checked = 'checked';
-        //                 }
-
-        //                 html += '<div class="shipping_location"><input type="radio" name="shipping_id" data-id="' + value.price + '" value="' + value.id + '" id="shipping_price' + key + '" class="shipping_mode" ' + checked + '>' +
-        //                     ' <label name="shipping_label" for="shipping_price' + key + '" class="shipping_label"> ' + value.name + '</label></div>';
-
-        //             });
-        //             $('#shipping_location_content').html(html);
+        //             var price = data.price + pro_total_price;
+        //             $('.shipping_price').html(data.price);
+        //             $('.shipping_price').attr('data-value', data.price);
+        //             $('.pro_total_price').html(data.total_price);
         //         }
         //     });
-        // });
-
-        // $(document).on('click', '.apply-coupon', function (e) {
-        //     e.preventDefault();
-
-        //     var ele = $(this);
-        //     var coupon = ele.closest('.row').find('.coupon').val();
-        //     var hidden_field = $('.hidden_coupon').val();
-        //     var price = $('#card-summary .product_total').val();
-        //     var shipping_price = $('#card-summary .shipping_price').attr('data-value');
-
-        //     if (coupon == hidden_field && coupon != "") {
-        //         show_toastr('Error', 'Coupon Already Used', 'error');
-        //     } else {
-        //         if (coupon != '') {
-        //             $.ajax({
-        //                 url: '{{route('apply.productcoupon')}}',
-        //                 datType: 'json',
-        //                 data: {
-        //                     price: price,
-        //                     shipping_price: shipping_price,
-        //                     store_id: {{$store->id}},
-        //                     coupon: coupon
-        //                 },
-        //                 success: function (data) {
-        //                     $('#stripe_coupon, #paypal_coupon').val(coupon);
-        //                     if (data.is_success) {
-        //                         $('.hidden_coupon').val(coupon);
-        //                         $('.hidden_coupon').attr(data);
-
-        //                         $('.dicount_price').html(data.discount_price);
-
-        //                         var html = '';
-        //                         html += '<span class="text-sm font-weight-bold s-p-total pro_total_price" data-original="' + data.final_price_data_value + '">' + data.final_price + '</span>'
-        //                         $('.final_total_price').html(html);
-
-
-        //                         // $('.coupon-tr').show().find('.coupon-price').text(data.discount_price);
-        //                         // $('.final-price').text(data.final_price);
-        //                         show_toastr('Success', data.message, 'success');
-        //                     } else {
-        //                         // $('.coupon-tr').hide().find('.coupon-price').text('');
-        //                         // $('.final-price').text(data.final_price);
-        //                         show_toastr('Error', data.message, 'error');
-        //                     }
-        //                 }
-        //             })
-        //         } else {
-        //             $.ajax({
-        //                 url: '{{route('apply.removecoupn')}}',
-        //                 datType: 'json',
-        //                 data: {
-        //                     price: "price",
-        //                     shipping_price: "shipping_price",
-        //                     slug:{{$store->id}} ,
-        //                     coupon: "coupon"
-        //                 },
-        //                 success: function (data) {
-        //                 }
-        //             });
-        //             var hidd_cou = $('.hidd_val').val();
-
-        //             if(hidd_cou == ""){
-        //                var total_pa_val =  $(".total_pay_price").val();
-        //                $(".final_total_price").html(total_pa_val);
-        //                $(".dicount_price").html(0.00);
-
-        //             }
-        //             show_toastr('Error', '{{__('Invalid Coupon Code.')}}', 'error');
-        //         }
-        //     }
-
-        // });
-        // $(document).on('change','.change_country',function(){
-        //     var country = $('.change_country').val();
-        //     $.ajax({
-        //         url : '{{ route('user.city',[$store->slug,'_country']) }}'.replace('_country',country),
-        //         method : 'POST',
-        //         data : {
-        //             "_token":"{{ csrf_token() }}",
-        //         },
-        //         context : this,
-        //         dataType : 'json',
-        //         success : function(data){
-        //             $('#city').html('<option value="">Select city</option>'); 
-        //             $.each(data.cities,function(key,value){
-        //                 $("#city").append('<option value="'+value+'">'+value+'</option>');
-        //             });
-        //         }
-        //     }); 
-        // });
+        // }
     </script>
 @endpush

@@ -32,7 +32,6 @@
     "Action": "Action",
     "Active": "Active",
     "Active Users": "Active Users",
-    "Add": "Add",
     "Add Coupon": "Add Coupon",
     "Add in Cart": "Add in Cart",
     "Add new product": "Add new product",
@@ -1600,5 +1599,11 @@
     "Please Select a store": "Please Select a store",
     "Please select products": "Please select products",
     "Product Successfully Copied": "Product Successfully Copied",
-    "Copy": "Copy"
+    "Copy": "Copy",
+    "Rooms & Suites": "Rooms & Suites",
+    "All": "All",
+    "Availability": "Availability",
+    "Check-in - Check-out": "Check-in - Check-out",
+    "Choose Dates": "Choose Dates",
+    "Please select a valid check-out date": "Please select a valid check-out date"
 }

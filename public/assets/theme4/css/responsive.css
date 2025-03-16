@@ -99,13 +99,13 @@
   .store-promotions-box {
     margin-top: 30px;
   }
-  .last-btn .cart-btn{
+  /* .last-btn .cart-btn{
     width: 100%;
-  }
-  .last-btn{
+  } */
+  /* .last-btn{
     flex-direction: column;
     align-items: start;
-  }
+  } */
   .bestseller-title .section-title{
     flex: 1;
   }

@@ -1481,10 +1481,6 @@ class StoreController extends Controller
         }
         $product_categorie = ProductCategorie::where('id', $products->product_categorie)->pluck('name')->first();
 
-        // Clear cart when opening a new product link in theme4
-        if($store->theme_dir=='theme4') {
-            session()->forget($slug);
-        }
         return view('storefront.' . $store->theme_dir . '.view', compact('wishlist', 'products', 'store', 'user_count', 'avg_rating', 'products_image', 'total_item', 'product_ratings', 'store_setting', 'product_variant_names', 'page_slug_urls', 'blog', 'all_products', 'product_categorie'));
     }
 
@@ -2825,6 +2821,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 "phone" => $request->phone,
                 "email" => $request->email,
                 "check_in_date" => $request->check_in_date,
+                "check_out_date" => $request->check_out_date,
                 "number_of_nights" => $request->number_of_nights,
     
     

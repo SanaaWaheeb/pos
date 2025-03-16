@@ -4,7 +4,7 @@
 @endsection
 @php
     $imgpath = \App\Models\Utility::get_file('uploads/is_cover_image/');
-    
+    $cart = session()->get($store->slug);
 @endphp
 @section('content')
     <div class="wrapper">
@@ -140,6 +140,28 @@
                 </div>
             </div>
         </section>
+
+        <div class="checkout-box" style="{{ empty($cart['products']) || count($cart['products']) == 0 ? 'display: none;' : '' }}">
+            <div class="align-items-center justify-content-center">
+                <!-- <div class="col-md-4 col-12">
+                    <div class="price-bar">
+                        <span>{{ __('Total value:') }}</span>
+                        <span id="displaytotal">{{\App\Models\Utility::priceFormat(price: !empty($total)?$total:0)}}</span>
+                    </div>
+                </div> -->
+                    {{-- @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
+                        <a href="#" class="checkout-btn modal-target checkout_btn" data-modal="Checkout" id="checkout-btn">
+                            {{__('Continue to Booking')}}
+                            <i class="fas fa-shopping-basket"></i>
+                        </a>
+                    @else --}}
+                        <a href="{{ route('user-address.useraddress',$store->slug) }}" class="checkout-btn">
+                            {{__('Continue to Booking')}}
+                            <i class="fas fa-shopping-basket"></i>
+                        </a>
+                    {{-- @endif --}}
+            </div>
+        </div>
     </div>
 @endsection
 @push('script-page')
@@ -170,6 +192,9 @@
                     if (response.status == "Success") {
                         show_toastr('Success', response.success, 'success');
                         $("#shoping_counts").html(response.item_count);
+
+                        // Display booking button
+                        $('.checkout-box').fadeIn();
                     } else {
                         show_toastr('Error', response.error, 'error');
                     }

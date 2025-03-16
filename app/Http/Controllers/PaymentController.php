@@ -3072,9 +3072,14 @@ class PaymentController extends Controller
     public function getTotalBookingPrice(Request $request)
     {
         $nights = $request->input('nights', 1);
-        $price = $request->input('price', 0);
+        $prices = $request->input('prices', []);
 
-        $total_price = $nights * $price;
+        $total_price = 0;
+
+        // Iterate over each price and calculate total price
+        foreach ($prices as $price) {
+            $total_price += ((float) $price * $nights);
+        }
 
         return response()->json([
             'code' => 200,

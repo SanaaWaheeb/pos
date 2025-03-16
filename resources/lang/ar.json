@@ -32,7 +32,6 @@
   "Action": "فعّل",
   "Active": "نشيط",
   "Active Users": "المستخدمون النشطون",
-  "Add": "يضيف",
   "Add Coupon": "أضف قسيمة",
   "Add in Cart": "أضف إلى السلة",
   "Add new product": "إضافة منتج جديد",
@@ -1603,5 +1602,10 @@
   "Please Select a store": "قم باختيار المتجر",
   "Please select products": "الرجاء اختيار منتجات",
   "Product Successfully Copied": "تم نسخ المنتجات بنجاح",
-  "Copy": "نسخ"
+  "Copy": "نسخ",
+  "Rooms & Suites": "الغرف والأجنحة",
+  "All": "الجميع",
+  "Check-in - Check-out": "وقت الوصول - وقت المغادرة",
+  "Choose Dates": "اختر المواعيد",
+  "Please select a valid check-out date": "الرجاء تحديد تاريخ المغادرة"
 }

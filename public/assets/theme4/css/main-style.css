@@ -1967,6 +1967,7 @@ body.no-scroll {
     padding-bottom: 80px;
 }
 .section-title {
+    width: 100%; /** added **/
     margin-bottom: 26px;
 }
 .subtitle {
@@ -1984,6 +1985,7 @@ body.no-scroll {
     right: 0;
     top: 0;
     z-index: 4;
+    padding: 15px 0; /** added **/
     -webkit-transition: all ease-in-out 0.5s;
     -moz-transition: all ease-in-out 0.5s;
     -ms-transition: all ease-in-out 0.5s;
@@ -2075,7 +2077,7 @@ body.no-scroll {
     /* min-width: 150px; */
     z-index: 2;
     left: auto;
-    right: 0;
+    /* right: 0; */
     padding: 10px 0 0 !important;
     border-top: 1px solid var(--border-color);
 }
@@ -2490,6 +2492,8 @@ body.no-scroll {
     flex-direction: column;
     height: 100%;
     color: var(--third-color);
+    border-radius: 8px; /** added **/
+    border: 1px solid var(--border-color); /** added **/
 }
 .product-card .card-img {
     position: relative;
@@ -2516,7 +2520,7 @@ body.no-scroll {
     right: 15px;
     height: 100%;
     width: 100%;
-    object-fit: contain;
+    object-fit: cover; /** changed << contain **/
     transition: all ease-in-out 0.6s;
     -webkit-transition: all ease-in-out 0.6s;
     -moz-transition: all ease-in-out 0.6s;
@@ -2541,6 +2545,7 @@ body.no-scroll {
 }
 .product-card .card-content{
     margin-top: 15px;
+    padding: 15px; /** added **/
 }
 .product-card .card-content h6 {
     font-weight: bold;
@@ -3137,6 +3142,7 @@ table tr th {
     justify-content: center;
     align-items: center;
     text-align: center; /* Ensure text inside is centered */
+    z-index: 1000;
 }
 .checkout-btn{
     padding: 12px 30px;
@@ -4382,4 +4388,26 @@ del {
 
 .mini-cart-details-cart .mini-cart-image{
     margin-right: 0.5rem;
+}
+
+.daterangepicker .drp-calendar.right {
+    display: none !important;
+}
+
+.daterangepicker .drp-calendar {
+    width: 100% !important;
+}
+
+.cart-summery li{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+.cart-summery li:not(:last-of-type){
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+.cart-summery .cart-sum-left {
+    font-weight: bold;
 }

@@ -19,6 +19,7 @@ $productImg = \App\Models\Utility::get_file('uploads/is_cover_image/');
 $catimg = \App\Models\Utility::get_file('uploads/product_image/');
 $default =\App\Models\Utility::get_file('uploads/theme4/header/brand_logo.png');
 $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
+$cart = session()->get($store->slug);
 
 @endphp
 @section('content')
@@ -53,13 +54,18 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                         </h2>
                         <p> {{ !empty($homepage_header_Sub_text) ? $homepage_header_Sub_text : 'There is only that moment and the incredible certainty that everything under the sun has been written by one hand only.' }}</p>
                         <a href="#" class="cart-btn" id="pro_scroll"> {{ !empty($homepage_header_Button) ? $homepage_header_Button : __('Start shopping') }}
-                            <i class="fas fa-shopping-basket"></i>
+                            <i class="fas fa-calendar-check"></i>
                         </a>
                     </div>
                 </div>
             </section>
         @endif
     @endforeach
+
+    @php
+        $homePromotions = collect($getStoreThemeSetting)->firstWhere('section_name', 'Home-Promotions');
+    @endphp
+    @if ($homePromotions['section_name'] == 'Home-Promotions' && $homePromotions['section_enable'] == 'on')
     <section class="store-promotions">
         <div class="offset-container offset-left">
             <div class="store-promotions-inner">
@@ -136,8 +142,8 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                             </div>
                                         </div>
                                         @if ($i == 2)
-                                            <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show more products') }}
-                                                <i class="fas fa-shopping-basket"></i>
+                                            <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show More') }}
+                                                <i class="fas fa-angle-right"></i>
                                             </a>
                                         @endif
                                     @endfor
@@ -151,8 +157,8 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                             </div>
                                         </div>
                                         @if ($i == 2)
-                                            <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show more products') }}
-                                                <i class="fas fa-shopping-basket"></i>
+                                            <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show More') }}
+                                                <i class="fas fa-angle-right"></i>
                                             </a>
                                         @endif
                                     @endfor
@@ -180,25 +186,36 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
             </div>
         </div>
     </section>
+    @endif
+
     @if ($products['Start shopping']->count() > 0)
         <section class="bestseller-section tabs-wrapper padding-top padding-bottom" id="pro_items">
             <div class="container">
                 <div class="bestseller-title">
                     <div class="section-title">
-                        <h2>{{__('Products')}}</h2>
+                        <div class="d-flex justify-content-between align-items-center" style="gap: 10px">
+                            <h2>{{__('Rooms & Suites')}}</h2>
+                            <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show More') }}
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </div>
                         <div class="tab-bar">
                             <ul class="cat-tab tabs">
                                 @foreach($categories as $key => $category)
                                     <li class="tab-link {{ $key == 0 ? 'active' : '' }}" data-tab="tab-{!! preg_replace('/[^A-Za-z0-9\-]/', '_', $category) !!}">
-                                        <a> {{__($category)}}</a>
+                                        @if ($category !== 'Start shopping')
+                                            <a> {{__($category)}}</a>
+                                        @else
+                                            <a> {{__('All')}}</a>
+                                        @endif
                                     </li>
                                 @endforeach
                             </ul>
                         </div>
                         </div>    
-                        <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show more products') }}
-                            <i class="fas fa-shopping-basket"></i>
-                        </a>                
+                        <!-- <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show More') }}
+                            <i class="fas fa-angle-right"></i>
+                        </a>                 -->
                 </div>
                 <div class="tabs-container">
                     @foreach ($products as $key => $items)
@@ -251,7 +268,9 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                                     <h6>
                                                         <a href="{{route('store.product.product_view',[$store->slug,$product->id])}}">{{$product->name}}</a>
                                                     </h6>
-                                                <p>{{__('Category')}}: {{$product->product_category()}}
+                                                @if (!empty($product->product_category()))
+                                                    <p>{{__('Category')}}: {{$product->product_category()}}
+                                                @endif
                                                     </p>
                                                     <div class="rating">
                                                         @if($store->enable_rating == 'on')
@@ -284,9 +303,9 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                                             </ins>
                                                         </div>
                                                         @if ($product->enable_product_variant == 'on')
-                                                            <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn"> <i class="fas fa-shopping-basket"></i>{{ __('Add To Cart') }}</a>
+                                                            <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn"> {{ __('Select') }}</a>
                                                         @else
-                                                        <a data-id="{{ $product->id }}" class="cart-btn add_to_cart"> <i class="fas fa-shopping-basket"></i>{{ __('Add To Cart') }}</a>
+                                                        <a data-id="{{ $product->id }}" class="cart-btn add_to_cart"> {{ __('Select') }}</a>
                                                         @endif
                                                     </div>
                                                 </div>
@@ -294,7 +313,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                         </div>
                                     @endforeach
                                 @else
-                                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 product-card">
+                                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
                                         <h6 class="no_record"><i class="fas fa-ban"></i> {{__('No Record Found')}}</h6>
                                     </div>
                                 @endif
@@ -305,6 +324,29 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
             </div>
         </section>
     @endif
+
+    <div class="checkout-box" style="{{ empty($cart['products']) || count($cart['products']) == 0 ? 'display: none;' : '' }}">
+        <div class="align-items-center justify-content-center">
+            <!-- <div class="col-md-4 col-12">
+                <div class="price-bar">
+                    <span>{{ __('Total value:') }}</span>
+                    <span id="displaytotal">{{\App\Models\Utility::priceFormat(price: !empty($total)?$total:0)}}</span>
+                </div>
+            </div> -->
+                {{-- @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
+                    <a href="#" class="checkout-btn modal-target checkout_btn" data-modal="Checkout" id="checkout-btn">
+                        {{__('Continue to Booking')}}
+                        <i class="fas fa-calendar-check"></i>
+                    </a>
+                @else --}}
+                    <a href="{{ route('user-address.useraddress',$store->slug) }}" class="checkout-btn">
+                        {{__('Continue to Booking')}}
+                        <i class="fas fa-calendar-check"></i>
+                    </a>
+                {{-- @endif --}}
+        </div>
+    </div>
+
     @foreach ($getStoreThemeSetting as $storethemesetting)
         @if (isset($storethemesetting['section_name']) && $storethemesetting['section_name'] == 'Home-Categories' && $storethemesetting['section_enable'] == 'on' && !empty($pro_categories))
             @php
@@ -315,16 +357,24 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                 $Description_key = array_search('Description', array_column($storethemesetting['inner-list'], 'field_name'));
                 $Description = $storethemesetting['inner-list'][$Description_key]['field_default_text'];
             @endphp
+
+            @if (count($categories) > 1)
             <section class="category-section padding-bottom padding-top">
                 <div class="container">
                     <div class="bestseller-title">
                         <div class="section-title">
+                        <div class="d-flex justify-content-between align-items-center" style="gap: 10px">
                             <h2> {{ !empty($Title) ? $Title : 'Categories' }}</h2>
-                            <p> {{ !empty($Description) ? $Description : 'There is only that moment and the incredible certainty <br> that everything under the sun has been written by one hand only.' }}</p>
+                            <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show More') }}
+                                <i class="fas fa-angle-right"></i>
+                            </a>
+                        </div>
+                            <!-- <h2> {{ !empty($Title) ? $Title : 'Categories' }}</h2> -->
+                            <!-- <p> {{ !empty($Description) ? $Description : 'There is only that moment and the incredible certainty <br> that everything under the sun has been written by one hand only.' }}</p> -->
                             </div>    
-                            <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show more products') }}
-                                <i class="fas fa-shopping-basket"></i>
-                            </a>                
+                            <!-- <a href="{{ route('store.categorie.product', [$store->slug, 'Start shopping']) }}" class="cart-btn">{{ __('Show More') }}
+                                <i class="fas fa-angle-right"></i>
+                            </a>                 -->
                     </div>
                     <div class="row product-row">
                         @foreach ($pro_categories as $key => $pro_categorie)
@@ -349,9 +399,9 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                                         </div>
                                         
                                         <div class="category-content-bottom">
-                                            <p>{{ __('Products') }}: {{ !empty($product_count[$key]) ? $product_count[$key] : '0' }}</p>
-                                            <a href="{{ route('store.categorie.product', [$store->slug, $pro_categorie->name]) }}" class="cart-btn">{{ __('Show more products') }}
-                                                <i class="fas fa-shopping-basket"></i>
+                                            <p>{{ __('Rooms & Suites') }}: {{ !empty($product_count[$key]) ? $product_count[$key] : '0' }}</p>
+                                            <a href="{{ route('store.categorie.product', [$store->slug, $pro_categorie->name]) }}" class="cart-btn">{{ __('Show More') }}
+                                                <i class="fas fa-angle-right"></i>
                                             </a>
                                         </div>
                                     </div>
@@ -361,6 +411,8 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                     </div>
                 </div>
             </section>
+            @endif
+
         @endif
     @endforeach
     @if($getStoreThemeSetting[2]['section_enable'] == 'on')
@@ -402,7 +454,7 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
             <div class="container">
                 <div class="section-title d-flex align-items-center justify-content-between">
                     <h2 style=" margin-bottom: 10px; ">{{ __('Top rated products') }}</h2>
-                    <a href="{{ route('store.categorie.product', $store->slug) }}" class="cart-btn">{{ __('Show more products') }}</a>
+                    <a href="{{ route('store.categorie.product', $store->slug) }}" class="cart-btn">{{ __('Show More') }}</a>
                 </div>
                 <div class="row  product-row">
                     @foreach ($topRatedProducts as $k => $topRatedProduct)
@@ -598,6 +650,9 @@ $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
                     if (response.status == "Success") {
                         show_toastr('Success', response.success, 'success');
                         $("#shoping_counts").html(response.item_count);
+                        
+                        // Display booking button
+                        $('.checkout-box').fadeIn();
                     } else {
                         show_toastr('Error', response.error, 'error');
                     }

@@ -67,7 +67,7 @@ $proimg=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 <del>{{ \App\Models\Utility::priceFormat($products->last_price) }}</del>
                                 @endif
                             </div>
-                            <!-- <a href="#" class="btn add_to_cart" data-id="{{ $products->id }}">{{ __('Add to cart') }} <i class="fas fa-shopping-basket"></i></a> -->
+                            <!-- <a href="#" class="btn add_to_cart" data-id="{{ $products->id }}">{{ __('Select') }} </a> -->
                         </div>
                         <span class=" mb-0 text-danger product-price-error"></span>
                         <ul class="product-variables">
