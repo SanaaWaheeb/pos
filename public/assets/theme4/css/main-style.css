@@ -4411,3 +4411,7 @@ del {
 .cart-summery .cart-sum-left {
     font-weight: bold;
 }
+
+td.off.available {
+    visibility: hidden;
+}
