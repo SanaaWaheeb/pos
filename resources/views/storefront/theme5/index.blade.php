@@ -522,9 +522,11 @@
                                                     @if ($storethemesetting['homepage-testimonial-card-enable'][$i] == 'on')
                                                         <div class="testimonial-card">
                                                             <div class="testimonial-card-inner">
-                                                                <p>
-                                                                    {{ $storethemesetting['homepage-testimonial-card-description'][$i] }}
-                                                                </p>
+                                                                @if(isset($storethemesetting['homepage-promotions-description'][$i])) 
+                                                <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p> 
+                                            @else 
+                                                <p>Default promotion description</p> 
+                                            @endif
                                                                 <div class="abt-user">
                                                                     <div class="user-img">
                                                                         <img src="{{ $imgpath . $storethemesetting['homepage-testimonial-card-image'][$i]['field_prev_text'] }}"
@@ -584,7 +586,11 @@
                                         <div class="about-promotions">
                                             <h3>{!! $storethemesetting['homepage-promotions-font-icon'][$i] !!}
                                                 {{ $storethemesetting['homepage-promotions-title'][$i] }}</h3>
-                                            <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p>
+                                                @if(isset($storethemesetting['homepage-promotions-description'][$i])) 
+                                                <p>{{ $storethemesetting['homepage-promotions-description'][$i] }}</p> 
+                                            @else 
+                                                <p>Default promotion description</p> 
+                                            @endif
                                         </div>
                                     </div>
                                 @endfor
