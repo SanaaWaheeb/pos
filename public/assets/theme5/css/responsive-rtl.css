@@ -387,6 +387,9 @@
     margin: 15px 0 15px 0;
   }
 
+  .logo-col {
+    max-width: 110px;
+  }
 
 }
 
