@@ -1582,6 +1582,7 @@
     "Generated Barcode:":"Generated Barcode:",
     "Return to Store": "Return to Store",
     "Return to Scanner":"Return to Scanner",
+    "Return to Home": "Return to Home",
     "Zip Code": "Zip Code",
     "Zipcode": "Zipcode",
     "SKU (Barcode)":"SKU (Barcode)",
@@ -1608,5 +1609,6 @@
     "Please select a valid check-out date": "Please select a valid check-out date",
     "The Total Price": "The Total Price",
     "Complete your purchase by entering the price": "Complete your purchase by entering the price",
-    "Please enter a price": "Please enter a price"
+    "Please enter a price": "Please enter a price",
+    "Enter here...": "Enter here..."
 }

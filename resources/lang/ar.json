@@ -1580,6 +1580,7 @@
   "Submit": "إرسال",
   "Return to Store": "العودة للمتجر",
   "Return to Scanner": "العودة لمسح المنتجات",
+  "Return to Home": "العودة إلى الرئيسية",
   "is added to the cart!":"تمت إضافته للسلة",
   "CANCEL":"إلغاء",
   "Help": "مساعدة",
@@ -1610,5 +1611,6 @@
   "Please select a valid check-out date": "الرجاء تحديد تاريخ المغادرة",
   "The Total Price": "السعر الإجمالي",
   "Complete your purchase by entering the price": "أدخل السعر لإكمال عملية الدفع",
-  "Please enter a price": "فضلًا أدخل السعر"
+  "Please enter a price": "فضلًا أدخل السعر",
+  "Enter here...": "أدخل هنا..."
 }

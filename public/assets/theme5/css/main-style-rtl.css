@@ -4624,3 +4624,7 @@ del {
     background-color: #fa0505; 
 }
 
+#priceInput::placeholder {
+    color: var(--third-color);
+    opacity: 1; /* make sure it's fully visible */
+}

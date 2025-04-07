@@ -20,7 +20,7 @@
                     type="number"
                     id="priceInput"
                     class="form-control form-control-flush"
-                    placeholder="{{ __('Enter Here ..') }}"
+                    placeholder="{{ __('Enter here...') }}"
                     inputmode="decimal"
                     pattern="[0-9]*"
                     style="flex: 1"
