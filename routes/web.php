@@ -60,6 +60,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\XenditController;
 use Illuminate\Http\Request;
+use App\Models\Store;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -512,6 +513,10 @@ Route::get('/generate-barcode/{sku}', [StoreController::class, 'generateBarcode'
 Route::get('payment-checkout/{slug}/{order_amount}', [PaymentController::class, 'processCheckout'])->name(name: 'payment.checkout')->middleware('SetLocale');
 Route::post('total-booking', [PaymentController::class, 'getTotalBookingPrice'])->name('payment.total_booking');
 Route::get('payment-status/{slug}/{order_id}', [PaymentController::class, 'paymentStatus'])->name('payment.status')->middleware('SetLocale');
+Route::get('{slug}/self-payment', function ($slug) {
+    $store = Store::where('slug', $slug)->firstOrFail();
+    return view('storefront.theme5.selfPayment', compact('store'));
+})->name('self.payment')->middleware('SetLocale');
 Route::get('edfapay-payment/callback', [PaymentController::class, 'edfaPayPaymentCallback'])->name('edfapay.callback')->middleware('SetLocale');
 Route::get('confirm-order/{order}', [OrderController::class, 'storeConfirmOrder'])->name('confirm.order');
 Route::get('/check-order-status', [PaymentController::class, 'checkOrderStatus'])->name('edfapay.check')->middleware('SetLocale');

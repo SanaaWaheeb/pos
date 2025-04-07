@@ -1607,5 +1607,8 @@
   "All": "الجميع",
   "Check-in - Check-out": "وقت الوصول - وقت المغادرة",
   "Choose Dates": "اختر المواعيد",
-  "Please select a valid check-out date": "الرجاء تحديد تاريخ المغادرة"
+  "Please select a valid check-out date": "الرجاء تحديد تاريخ المغادرة",
+  "The Total Price": "السعر الإجمالي",
+  "Complete your purchase by entering the price": "أدخل السعر لإكمال عملية الدفع",
+  "Please enter a price": "فضلًا أدخل السعر"
 }
