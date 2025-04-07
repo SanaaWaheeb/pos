@@ -299,9 +299,9 @@
     display: block;
   }
 
-  .site-header .top-navigationbar .top-right-menu .language-header {
+  /* .site-header .top-navigationbar .top-right-menu .language-header {
     display: none;
-  }
+  } */
 
   .top-right-menu>ul>li {
     font-size: 0;

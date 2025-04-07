@@ -122,13 +122,17 @@ if (empty($getStoreThemeSetting)) {
         }
         $langName = \App\Models\Languages::where('code',$currantLang)->first();
         $languages = \App\Models\Utility::languages();
+        $specific_langs = [
+            "ar" => "Arabic",
+            "en" => "English",
+        ];
         $storethemesetting = \App\Models\Utility::demoStoreThemeSetting($store->id, $store->theme_dir);
     @endphp
     <header class="site-header">
         <div class="container">
             <div class="top-navigationbar">
                 <div class="top-left-menu">
-                    <ul>
+                    {{-- <ul>
                         <li class="search-header">
                             <a href="javascript:void(0)" class="modal-target" data-modal="searchheader"><i class="fas fa-search"></i></a>
                         </li>
@@ -138,17 +142,42 @@ if (empty($getStoreThemeSetting)) {
                                 <span class="count wishlist_count">{{ !empty($wishlist) ? count($wishlist) : '0' }}</span>
                             </li>
                         @endif
-                    </ul>
+                    </ul> --}}
+                    <div class="logo-col">
+                        <a href="{{ route('store.slug', $store->slug) }}">
+    
+                                <img src="{{ $s_logo . (!empty($store->logo) ? $store->logo : 'logo.png') . '?timestamp='. time() }}" alt="">
+    
+                        </a>
+                    </div>
                 </div>
-                <div class="logo-col">
-                    <a href="{{ route('store.slug', $store->slug) }}">
-
-                            <img src="{{ $s_logo . (!empty($store->logo) ? $store->logo : 'logo.png') . '?timestamp='. time() }}" alt="">
-
-                    </a>
-                </div>
+              
+               
+                
                 <div class="top-right-menu">
-                    <ul>
+                    <div>
+                        <li class="language-header has-item">
+                            <a href="#">
+                                <i class="fas fa-language"></i>
+                                {{ ucFirst($langName->fullName) }}
+                            </a>
+                            <div class="menu-dropdown">
+                                <ul>
+                                    @foreach ($specific_langs as $code => $language)
+                                        <li>
+                                            <a href="{{ route('change.languagestore', [$store->slug, $code]) }}"
+                                               class="dropdown-item @if ($language == $currantLang) active-language text-primary @endif">
+                                                {{ ucFirst($language) }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </li>
+                    </div>
+
+
+                    {{-- <ul>
                         <li class="cart-header">
                             <a href="{{ route('store.cart', $store->slug) }}">
                                 <i class="fas fa-shopping-basket"></i>
@@ -171,22 +200,27 @@ if (empty($getStoreThemeSetting)) {
                                 </ul>
                             </div>
                         </li>
-                    </ul>
-                </div>
-                <div class="mobile-menu mobile-only">
+                    </ul> --}}
+                 </div>
+
+
+
+                {{-- <div class="mobile-menu mobile-only">
                     <button class="mobile-menu-button" id="menu">
                         <div class="one"></div>
                         <div class="two"></div>
                         <div class="three"></div>
                     </button>
-                </div>
+                </div> --}}
                 <div class="mobile-menu-wrapper">
+                    
                     <div class="menu-close-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="18" viewBox="0 0 20 18">
                             <path fill="#24272a" d="M19.95 16.75l-.05-.4-1.2-1-5.2-4.2c-.1-.05-.3-.2-.6-.5l-.7-.55c-.15-.1-.5-.45-1-1.1l-.1-.1c.2-.15.4-.35.6-.55l1.95-1.85 1.1-1c1-1 1.7-1.65 2.1-1.9l.5-.35c.4-.25.65-.45.75-.45.2-.15.45-.35.65-.6s.3-.5.3-.7l-.3-.65c-.55.2-1.2.65-2.05 1.35-.85.75-1.65 1.55-2.5 2.5-.8.9-1.6 1.65-2.4 2.3-.8.65-1.4.95-1.9 1-.15 0-1.5-1.05-4.1-3.2C3.1 2.6 1.45 1.2.7.55L.45.1c-.1.05-.2.15-.3.3C.05.55 0 .7 0 .85l.05.35.05.4 1.2 1 5.2 4.15c.1.05.3.2.6.5l.7.6c.15.1.5.45 1 1.1l.1.1c-.2.15-.4.35-.6.55l-1.95 1.85-1.1 1c-1 1-1.7 1.65-2.1 1.9l-.5.35c-.4.25-.65.45-.75.45-.25.15-.45.35-.65.6-.15.3-.25.55-.25.75l.3.65c.55-.2 1.2-.65 2.05-1.35.85-.75 1.65-1.55 2.5-2.5.8-.9 1.6-1.65 2.4-2.3.8-.65 1.4-.95 1.9-1 .15 0 1.5 1.05 4.1 3.2 2.6 2.15 4.3 3.55 5.05 4.2l.2.45c.1-.05.2-.15.3-.3.1-.15.15-.3.15-.45z">
                             </path>
                         </svg>
                     </div>
+                    
                     <div class="mobile-menu-bar">
                         <ul>
                             <li class="menu-lnk">
@@ -208,11 +242,24 @@ if (empty($getStoreThemeSetting)) {
                              </li>
                             @endif
                         </ul>
+                        
+                        
+
                     </div>
+
+                    
+
+                    
                 </div>
+                
             </div>
+            
         </div>
-        <div class="bottom-navigationbar">
+
+        
+        
+        {{-- <div class="bottom-navigationbar">
+            
             <div class="container">
                 <div class="main-navigationbar">
                     <div class="navigation-brand">
@@ -242,7 +289,7 @@ if (empty($getStoreThemeSetting)) {
                                 <li class="profile-header has-item">
                                     <a href="javascript:void(0)">
                                         <span class="login-text" style="display: block;"> {{ ucFirst(Auth::guard('customers')->user()->name) }}</span>
-                                        {{--  <span class="login-text" style="display: none;">Sign In</span>  --}}
+                                         <span class="login-text" style="display: none;">Sign In</span> 
                                     </a>
                                     <div class="menu-dropdown">
                                         <ul>
@@ -275,7 +322,7 @@ if (empty($getStoreThemeSetting)) {
                                     <a href="{{ route('customer.login', $store->slug) }}" ><span class="login-text">{{ __('Log in') }}</span></a>
                                 </li>
                             @endif
-                            <!-- LANGUAGE SELECT FOR MOBILE SCREEN -->
+                        
                             <li class="language-header has-item">
                                 <a href="#">
                                     <i class="fas fa-language"></i>
@@ -292,7 +339,7 @@ if (empty($getStoreThemeSetting)) {
                         </ul>
 
 
-                        <div class="mobile-menu-bottom">
+                        <div class="top-right-menu">
                             <ul>
                                 @if (Utility::CustomerAuthCheck($store->slug) == true)
                                     <li class="set has-children">
@@ -342,15 +389,17 @@ if (empty($getStoreThemeSetting)) {
                                         </ul>
                                     </div>
                                 </li>
+
+                                
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </header>
     @yield('content')
-    <footer class="site-footer">
+    {{-- <footer class="site-footer">
         <div class="container">
             @if ($getStoreThemeSetting[7]['section_enable'] == 'on')
                 <div class="footer-top">
@@ -540,7 +589,7 @@ if (empty($getStoreThemeSetting)) {
                 </div>
             @endif
         </div>
-    </footer>
+    </footer> --}}
     @if ($getStoreThemeSetting[16]['section_enable'] == 'on')
         <script>
             {!! $getStoreThemeSetting[18]['inner-list'][0]['field_default_text'] !!}

@@ -37,7 +37,7 @@
   }
 }
 
-@media screen and (max-width:1260px) {
+@media screen {
   .about-promotions h3 {
     font-size: 30px;
   }
@@ -299,9 +299,9 @@
     display: block;
   }
 
-  .site-header .top-navigationbar .top-right-menu .language-header {
+  /* .site-header .top-navigationbar .top-right-menu .language-header {
     display: none;
-  }
+  } */
 
   .top-right-menu>ul>li {
     font-size: 0;
