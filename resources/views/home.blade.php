@@ -182,6 +182,11 @@ $company_logo = \App\Models\Utility::getValByName('company_logo');
                                             {{ __('Store Link') }}
                                             <i class="ms-3"data-feather="copy"></i>
                                         </a>
+                                    @elseif($store_id['theme_dir']=='theme5')
+                                        <a href="#!" class="btn btn-light-primary w-100 cp_link" data-link="{{ url("{$store_id['slug']}/self-payment") }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Click to copy Store link') }}" style=" padding-left: 10px; padding-right: 10px; ">
+                                            {{ __('Store Link') }}
+                                            <i class="ms-3"data-feather="copy"></i>
+                                        </a>
                                     @else
                                         <a href="#!" class="btn btn-light-primary w-100 cp_link" data-link="{{ $store_id['store_url'] }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Click to copy Store link') }}" style=" padding-left: 10px; padding-right: 10px; ">
                                             {{ __('Store Link') }}
