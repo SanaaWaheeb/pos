@@ -4629,3 +4629,76 @@ del {
     color: var(--third-color);
     opacity: 1; /* make sure it's fully visible */
 }
+
+#self-payment .top-bar {
+    flex: 0.5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 5vw 4vw 0;
+    text-align: center;
+    position: relative;
+}
+
+#self-payment .amount-display {
+    font-size: 8vw;
+    font-weight: bold;
+    text-align: center;
+    direction: rtl;
+    padding: 40px;
+}
+
+#self-payment .keyboard-section {
+    background-color: var(--theme-color);
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    padding: 0vw;
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    flex: 2; /***/
+    justify-content: space-between;
+  }
+
+  #self-payment .keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4vw;
+    padding: 5vw;
+  }
+
+  #self-payment .keypad button {
+    font-size: 6vw;
+    padding: 5vw 0;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+  }
+
+  #self-payment .keypad button:active {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  #self-payment .confirm-btn {
+    width: 100%;
+    background-color: #000;
+    color: white;
+    padding: 5vw;
+    text-align: center;
+    font-weight: bold;
+    font-size: 5vw;
+    cursor: pointer;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+  }
+  #self-payment .confirm-bg {
+      margin-top: 5vw;
+      background-color: #fff;
+  }
+  #self-payment .confirm-btn:active {
+    background-color: #222;
+  }
