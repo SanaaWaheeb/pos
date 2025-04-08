@@ -4650,9 +4650,10 @@ del {
     font-size: 8vw;
     font-weight: bold;
     text-align: center;
-    direction: rtl;
     padding: 40px;
 }
+
+
 
 #self-payment .keyboard-section {
     background-color: var(--theme-color);
@@ -4706,5 +4707,9 @@ del {
   }
   #self-payment .confirm-btn:active {
     background-color: #222;
+  }
+
+  .store-uppercase {
+    text-transform: uppercase;
   }
 

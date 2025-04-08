@@ -12,9 +12,13 @@
     <div id="self-payment" class="d-flex direction-column justify-content-between">
         <!-- Top white section -->
         <div class="top-bar">
-            <h4 class="cart-title">{{$store_name}} QR POS</h4>
+            <h4 class="cart-title store-uppercase">{{$store_name}} QR POS</h4>
             <p>{{ __('Total Price') }}</p>
-            <div class="amount-display"><span id="displayAmount">0.00</span> {{$currency}}</div>
+            <div class="amount-display">
+                <span id="displayAmount">0.00</span>
+                <span class="currency"> {{ $currency }}</span>
+              </div>
+              
         </div>
 
         <!-- Red keypad section including confirm button -->
