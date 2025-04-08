@@ -12,8 +12,6 @@
     <div id="self-payment" class="d-flex direction-column justify-content-between">
         <!-- Top white section -->
         <div class="top-bar">
-            <h4 class="cart-title store-uppercase">{{$store_name}} QR POS</h4>
-            <p>{{ __('Total Price') }}</p>
             <div class="amount-display">
                 <span id="displayAmount">0.00</span>
                 <span class="currency"> {{ $currency }}</span>
@@ -72,8 +70,30 @@
         }
 
         const slug = "{{ $store->slug }}";
-        const url = `{{ url('payment-checkout') }}/${slug}/${parseFloat(currentInput).toFixed(2)}`;
-        window.location.href = url;
+        const checkoutUrl = `{{ url('payment-checkout') }}/${slug}/${parseFloat(currentInput).toFixed(2)}`;
+
+        $.ajax({
+            url: checkoutUrl,
+            type: 'GET',
+            headers: {
+                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.redirect_url) {
+                    // Redirect to the payment gateway
+                    window.location.href = response.redirect_url;
+                } else if (response.error) {
+                    show_toastr('Error', response.error, 'error');
+                }
+            },
+            error: function (xhr) {
+                let errorMessage = 'Something went wrong. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                }
+                show_toastr('Error', errorMessage, 'error');
+            }
+        })     
     }
 
     // Prevent double-tap zoom on mobile
