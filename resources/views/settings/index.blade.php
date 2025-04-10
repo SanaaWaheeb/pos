@@ -120,11 +120,11 @@
                     href="#pills-store_payment-setting" role="tab" aria-controls="pills-store_payment-setting"
                     aria-selected="false">{{ __('Payment Settings') }}</a>
             </li>
-            <li class="nav-item">
+            {{-- <li class="nav-item">
                 <a class="nav-link" id="pills-store_email_setting-tab" data-bs-toggle="pill"
                     href="#pills-store_email_setting" role="tab" aria-controls="pills-store_email_setting"
                     aria-selected="false">{{ __('Email Settings') }}</a>
-            </li>
+            </li> --}}
             <li class="nav-item">
                 <a class="nav-link" id="pills-whatsapp_custom_massage-tab" data-bs-toggle="pill"
                     href="#pills-whatsapp_custom_massage" role="tab" aria-controls="pills-whatsapp_custom_massage"
