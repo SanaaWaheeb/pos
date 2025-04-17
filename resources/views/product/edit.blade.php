@@ -263,7 +263,7 @@
                                         <div class="row gy-4">
                                             <div class="col-md-6">
                                                 {{ Form::label('price', __('Price'), ['class' => 'form-label']) }}<x-required></x-required>
-                                                {{ Form::number('price', null, ['step' => 'any', 'class' => 'form-control']) }}
+                                                {{ Form::number('price', null, ['step' => 'any', 'class' => 'form-control', 'id' => 'default-price-input']) }}
                                             </div>
                                             <div class="col-md-6">
                                                 {{ Form::label('last_price', __('Last Price'), ['class' => 'form-label']) }}
@@ -271,6 +271,15 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    @if ($store_id['theme_dir'] == 'theme4')
+                                        <div class="form-group">
+                                        {{ Form::label('daily_prices', __('Customize Prices'), ['class' => 'form-label']) }}
+                                            @csrf
+                                            @include('components.price-calendar')
+                                        </div>
+                                    @endif
+
                                     <div class="form-group">
                                         {{ Form::label('product_tax', __('Product Tax'), ['class' => 'form-label']) }}
                                         {{ Form::select('product_tax[]', $product_tax, explode(',',$product->product_tax), ['class' => 'form-control multi-select', 'id' => 'choices-multiple1', 'multiple']) }}
@@ -767,36 +776,36 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         $(document).on('click', '.add-variants', function(e) {
-        e.preventDefault();
-        var form = $(this).parents('form');
-        var variantNameEle = $('#variant_name');
-        var variantOptionsEle = $('#variant_options');
-        var isValid = true;
+            e.preventDefault();
+            var form = $(this).parents('form');
+            var variantNameEle = $('#variant_name');
+            var variantOptionsEle = $('#variant_options');
+            var isValid = true;
 
-        if (variantNameEle.val() == '') {
-            variantNameEle.focus();
-            isValid = false;
-        } else if (variantOptionsEle.val() == '') {
-            variantOptionsEle.focus();
-            isValid = false;
-        }
+            if (variantNameEle.val() == '') {
+                variantNameEle.focus();
+                isValid = false;
+            } else if (variantOptionsEle.val() == '') {
+                variantOptionsEle.focus();
+                isValid = false;
+            }
 
-        if (isValid) {
-            $.ajax({
-                url: form.attr('action'),
-                datType: 'json',
-                data: {
-                    variant_name: variantNameEle.val(),
-                    variant_options: variantOptionsEle.val(),
-                    hiddenVariantOptions: $('#hiddenVariantOptions').val()
-                },
-                success: function(data) {
-                    $('#hiddenVariantOptions').val(data.hiddenVariantOptions);
-                    $('.variant-table').html(data.varitantHTML);
-                    $("#commonModal").modal('hide');
-                }
-            })
-        }
+            if (isValid) {
+                $.ajax({
+                    url: form.attr('action'),
+                    datType: 'json',
+                    data: {
+                        variant_name: variantNameEle.val(),
+                        variant_options: variantOptionsEle.val(),
+                        hiddenVariantOptions: $('#hiddenVariantOptions').val()
+                    },
+                    success: function(data) {
+                        $('#hiddenVariantOptions').val(data.hiddenVariantOptions);
+                        $('.variant-table').html(data.varitantHTML);
+                        $("#commonModal").modal('hide');
+                    }
+                })
+            }
         });
 });
 </script>

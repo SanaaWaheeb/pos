@@ -79,7 +79,7 @@ class ProductController extends Controller
             $product_categorie = ProductCategorie::where('store_id', $store_id->id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
             $product_tax = ProductTax::where('store_id', $store_id->id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
 
-            return view('product.create', compact('product_categorie', 'product_tax'));
+            return view('product.create', compact('store_id', 'product_categorie', 'product_tax'));
         }
         else{
             return redirect()->back()->with('error', 'Permission denied.');
@@ -556,7 +556,13 @@ class ProductController extends Controller
                         $productVariantArrays[$key]['product_variants'] = $productVariant->toArray();
                     }
                 // }
-                return view('product.edit', compact('product', 'product_categorie', 'product_image', 'product_tax', 'productVariantArrays', 'product_variant_names', 'variant_options'));
+
+                // Fetch customize prices to this product
+                $productPrices = [];
+                if ($store_id->theme_dir == 'theme4') {
+                    $productPrices = ProductPrice::where('product_id', $product->id)->pluck('price', 'date');
+                }
+                return view('product.edit', compact('store_id', 'product', 'product_categorie', 'product_image', 'product_tax', 'productVariantArrays', 'product_variant_names', 'variant_options', 'productPrices'));
             }else{
                 return redirect()->back()->with('error', 'Permission denied.');
             }

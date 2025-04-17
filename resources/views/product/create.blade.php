@@ -249,11 +249,13 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group">
-                                    {{ Form::label('daily_prices', __('Customize Prices'), ['class' => 'form-label']) }}
-                                        @csrf
-                                        @include('components.price-calendar')
-                                    </div>
+                                    @if ($store_id['theme_dir'] == 'theme4')
+                                        <div class="form-group">
+                                        {{ Form::label('daily_prices', __('Customize Prices'), ['class' => 'form-label']) }}
+                                            @csrf
+                                            @include('components.price-calendar')
+                                        </div>
+                                    @endif
 
                                     <div class="form-group">
                                         {{ Form::label('product_tax', __('Product Tax'), ['class' => 'form-label']) }}

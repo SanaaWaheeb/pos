@@ -27,6 +27,8 @@
 </style>
 
 <script>
+    const existingPrices = @json($productPrices ?? []); // Fetch existing prices from DB for edit product page
+
     document.addEventListener('DOMContentLoaded', () => {
         const container = document.getElementById('calendar-container');
         const grid = document.getElementById('calendar-grid');
@@ -36,7 +38,7 @@
         const defaultInput = document.getElementById('default-price-input');
 
         let defaultPrice = parseFloat(defaultInput.value || 0);
-        const priceMap = {}; // Tracks manually edited prices
+        const priceMap = { ...existingPrices }; // Tracks manually edited prices: prefill with existing DB values
 
         const renderCalendarGrid = (month, year) => {
             const firstDay = new Date(year, month - 1, 1);
