@@ -7,6 +7,7 @@ use App\Imports\ProductImport;
 use App\Models\Plan;
 use App\Models\Product;
 use App\Models\ProductCategorie;
+use App\Models\ProductPrice;
 use App\Models\ProductTax;
 use App\Models\ProductVariantOption;
 use App\Models\Product_images;
@@ -332,6 +333,8 @@ class ProductController extends Controller
                     return $msg;
                 }
             }
+
+            
             if (!empty($request->product_categorie)) {
                 if (count($request->product_categorie) > 1 && in_array(0, $request->product_categorie)) {
                     $msg['flag'] = 'error';
@@ -403,6 +406,19 @@ class ProductController extends Controller
                         );
                     }
                 }
+                if ($store_id['theme_dir']=='theme4') {
+             
+                    if ($request->has('daily_prices') && is_array($request->daily_prices)) {
+                        foreach ($request->daily_prices as $date => $price) {
+                            $priceRecord = ProductPrice::create([
+                            'product_id'=>$product->id,
+                            'price'=>$price,
+                            'date'=> $date
+    
+                            ]);
+                          }
+                        }  
+                    }
 
                 if ($request->enable_product_variant == 'on') {
                     $product->variants_json = json_decode($product->variants_json, true);
@@ -454,6 +470,7 @@ class ProductController extends Controller
             return redirect()->back()->with('error', 'Permission denied.');
         }
     }
+    
 
     /**
      * Display the specified resource.
