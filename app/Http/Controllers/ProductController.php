@@ -969,6 +969,48 @@ class ProductController extends Controller
                 );
             }
 
+            // Handle updating product prices in theme4
+            if ($store_id['theme_dir']=='theme4') {
+                if ($request->has('daily_prices') && is_array($request->daily_prices)) {
+                    $defaultPrice = (float) $request->price;
+                    $dailyPrices = $request->input('daily_prices', []);
+
+                    // 1. Get current DB entries
+                    $existingPrices = ProductPrice::where('product_id', $product->id)->pluck('price', 'date');
+
+                    // 2. Loop through frontend dailyPrices
+                    foreach($dailyPrices as $date => $price) {
+                        $price = floatval($price);
+
+                        // A. If price matches default, remove it (if exists in DB)
+                        if ($price == $defaultPrice) {
+                            if (isset($existingPrices[$date])) {
+                                ProductPrice::where('product_id', $product->id)
+                                    ->where('date', $date)
+                                    ->delete();
+                            }
+                            continue; // skip to next item
+                        }
+
+                        // B. If price already exists and is different, update it
+                        if (isset($existingPrices[$date])) {
+                            if ($existingPrices[$date] != $price) {
+                                ProductPrice::where('product_id', $product->id)
+                                    ->where('date', $date)
+                                    ->update(['price' => $price]);
+                            }
+                        } else {
+                            // C. It's a new custom price
+                            ProductPrice::create([
+                                'product_id' => $product->id,
+                                'price' => $price,
+                                'date' => $date
+                            ]);
+                        }
+                    }
+                }
+            }
+
             $product->save();
 
             if ($product->enable_product_variant == 'on') {
