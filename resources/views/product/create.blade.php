@@ -240,7 +240,7 @@
                                         <div class="row gy-4">
                                             <div class="col-md-6">
                                                 {{ Form::label('price', __('Price'), ['class' => 'form-label']) }}<x-required></x-required>
-                                                {{ Form::number('price', null, ['step' => 'any', 'class' => 'form-control']) }}
+                                                {{ Form::number('price', null, ['step' => 'any', 'class' => 'form-control', 'id' => 'default-price-input']) }}
                                             </div>
                                             <div class="col-md-6">
                                                 {{ Form::label('last_price', __('Last Price'), ['class' => 'form-label']) }}
@@ -248,6 +248,13 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="form-group">
+                                    {{ Form::label('daily_prices', __('Customize Prices'), ['class' => 'form-label']) }}
+                                        @csrf
+                                        @include('components.price-calendar')
+                                    </div>
+
                                     <div class="form-group">
                                         {{ Form::label('product_tax', __('Product Tax'), ['class' => 'form-label']) }}
                                         {{ Form::select('product_tax[]', $product_tax, null, ['class' => 'form-control multi-select', 'id' => 'choices-multiple1', 'multiple']) }}

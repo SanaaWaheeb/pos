@@ -406,19 +406,26 @@ class ProductController extends Controller
                         );
                     }
                 }
+                // Handle storing product prices in theme4
                 if ($store_id['theme_dir']=='theme4') {
              
                     if ($request->has('daily_prices') && is_array($request->daily_prices)) {
-                        foreach ($request->daily_prices as $date => $price) {
+                        $dailyPrices = $request->input('daily_prices', []);
+                        $defaultPrice = (float) $product->price;
+                        // Filter out dates where the price matches the default
+                        $customPrices = array_filter($dailyPrices, function($price) use($defaultPrice) {
+                            return (float) $price !== $defaultPrice;
+                        });
+                
+                        foreach ($customPrices as $date => $price) {
                             $priceRecord = ProductPrice::create([
-                            'product_id'=>$product->id,
-                            'price'=>$price,
-                            'date'=> $date
-    
+                                'product_id'=>$product->id,
+                                'price'=>$price,
+                                'date'=> $date
                             ]);
-                          }
-                        }  
-                    }
+                        }
+                    } 
+                }
 
                 if ($request->enable_product_variant == 'on') {
                     $product->variants_json = json_decode($product->variants_json, true);
