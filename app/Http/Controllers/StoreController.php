@@ -1878,8 +1878,8 @@ class StoreController extends Controller
             if(
                 $store->theme_dir=='theme3' 
                 && (
-                    (empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'off')
-                    || $store->is_checkout_login_required == 'on'
+                    (empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'on')
+                    || $store->is_checkout_login_required == 'off'
                 )
             ) {
                 $is_cart = true;
