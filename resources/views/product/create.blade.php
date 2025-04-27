@@ -253,7 +253,7 @@
                                         <div class="form-group">
                                         {{ Form::label('daily_prices', __('Customize Prices'), ['class' => 'form-label']) }}
                                             @csrf
-                                            @include('components.price-calendar')
+                                            @include('components.price-calendar', ['readOnly' => false])
                                         </div>
                                     @endif
 

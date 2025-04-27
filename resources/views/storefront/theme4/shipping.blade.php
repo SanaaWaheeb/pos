@@ -40,13 +40,24 @@
                                     {{Form::text('number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
                                 </div>
                             </div> -->
-                            <div class="col-12">
+                            <!-- <div class="col-12">
                                 <div class="form-group">
                                     {{ Form::label('date_range', __('Choose Dates'), ['class' => 'form-label']) }} <span style="color:red">*</span>
                                     <input type="text" id="date-range" name="date_range" class="form-control" placeholder="{{__('Check-in - Check-out')}}" required>
                                     <input type="hidden" id="check-in-date" name="check_in_date">
                                     <input type="hidden" id="check-out-date" name="check_out_date">
                                     <input type="hidden" id="number_of_nights" name="number_of_nights">
+                                </div>
+                            </div> -->
+
+                            <div class="col-12">
+                                <div class="form-group">
+                                    {{ Form::label('date_range', __('Choose Dates'), ['class' => 'form-label']) }} <span style="color:red">*</span>
+                                    <input type="hidden" id="check-in-date" name="check_in_date">
+                                    <input type="hidden" id="check-out-date" name="check_out_date">
+                                    <input type="hidden" id="number_of_nights" name="number_of_nights">
+                                        @csrf
+                                        @include('components.price-calendar', ['readOnly' => true])
                                 </div>
                             </div>
                         </div>
@@ -81,7 +92,7 @@
                                                         @php
                                                             $total_tax=0;
                                                         @endphp
-                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
+                                                        <!-- <div class="pvarprice d-flex align-items-center justify-content-between">
                                                             <div class="price">
                                                                 <small>
                                                                     {{$product['quantity']}} × {{\App\Models\Utility::priceFormat($product['variant_price'])}}
@@ -106,7 +117,7 @@
                                                             <a class="remove_item" style="margin: 10px 0 5px 0" data-price="{{ $totalprice }}">
                                                                 {{\App\Models\Utility::priceFormat($totalprice)}} / {{__('Night')}}
                                                             </a>
-                                                        </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                                 @php
@@ -126,7 +137,7 @@
                                                         @php
                                                             $total_tax=0;
                                                         @endphp
-                                                        <div class="pvarprice d-flex align-items-center justify-content-between">
+                                                        <!-- <div class="pvarprice d-flex align-items-center justify-content-between">
                                                             <div class="price">
                                                                 <small>
                                                                     {{$product['quantity']}} × {{\App\Models\Utility::priceFormat($product['price'])}}
@@ -154,7 +165,7 @@
                                                             @php
                                                             $total += $totalprice;
                                                             @endphp
-                                                        </div>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                             @endif
@@ -187,10 +198,18 @@
                                     @endforeach
                                     <!-- Display service per night -->
                                      <ul class="cart-summery">
-                                        <li>
-                                            <span class="cart-sum-left"> {{__('Number of Nights')}} </span>
-                                            <span id="num-nights"> {{__('Night')}} </span>
-                                        </li>
+                                        <div class="u-save d-flex justify-content-between">
+                                            <div class="cpn-lbl">{{ __('Check-in Date') }}</div>
+                                            <div id="check-in"></div>
+                                        </div>
+                                        <div class="u-save d-flex justify-content-between">
+                                            <div class="cpn-lbl">{{ __('Check-out Date') }}</div>
+                                            <div id="check-out"></div>
+                                        </div>
+                                        <div class="u-save d-flex justify-content-between">
+                                            <div class="cpn-lbl">{{__('Number of Nights')}}</div>
+                                            <div id="num-nights">{{__('Night')}}</div>
+                                        </div>
                                      </ul>
                                     <div
                                         class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
@@ -201,7 +220,7 @@
                                             <input type="hidden" class="product_total" value="{{$total}}">
                                             <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
                                             <input type="hidden" name="total" id="total-booking-price" value="{{ $total }}">
-                                            <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}"> {{\App\Models\Utility::priceFormat(!empty($total)?$total:'0')}}</span>
+                                            <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}"> </span>
                                         </div>
                                     </div>
                                 </div>
@@ -417,74 +436,89 @@
             $("[name='shipping_postalcode']").val($("[name='billing_postalcode']").val());
         }
 
-        // Handle select check-in and check-out dates
-        $(document).ready(function() {
-            $('#date-range').daterangepicker({
-                minDate: moment().format('YYYY-MM-DD'),
-                locale: {
-                    format: 'YYYY-MM-DD',
-                    cancelLabel: 'Clear',
-                },
-                singleDatePicker: false,
-                alwaysShowCalendars: true, 
-                opens: 'center',
-                showCustomRangeLabel: false, 
-                linkedCalendars: false, // Ensures only one month is shown
-                autoUpdateInput: false
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('form'); // adjust selector if your form has ID or class
 
-            $('#date-range').on('apply.daterangepicker', function(ev, picker) {
-                let checkInDate = picker.startDate.format('YYYY-MM-DD');
-                let checkOutDate = picker.endDate.format('YYYY-MM-DD');
-                let nights = picker.endDate.diff(picker.startDate, 'days');
+            form.addEventListener('submit', function(e) {
+                const checkIn = document.getElementById('check-in-date').value;
+                const checkOut = document.getElementById('check-out-date').value;
+                const nights = document.getElementById('number_of_nights').value;
 
-                // Prevent applying if no check-out date is selected
-                if (nights < 1) {
-                    show_toastr('Error', "{{ __('Please select a valid check-out date') }}", 'error');
-                    return false; // Stop execution
+                if (!checkIn || !checkOut || !nights || nights <= 0) {
+                    e.preventDefault(); // 🛑 Stop form submission
+                    alert('Please select a valid date range first!');
                 }
-
-                // Update input values
-                $(this).val(checkInDate + ' - ' + checkOutDate);
-                $('#check-in-date').val(checkInDate);
-                $('#check-out-date').val(checkOutDate);
-                $('#number_of_nights').val(nights);
-                $('#num-nights').text(nights + ' ' + (nights > 1 ? "{{ __('Nights') }}" : "{{ __('Night') }}"));
-
-                // Get prices from .remove_item elements
-                let removeItems = document.querySelectorAll(".remove_item");
-                let prices = [];
-                removeItems.forEach(function (item) {
-                    prices.push(item.dataset.price);
-                });
-
-                // Send AJAX request to update total price
-                $.ajax({
-                    url: "{{ route('payment.total_booking') }}",
-                    data: {
-                        "_token": $('meta[name="csrf-token"]').attr('content'),
-                        nights,
-                        prices
-                    },
-                    method: 'POST',
-                    dataType: 'json',
-                    success: function (data) {
-                        $('.pro_total_price').html(data.total_price);
-                        $('#total-booking-price').val(data.total_price); // Update hidden input field
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Error:", error);
-                    }
-                });
-            });
-
-            $('#date-range').on('cancel.daterangepicker', function(ev, picker) {
-                $(this).val('');
-                $('#check-in-date').val('');
-                $('#check-out-date').val('');
-                $('#number_of_nights').val('');
             });
         });
+
+        // Handle select check-in and check-out dates
+        // $(document).ready(function() {
+        //     $('#date-range').daterangepicker({
+        //         minDate: moment().format('YYYY-MM-DD'),
+        //         locale: {
+        //             format: 'YYYY-MM-DD',
+        //             cancelLabel: 'Clear',
+        //         },
+        //         singleDatePicker: false,
+        //         alwaysShowCalendars: true, 
+        //         opens: 'center',
+        //         showCustomRangeLabel: false, 
+        //         linkedCalendars: false, // Ensures only one month is shown
+        //         autoUpdateInput: false
+        //     });
+
+        //     $('#date-range').on('apply.daterangepicker', function(ev, picker) {
+        //         let checkInDate = picker.startDate.format('YYYY-MM-DD');
+        //         let checkOutDate = picker.endDate.format('YYYY-MM-DD');
+        //         let nights = picker.endDate.diff(picker.startDate, 'days');
+
+        //         // Prevent applying if no check-out date is selected
+        //         if (nights < 1) {
+        //             show_toastr('Error', "{{ __('Please select a valid check-out date') }}", 'error');
+        //             return false; // Stop execution
+        //         }
+
+        //         // Update input values
+        //         $(this).val(checkInDate + ' - ' + checkOutDate);
+        //         $('#check-in-date').val(checkInDate);
+        //         $('#check-out-date').val(checkOutDate);
+        //         $('#number_of_nights').val(nights);
+        //         $('#num-nights').text(nights + ' ' + (nights > 1 ? "{{ __('Nights') }}" : "{{ __('Night') }}"));
+
+        //         // Get prices from .remove_item elements
+        //         let removeItems = document.querySelectorAll(".remove_item");
+        //         let prices = [];
+        //         removeItems.forEach(function (item) {
+        //             prices.push(item.dataset.price);
+        //         });
+
+        //         // Send AJAX request to update total price
+        //         $.ajax({
+        //             url: "{{ route('payment.total_booking') }}",
+        //             data: {
+        //                 "_token": $('meta[name="csrf-token"]').attr('content'),
+        //                 nights,
+        //                 prices
+        //             },
+        //             method: 'POST',
+        //             dataType: 'json',
+        //             success: function (data) {
+        //                 $('.pro_total_price').html(data.total_price);
+        //                 $('#total-booking-price').val(data.total_price); // Update hidden input field
+        //             },
+        //             error: function(xhr, status, error) {
+        //                 console.error("Error:", error);
+        //             }
+        //         });
+        //     });
+
+        //     $('#date-range').on('cancel.daterangepicker', function(ev, picker) {
+        //         $(this).val('');
+        //         $('#check-in-date').val('');
+        //         $('#check-out-date').val('');
+        //         $('#number_of_nights').val('');
+        //     });
+        // });
 
         // Triger changes in number of nights input field (old code)
         // document.addEventListener("DOMContentLoaded", function() {

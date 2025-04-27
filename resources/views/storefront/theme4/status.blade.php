@@ -176,6 +176,14 @@
                     <span id="coupon-discount"></span>
                 </div> --}}
                 <div style="padding-bottom: 10px">
+                    <strong>{{ __('Number of Nights') }}: </strong>
+                    @if ($order_num_nights > 1)
+                        <span>{{$order_num_nights}} {{ __('Nights') }}</span>
+                    @else
+                        <span>{{$order_num_nights}} {{ __('Night') }}</span>
+                    @endif
+                </div>
+                <div style="padding-bottom: 10px">
                     <strong>{{ __('Total value') }}: </strong>
                     <span>{{\App\Models\Utility::priceFormat(!empty($order_amount)?$order_amount:0)}} </span> 
                 </div>
@@ -291,28 +299,19 @@
                         const formattedPrice = formatPrice(price * product.quantity);
                         
                         productHTML += `
-                            <div class="mini-cart-item" style="margin: 0; width: 90%;" data-id="${key}" id="product-id-${product.product_id}">
-                                <div class="mini-cart-image">
-                                    <a href="#">
-                                        <img src="{{ $productImg }}${product.image}" alt="img">
-                                    </a>
-                                </div>
-                                <div class="mini-cart-details">
-                                    <p class="mini-cart-title">
-                                        <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
-                                    </p>
-                                    <div class="pvarprice d-flex align-items-center justify-content-between">
-                                        <div class="price">
-                                            <small>
-                                            ${nights} ${nights > 1? "{{__('Nights')}}" : "{{__('Night')}}"}
-                                            </small>
-                                        </div>
-                                        <a class="remove_item">
-                                            <span class="subtotal">${formattedPrice}</span>
+                            <div class="mini-cart-item" style="margin: 0; width: 100%" data-id="${key}" id="product-id-${product.product_id}">
+                                <div class="mini-cart-details-status">
+                                    <span>${product.quantity} X </span>
+                                    <div data-label="Product" class="mini-cart-image">
+                                        <a href="">
+                                            <img src="{{ $productImg }}${product.image}" alt="img">
                                         </a>
                                     </div>
+                                    <div data-label="Name">
+                                        <a class="text-dark c-list-title mb-0 cart_word_break">${product.product_name}</a>
+                                    </div>
                                 </div>
-                            </div>      
+                            </div>
                         `;
                     });
 

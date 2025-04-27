@@ -492,6 +492,7 @@ Route::get('rating/{slug?}/product/{id}', [RattingController::class, 'rating'])-
 Route::post('stor_rating/{slug?}/product/{id}', [RattingController::class, 'stor_rating'])->name('stor_rating')->middleware(['SetLocale']);
 
 Route::post('subscriptions/{id}', [SubscriptionController::class, 'store_email'])->name('subscriptions.store_email')->middleware('SetLocale');
+Route::get('product-prices', [ProductController::class, 'calculateCalendarTotals'])->name('product.prices');
 Route::get('get-products-variant-quantity', [ProductController::class, 'getProductsVariantQuantity'])->name('get.products.variant.quantity');
 Route::post('/product/update-quantity', [ProductController::class, 'updateStockQuantity'])->name('product.updateQuantity');
 Route::post('/product/update-price', [ProductController::class, 'updatePrice'])->name('product.updatePrice');

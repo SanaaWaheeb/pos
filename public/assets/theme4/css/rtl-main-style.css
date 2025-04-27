@@ -4297,6 +4297,7 @@ del {
     overflow-y: auto;
     max-height: 20vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }

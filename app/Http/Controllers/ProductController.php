@@ -21,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 
 class ProductController extends Controller
@@ -476,6 +477,58 @@ class ProductController extends Controller
         else{
             return redirect()->back()->with('error', 'Permission denied.');
         }
+    }
+
+    public function calculateCalendarTotals(Request $request)
+    {
+        $slug = $request->slug;
+        if (!$slug) {
+            return response()->json(['error' => 'Missing slug'], 400);
+        }
+        $cart = session()->get($slug);
+        if (!$cart || !isset($cart['products'])) {
+            return response()->json(['error' => 'Invalid or empty cart'], 400);
+        }
+
+        // Step 1: Get all product IDs and default prices from cart
+        $products = collect($cart['products']);
+        $productIds = collect($products)->pluck('product_id')->unique()->values()->toArray();
+        $defaultPrices = $products->pluck('price', 'product_id');
+
+        // Step 2: Fetch all custom product prices grouped by date and product_id
+        $customPrices = ProductPrice::whereIn('product_id', $productIds)
+        ->select('product_id', 'date', 'price')
+        ->get()
+        ->groupBy('date');
+
+        // Step 3: For each date, calculate total of custom + fallback default prices
+        $calendarPrices = [];
+        forEach($customPrices as $date => $priceEntries) {
+            $sum = 0;
+            $customProductIds = [];
+
+            forEach($priceEntries as $entry) {
+                $sum += floatval($entry->price);
+                $customProductIds[] = $entry->product_id;
+            }
+
+            // Add default prices for products that don't have custom price on this date
+            forEach($productIds as $productId) {
+                if (!in_array($productId, $customProductIds)) {
+                    $sum += floatval($defaultPrices[$productId ?? 0]);
+                }
+            }
+
+            $calendarPrices[] = [$date => $sum];
+        }
+
+        // Step 4: Compute total default price (for days with no custom prices at all)
+        $defaultTotal = $defaultPrices->map(fn($p) => floatval($p))->sum();
+
+        return response()->json([
+            'calendar_prices' => $calendarPrices,
+            'default_total' => $defaultTotal
+        ]);
     }
     
 
