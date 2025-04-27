@@ -79,93 +79,34 @@
                                         @endphp
                                         @foreach ($products as $product)
                                             @if (isset($product['variant_id']) && !empty($product['variant_id']))
-                                                <div class="mini-cart-item">
-                                                    <div class="mini-cart-image">
-                                                        <a href="#">
-                                                            <img src="{{$productImg .$product['image']}}" alt="img">
-                                                        </a>
-                                                    </div>
-                                                    <div class="mini-cart-details">
-                                                        <p class="mini-cart-title">
-                                                            <a href="#">{{$product['product_name'].' - ( ' . $product['variant_name'] .' ) '}}</a>
-                                                        </p>
-                                                        @php
-                                                            $total_tax=0;
-                                                        @endphp
-                                                        <!-- <div class="pvarprice d-flex align-items-center justify-content-between">
-                                                            <div class="price">
-                                                                <small>
-                                                                    {{$product['quantity']}} × {{\App\Models\Utility::priceFormat($product['variant_price'])}}
-                                                                    @if(!empty($product['tax']))
-                                                                        +
-                                                                        @foreach($product['tax'] as $tax)
-                                                                            @php
-                                                                                $sub_tax = ($product['variant_price'] * $product['quantity'] * $tax['tax']) / 100;
-                                                                                $total_tax += $sub_tax;
-                                                                            @endphp
-    
-                                                                            {{\App\Models\Utility::priceFormat($sub_tax).' ('.$tax['tax_name'].' '.($tax['tax']).'%)'}}
-                                                                        @endforeach
-                                                                    @endif
-                                                                </small>
-                                                                @php
-                                                                    $totalprice = $product['variant_price'] * $product['quantity'] + $total_tax;
-                                                                    $subtotal = $product['variant_price'] * $product['quantity'];
-                                                                    $sub_total += $subtotal;
-                                                                @endphp
-                                                            </div>
-                                                            <a class="remove_item" style="margin: 10px 0 5px 0" data-price="{{ $totalprice }}">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}} / {{__('Night')}}
+                                                <div class="mini-cart-item" style="margin: 0; width: 100%">
+                                                    <div class="mini-cart-details-status">
+                                                        <span>{{$product['quantity']}} X </span>
+                                                        <div data-label="Product" class="mini-cart-image">
+                                                            <a href="">
+                                                                <img src="{{$productImg .$product['image']}}" alt="img">
                                                             </a>
-                                                        </div> -->
+                                                        </div>
+                                                        <div data-label="Name">
+                                                            <a href="#">{{$product['product_name'].' - ( ' . $product['variant_name'] .' ) '}}</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 @php
                                                     $total += $totalprice;
                                                 @endphp
                                             @else
-                                                <div class="mini-cart-item">
-                                                    <div class="mini-cart-image">
-                                                        <a href="#">
-                                                            <img src="{{$productImg .$product['image']}}" alt="img">
-                                                        </a>
-                                                    </div>
-                                                    <div class="mini-cart-details">
-                                                        <p class="mini-cart-title">
-                                                            <a href="#">{{$product['product_name']}}</a>
-                                                        </p>
-                                                        @php
-                                                            $total_tax=0;
-                                                        @endphp
-                                                        <!-- <div class="pvarprice d-flex align-items-center justify-content-between">
-                                                            <div class="price">
-                                                                <small>
-                                                                    {{$product['quantity']}} × {{\App\Models\Utility::priceFormat($product['price'])}}
-                                                                    @if(!empty($product['tax']))
-                                                                        +
-                                                                        @foreach($product['tax'] as $tax)
-                                                                            @php
-                                                                                $sub_tax = ($product['price'] * $product['quantity'] * $tax['tax']) / 100;
-                                                                                $total_tax += $sub_tax;
-                                                                            @endphp
-        
-                                                                            {{\App\Models\Utility::priceFormat($sub_tax).' ('.$tax['tax_name'].' '.($tax['tax']).'%)'}}
-                                                                        @endforeach
-                                                                    @endif
-                                                                </small>
-                                                                @php
-                                                                    $totalprice = $product['price'] * $product['quantity'] + $total_tax;
-                                                                    $subtotal = $product['price'] * $product['quantity'];
-                                                                    $sub_total += $subtotal;
-                                                                @endphp
-                                                            </div>
-                                                            <a class="remove_item" href="#" style="margin: 10px 0 5px 0" data-price="{{ $totalprice }}">
-                                                                {{\App\Models\Utility::priceFormat($totalprice)}} / {{__('Night')}}
+                                                <div class="mini-cart-item" style="margin: 0; width: 100%">
+                                                    <div class="mini-cart-details-status">
+                                                        <span>{{$product['quantity']}} X </span>
+                                                        <div data-label="Product" class="mini-cart-image">
+                                                            <a href="">
+                                                                <img src="{{$productImg .$product['image']}}" alt="img">
                                                             </a>
-                                                            @php
-                                                            $total += $totalprice;
-                                                            @endphp
-                                                        </div> -->
+                                                        </div>
+                                                        <div data-label="Name">
+                                                            <a href="#">{{$product['product_name']}}</a>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             @endif

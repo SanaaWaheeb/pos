@@ -481,7 +481,7 @@
   "Enter Re-type New Password": "أعد إدخال كلمة المرور الجديدة",
   "Enter Request Amount": "أدخل مبلغ الطلب",
   "Enter Role Name": "أدخل اسم الدور",
-  "Enter SKU": "أدخل رمز التخزين التعريفي",
+  "Enter SKU": "أدخل رمز الباركود الخاص بالمنتج",
   "Enter Star": "أدخل ستار",
   "Enter State Name": "أدخل اسم الولاية",
   "Enter Stock Quantity": "أدخل كمية المخزون",
@@ -1588,7 +1588,7 @@
   "Expiry Date":"تاريخ الانتهاء",
   "Product not found":"المنتج غير متوفر",
   "Zipcode": "الرمز البريدي",
-  "SKU (Barcode)":"الباكورد",
+  "SKU (Barcode)":"الباركود",
   "Continue to Shipping":"المتابعة إلى الشحن",
   "Continue to Booking":"المتابعة إلى الحجز",
   "Booking Information": "معلومات الحجز",
@@ -1612,5 +1612,8 @@
   "Total Price": "السعر الإجمالي",
   "Complete your purchase by entering the price": "أدخل السعر لإكمال عملية الدفع",
   "Please enter a valid price": "فضلًا أدخل مبلغ صحيح",
-  "Enter here...": "أدخل هنا..."
+  "Enter here...": "أدخل هنا...",
+  "Availability": "عدد الغرف المتاحة",
+  "Enter Number of Available Rooms": "أدخل عدد الغرف المتاحة",
+  "Customize Prices": "تخصيص الأسعار"
 }

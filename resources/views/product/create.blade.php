@@ -269,7 +269,6 @@
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('SKU', __('SKU (Barcode)'), ['class' => 'form-label']) }}
-                                        <x-required></x-required>
                                         <div class="d-flex align-items-center">
                                             {{ Form::text('SKU', null, ['class' => 'form-control me-2', 'placeholder' => __('Enter SKU'), 'id' => 'sku-input', 'pattern' => '[0-9]*', 'maxlength' => '12']) }}
                                             <button type="button" id="generate-barcode-btn" class="btn btn-sm btn-primary">{{ __('Generate') }}</button>
@@ -297,13 +296,20 @@
                                         </div>
                                     </div>
                                     <div class="form-group proprice">
-                                        {{ Form::label('quantity', __('Stock Quantity'), ['class' => 'form-label']) }}<x-required></x-required>
-                                        {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Stock Quantity')]) }}
+                                        @if ($store_id['theme_dir'] == 'theme4')
+                                            {{ Form::label('quantity', __('Availability'), ['class' => 'form-label']) }}<x-required></x-required>
+                                            {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Number of Available Rooms')]) }}
+                                        @else
+                                            {{ Form::label('quantity', __('Stock Quantity'), ['class' => 'form-label']) }}<x-required></x-required>
+                                            {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Stock Quantity')]) }}
+                                        @endif
                                     </div>
+                                    @if ($store_id['theme_dir'] != 'theme4')
                                     <div class="form-group">
                                         {{ Form::label('expiry_date', __('Expiry Date'), ['class' => 'form-label']) }}
                                         {{ Form::date('expiry_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Expiry Date'), 'min' => date('Y-m-d')]) }}
                                     </div>
+                                    @endif
                                     <div class="form-group">
                                         <label for="attachment" class="form-label">{{ __('Attachment') }}</label>
                                         <input type="file" name="attachment" id="attachment" class="form-control"

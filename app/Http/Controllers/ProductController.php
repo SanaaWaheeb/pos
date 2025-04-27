@@ -180,7 +180,6 @@ class ProductController extends Controller
                         'price' => 'required',
                         'quantity' => 'required',
                         'name' => 'required',
-                        'SKU' => 'required',
                         'multiple_files.*' => 'nullable|file|mimes:jpg,jpeg,png,xlsx,xls,csv,pdf', 
                         // 'last_price' => 'required',
                     ]
