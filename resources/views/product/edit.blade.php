@@ -233,9 +233,9 @@
         {{ Form::model($product, ['method' => 'POST', 'id' => 'frmTarget', 'enctype' => 'multipart/form-data', 'class'=>'submit-product needs-validation', 'novalidate']) }}
         <div class="col-sm-12">
             <div class="row">
-                <div class="col-lg-6">
+                <div>
                     <div class="row">
-                        <div class=" col-lg-6 col-md-6">
+                        <div class="col-md-6">
                             <h5>{{ __('Main Informations') }}</h5>
                             <div class="card shadow-none border border-primary">
                                 <div class="card-body ">
@@ -292,7 +292,6 @@
                                     </div>
                                     <div class="form-group">
                                         {{ Form::label('SKU', __('SKU (Barcode)'), ['class' => 'form-label']) }}
-                                        <x-required></x-required>
                                         <div class="d-flex align-items-center">
                                             {{ Form::text('SKU', null, ['class' => 'form-control me-2', 'placeholder' => __('Enter SKU'), 'id' => 'sku-input', 'pattern' => '[0-9]*', 'maxlength' => '12']) }}
                                             <button type="button" id="generate-barcode-btn" class="btn btn-sm btn-primary">{{ __('Generate') }}</button>
@@ -314,13 +313,20 @@
                                     </div>
                                     <canvas id="barcode-canvas" style="display: none;"></canvas>
                                     <div class="form-group proprice">
-                                        {{ Form::label('quantity', __('Stock Quantity'), ['class' => 'form-label']) }}
-                                        {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Stock Quantity')]) }}
+                                        @if ($store_id['theme_dir'] == 'theme4')
+                                            {{ Form::label('quantity', __('Availability'), ['class' => 'form-label']) }}<x-required></x-required>
+                                            {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Number of Available Rooms')]) }}
+                                        @else
+                                            {{ Form::label('quantity', __('Stock Quantity'), ['class' => 'form-label']) }}<x-required></x-required>
+                                            {{ Form::text('quantity', null, ['class' => 'form-control', 'placeholder' => __('Enter Stock Quantity')]) }}
+                                        @endif
                                     </div>
+                                    @if ($store_id['theme_dir'] != 'theme4')
                                     <div class="form-group">
                                         {{ Form::label('expiry_date', __('Expiry Date'), ['class' => 'form-label']) }}
                                         {{ Form::date('expiry_date', null, ['class' => 'form-control', 'placeholder' => __('Enter Expiry Date'), 'min' => date('Y-m-d')]) }}
                                     </div>
+                                    @endif
                                     <div class="form-group">
                                         <label for="attachment" class="form-label"
                                             onchange="loadImg()">{{ __('Attachment') }}</label>
@@ -339,7 +345,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class=" col-lg-6 col-md-6">
+                        <!-- ----------------- Custome Fields ----------------- -->
+                        <!-- <div class=" col-lg-6 col-md-6">
                             <h5>{{ __('Custom Field') }}</h5>
                             <div class="card shadow-none border border-primary">
                                 <div class="card-body">
@@ -374,6 +381,105 @@
                                     <div class="form-group">
                                         {{ Form::label('custom_value_4', __('Custom Value'), ['class' => 'form-label']) }}
                                         {{ Form::text('custom_value_4', null, ['class' => 'form-control', 'placeholder' => __('Enter Custom Value')]) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+                        <div class="col-xl-3 col-lg-6 col-md-6">
+                            <h5>{{ __('Product Image') }}</h5>
+                            <div class="card shadow-none border border-primary">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        {{ Form::label('sub_images', __('Upload Product Images'), ['class' => 'form-label']) }}
+                                        <div class="dropzone dropzone-multiple" data-toggle="dropzone1"
+                                            data-dropzone-url="http://" data-dropzone-multiple>
+                                            <div class="fallback">
+                                                <div class="custom-file">
+                                                    {{-- <input type="file" class="custom-file-input" id="dropzone-1" name="file"
+                                                        multiple> --}}
+                                                        <input type="file" class="custom-file-input" id="dropzone-1" name="file" multiple>
+                                                    <label class="custom-file-label" for="customFileUpload">{{ __('Choose file') }}</label>
+                                                </div>
+                                            </div>
+                                            <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush">
+                                                <li class="list-group-item px-0">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="avatar">
+                                                                <img class="rounded" src="" alt="Image placeholder"
+                                                                    data-dz-thumbnail>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <h6 class="text-sm mb-1" data-dz-name>...</h6>
+                                                            <p class="small text-muted mb-0" data-dz-size>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <a href="#" class="dropdown-item" data-dz-remove>
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="form-group pt-3">
+                                            <div class="row gy-3 gx-3">
+                                                @foreach ($product_image as $file)
+                                                    <div class="col-sm-6 product_Image" data-id="{{ $file->id }}">
+                                                        <div class="position-relative p-2 border rounded border-primary overflow-hidden rounded">
+                                                            <img src="{{ $productimage . $file->product_images }}" alt="" class="w-100">
+                                                            <div class="position-absolute text-center top-50 end-0 start-0 pb-3">
+                                                                <a href="{{ $productimage . $file->product_images }}" download="" data-original-title="{{ __('Download') }}" class="btn btn-sm btn-primary me-2"><i class="ti ti-download"></i></a>
+                                                                <a class="btn btn-sm btn-danger deleteRecord" name="deleteRecord" data-id="{{ $file->id }}"><i class="ti ti-trash"></i></a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="is_cover_image" class="col-form-label">{{ __('Upload Cover Image') }}</label>
+                                        <input type="file" name="is_cover_image" id="is_cover_image"
+                                            class="form-control"
+                                            onchange="document.getElementById('coverImg').src = window.URL.createObjectURL(this.files[0])"
+                                            multiple>
+                                        <img id="coverImg"src="" width="20%" class="mt-2" />
+                                    </div>
+                                    @if(!empty($product->is_cover))
+                                        <div class="form-group">
+                                            <div class="row gy-3 gx-3">
+                                                <div class="col-sm-6">
+                                                    <div class="position-relative p-2 border rounded border-primary overflow-hidden rounded">
+                                                        <img src="{{ $is_cover_image . $product->is_cover }}" alt="" class="w-100">
+                                                        <div class="position-absolute text-center top-50 end-0 start-0 pb-3">
+                                                            <a href="{{ $is_cover_image . $product->is_cover }}" class="btn btn-sm btn-primary me-2"><i class="ti ti-download"></i></a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6">
+                            <h5>{{ __('About product') }}</h5>
+                            <div class="card shadow-none border border-primary">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        {{ Form::label('description', __('Product Description'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('description', !empty($product->description) ? $product->description : '', ['class' => 'form-control summernote-simple', 'rows' => 1, 'placeholder' => __('Product Description'), 'id' => 'description']) }} {{-- pc-tinymce-2 --}}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('specification', __('Product Specification'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('specification', !empty($product->specification) ? $product->specification : '', ['class' => 'form-control summernote-simple', 'rows' => 1, 'placeholder' => __('Product Specification'), 'id' => 'specification']) }} {{-- pc-tinymce-2 --}}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('detail', __('Product Details'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('detail', !empty($product->detail) ? $product->detail : '', ['class' => 'form-control summernote-simple', 'rows' => 1, 'placeholder' => __('Product Details'), 'id' => 'detail']) }} {{-- pc-tinymce-2 --}}
                                     </div>
                                 </div>
                             </div>
@@ -547,106 +653,9 @@
                             </div>
                         @endif
                     </div>
+
+                    <!-- Here was the two div columns with these classes: "col-xl-3 col-lg-6 col-md-6" -->
                     
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-6">
-                    <h5>{{ __('Product Image') }}</h5>
-                    <div class="card shadow-none border border-primary">
-                        <div class="card-body">
-                            <div class="form-group">
-                                {{ Form::label('sub_images', __('Upload Product Images'), ['class' => 'form-label']) }}
-                                <div class="dropzone dropzone-multiple" data-toggle="dropzone1"
-                                    data-dropzone-url="http://" data-dropzone-multiple>
-                                    <div class="fallback">
-                                        <div class="custom-file">
-                                            {{-- <input type="file" class="custom-file-input" id="dropzone-1" name="file"
-                                                multiple> --}}
-                                                <input type="file" class="custom-file-input" id="dropzone-1" name="file" multiple>
-                                            <label class="custom-file-label" for="customFileUpload">{{ __('Choose file') }}</label>
-                                        </div>
-                                    </div>
-                                    <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush">
-                                        <li class="list-group-item px-0">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="avatar">
-                                                        <img class="rounded" src="" alt="Image placeholder"
-                                                            data-dz-thumbnail>
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <h6 class="text-sm mb-1" data-dz-name>...</h6>
-                                                    <p class="small text-muted mb-0" data-dz-size>
-                                                    </p>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="dropdown-item" data-dz-remove>
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="form-group pt-3">
-                                    <div class="row gy-3 gx-3">
-                                        @foreach ($product_image as $file)
-                                            <div class="col-sm-6 product_Image" data-id="{{ $file->id }}">
-                                                <div class="position-relative p-2 border rounded border-primary overflow-hidden rounded">
-                                                    <img src="{{ $productimage . $file->product_images }}" alt="" class="w-100">
-                                                    <div class="position-absolute text-center top-50 end-0 start-0 pb-3">
-                                                        <a href="{{ $productimage . $file->product_images }}" download="" data-original-title="{{ __('Download') }}" class="btn btn-sm btn-primary me-2"><i class="ti ti-download"></i></a>
-                                                        <a class="btn btn-sm btn-danger deleteRecord" name="deleteRecord" data-id="{{ $file->id }}"><i class="ti ti-trash"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="is_cover_image" class="col-form-label">{{ __('Upload Cover Image') }}</label>
-                                <input type="file" name="is_cover_image" id="is_cover_image"
-                                    class="form-control"
-                                    onchange="document.getElementById('coverImg').src = window.URL.createObjectURL(this.files[0])"
-                                    multiple>
-                                <img id="coverImg"src="" width="20%" class="mt-2" />
-                            </div>
-                            @if(!empty($product->is_cover))
-                                <div class="form-group">
-                                    <div class="row gy-3 gx-3">
-                                        <div class="col-sm-6">
-                                            <div class="position-relative p-2 border rounded border-primary overflow-hidden rounded">
-                                                <img src="{{ $is_cover_image . $product->is_cover }}" alt="" class="w-100">
-                                                <div class="position-absolute text-center top-50 end-0 start-0 pb-3">
-                                                    <a href="{{ $is_cover_image . $product->is_cover }}" class="btn btn-sm btn-primary me-2"><i class="ti ti-download"></i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-6">
-                    <h5>{{ __('About product') }}</h5>
-                    <div class="card shadow-none border border-primary">
-                        <div class="card-body">
-                            <div class="form-group">
-                                {{ Form::label('description', __('Product Description'), ['class' => 'form-label']) }}
-                                {{ Form::textarea('description', !empty($product->description) ? $product->description : '', ['class' => 'form-control summernote-simple', 'rows' => 1, 'placeholder' => __('Product Description'), 'id' => 'description']) }} {{-- pc-tinymce-2 --}}
-                            </div>
-                            <div class="form-group">
-                                {{ Form::label('specification', __('Product Specification'), ['class' => 'form-label']) }}
-                                {{ Form::textarea('specification', !empty($product->specification) ? $product->specification : '', ['class' => 'form-control summernote-simple', 'rows' => 1, 'placeholder' => __('Product Specification'), 'id' => 'specification']) }} {{-- pc-tinymce-2 --}}
-                            </div>
-                            <div class="form-group">
-                                {{ Form::label('detail', __('Product Details'), ['class' => 'form-label']) }}
-                                {{ Form::textarea('detail', !empty($product->detail) ? $product->detail : '', ['class' => 'form-control summernote-simple', 'rows' => 1, 'placeholder' => __('Product Details'), 'id' => 'detail']) }} {{-- pc-tinymce-2 --}}
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
             <input type="submit" value="{{__('Update')}}" class="product-submit-button d-none btn btn-primary ms-2">

@@ -211,9 +211,9 @@
         {{ Form::open(['method' => 'POST', 'id' => 'frmTarget', 'enctype' => 'multipart/form-data', 'class'=>'submit-product needs-validation', 'novalidate']) }}
         <div class="col-sm-12">
             <div class="row">
-                <div class="col-lg-6">
+                <div>
                     <div class="row">
-                        <div class=" col-lg-6 col-md-6">
+                        <div class="col-md-6">
                             <h5>{{ __('Main Informations') }}</h5>
                             <div class="card shadow-none border border-primary">
                                 <div class="card-body ">
@@ -327,7 +327,80 @@
                                 </div>
                             </div>
                         </div>
-                        <div class=" col-lg-6 col-md-6">
+                        <div class="col-xl-3 col-lg-6 col-md-6">
+                            <h5>{{ __('Product Image') }}</h5>
+                            <div class="card shadow-none border border-primary">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        {{ Form::label('sub_images', __('Upload Product Images'), ['class' => 'form-label']) }}
+                                        <div class="dropzone dropzone-multiple" data-toggle="dropzone1"
+                                            data-dropzone-url="http://" data-dropzone-multiple>
+                                            <div class="fallback">
+                                                <div class="custom-file">
+                                                    {{-- <input type="file" class="custom-file-input" id="dropzone-1" name="file"
+                                                            multiple> --}}
+                                                    <input type="file" name="file" id="dropzone-1"
+                                                        class="fcustom-file-input"
+                                                        onchange="document.getElementById('dropzone').src = window.URL.createObjectURL(this.files[0])"
+                                                        multiple>
+                                                    <img id="dropzone"src="" width="20%" class="mt-2" />
+                                                    <label class="custom-file-label"
+                                                        for="customFileUpload">{{ __('Choose file') }}</label>
+                                                </div>
+                                            </div>
+                                            <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush">
+                                                <li class="list-group-item px-0">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="avatar">
+                                                                <img class="rounded" src="" alt="Image placeholder"
+                                                                    data-dz-thumbnail>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <h6 class="text-sm mb-1" data-dz-name>...</h6>
+                                                            <p class="small text-muted mb-0" data-dz-size>
+                                                            </p>
+                                                        </div>
+                                                        <div class="col-auto">
+                                                            <a href="#" class="dropdown-item" data-dz-remove>
+                                                                <i class="fas fa-trash-alt"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="is_cover_image" class="col-form-label">{{ __('Upload Cover Image') }}</label>
+                                        <input type="file" name="is_cover_image" id="is_cover_image" class="form-control custom-input-file" onchange="document.getElementById('upcoverImg').src = window.URL.createObjectURL(this.files[0]);" multiple>
+                                        <img id="upcoverImg" src="" width="20%" class="mt-2"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-6 col-md-6">
+                            <h5>{{ __('About product') }}</h5>
+                            <div class="card shadow-none border border-primary">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        {{ Form::label('description', __('Product Description'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('description', null, ['class' => 'form-control summernote-simple','rows' => 1,'placeholder' => __('Product Description'),'id'=>'description']) }} {{-- pc-tinymce-2 --}}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('specification', __('Product Specification'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('specification', null, ['class' => 'form-control summernote-simple','rows' => 1,'placeholder' => __('Product Specification'),'id'=>'specification']) }}   {{-- pc-tinymce-2 --}}
+                                    </div>
+                                    <div class="form-group">
+                                        {{ Form::label('detail', __('Product Details'), ['class' => 'form-label']) }}
+                                        {{ Form::textarea('detail', null, ['class' => 'form-control summernote-simple','rows' => 1,'placeholder' => __('Product Details'),'id'=>'detail']) }}   {{-- pc-tinymce-2 --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- ----------------- Custome Fields ----------------- -->
+                        <!-- <div class=" col-lg-6 col-md-6">
                             <h5>{{ __('Custom Field') }}</h5>
                             <div class="card shadow-none border border-primary">
                                 <div class="card-body">
@@ -365,7 +438,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="col-lg-12">
                             <div class="row">
                                 <div class="card shadow-none border border-primary">
@@ -435,78 +508,7 @@
                     
                 </div>
                 
-                <div class="col-xl-3 col-lg-6 col-md-6">
-                    <h5>{{ __('Product Image') }}</h5>
-                    <div class="card shadow-none border border-primary">
-                        <div class="card-body">
-                            <div class="form-group">
-                                {{ Form::label('sub_images', __('Upload Product Images'), ['class' => 'form-label']) }}
-                                <div class="dropzone dropzone-multiple" data-toggle="dropzone1"
-                                    data-dropzone-url="http://" data-dropzone-multiple>
-                                    <div class="fallback">
-                                        <div class="custom-file">
-                                            {{-- <input type="file" class="custom-file-input" id="dropzone-1" name="file"
-                                                    multiple> --}}
-                                            <input type="file" name="file" id="dropzone-1"
-                                                class="fcustom-file-input"
-                                                onchange="document.getElementById('dropzone').src = window.URL.createObjectURL(this.files[0])"
-                                                multiple>
-                                            <img id="dropzone"src="" width="20%" class="mt-2" />
-                                            <label class="custom-file-label"
-                                                for="customFileUpload">{{ __('Choose file') }}</label>
-                                        </div>
-                                    </div>
-                                    <ul class="dz-preview dz-preview-multiple list-group list-group-lg list-group-flush">
-                                        <li class="list-group-item px-0">
-                                            <div class="row align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="avatar">
-                                                        <img class="rounded" src="" alt="Image placeholder"
-                                                            data-dz-thumbnail>
-                                                    </div>
-                                                </div>
-                                                <div class="col">
-                                                    <h6 class="text-sm mb-1" data-dz-name>...</h6>
-                                                    <p class="small text-muted mb-0" data-dz-size>
-                                                    </p>
-                                                </div>
-                                                <div class="col-auto">
-                                                    <a href="#" class="dropdown-item" data-dz-remove>
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="is_cover_image" class="col-form-label">{{ __('Upload Cover Image') }}</label>
-                                <input type="file" name="is_cover_image" id="is_cover_image" class="form-control custom-input-file" onchange="document.getElementById('upcoverImg').src = window.URL.createObjectURL(this.files[0]);" multiple>
-                                <img id="upcoverImg" src="" width="20%" class="mt-2"/>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-lg-6 col-md-6">
-                    <h5>{{ __('About product') }}</h5>
-                    <div class="card shadow-none border border-primary">
-                        <div class="card-body">
-                            <div class="form-group">
-                                {{ Form::label('description', __('Product Description'), ['class' => 'form-label']) }}
-                                {{ Form::textarea('description', null, ['class' => 'form-control summernote-simple','rows' => 1,'placeholder' => __('Product Description'),'id'=>'description']) }} {{-- pc-tinymce-2 --}}
-                            </div>
-                            <div class="form-group">
-                                {{ Form::label('specification', __('Product Specification'), ['class' => 'form-label']) }}
-                                {{ Form::textarea('specification', null, ['class' => 'form-control summernote-simple','rows' => 1,'placeholder' => __('Product Specification'),'id'=>'specification']) }}   {{-- pc-tinymce-2 --}}
-                            </div>
-                            <div class="form-group">
-                                {{ Form::label('detail', __('Product Details'), ['class' => 'form-label']) }}
-                                {{ Form::textarea('detail', null, ['class' => 'form-control summernote-simple','rows' => 1,'placeholder' => __('Product Details'),'id'=>'detail']) }}   {{-- pc-tinymce-2 --}}
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Here was the two div columns with these classes: "col-xl-3 col-lg-6 col-md-6" -->
                
             </div>
             <input type="submit" value="{{__('Create')}}" class="product-submit-button d-none btn btn-primary ms-2">
