@@ -14,9 +14,15 @@
     <div class="col-sm-12">
         <div class="row gy-4">
             <div class="col-lg-12">
-                <h4 class="mb-2">{{ __('Visitor') }}</h4>
-                <div class="card shadow-none mb-0">
-                    <div class="card-body p-3 rounded border">
+                <div class="card mb-0">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ __('Visitor') }}</h5>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center">
+                            <h3 class="flex-grow-1 mb-0">4,354</h3>
+
+                        </div>
                         <div class="tab-content" id="myTabContent">
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                 <div id="Analytics"></div>
@@ -25,52 +31,67 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-4">
-                <h4 class="mb-2">{{ __('Top URL') }}</h4>
-                <div class="card shadow-none mb-0">
-                    <div class="card-body  rounded border">
-                        <div class="table-responsive">
-                            <table class="table mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="bg-transparent">{{ __('Url') }}</th>
-                                        <th class="bg-transparent">{{ __('Views') }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($visitor_url as $url)
+            <div class="col-lg-4 col-md-6 col-12 flex">
+                <div class="card top-url-card table-card h-100 mb-0">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ __('Top URL') }}</h5>
+                    </div>
+                    <div class="card-body overflow-hidden table-border-style">
+                        <div class="top-product-table">
+                            <div class="table-responsive custom-scrollbar">
+                                <table class="table mb-0">
+                                    <thead>
                                         <tr>
-                                            <td><a href="{{ $url->url }}">{{ $slug }}</a></td>
-                                            <td>{{ $url->total }}</td>
+                                            <th class="bg-transparent">{{ __('Url') }}</th>
+                                            <th class="bg-transparent">{{ __('Views') }}</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($visitor_url as $url)
+                                            <tr>
+                                                <td><a href="{{ $url->url }}">{{ $slug }}</a></td>
+                                                <td>{{ $url->total }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8">
-                <h4 class="mb-2">{{ __('Platform') }}</h4>
-                <div class="card shadow-none mb-0">
-                    <div class="card-body rounded border">
+            <div class="col-lg-8 col-md-6 col-12 flex">
+                {{-- <div class="platform-card-inner cart-card-inner h-100"> --}}
+                    <div class="card h-100 mb-0">
+                        <div class="card-header">
+                            <h5 class="mb-0">{{ __('Platform') }}</h5>
+                        </div>
+                    <div class="card-body">
                         <div class="d-flex align-items-center">
                             <h3 class="flex-grow-1 mb-0">{{ __('Analytics') }}</h3>
+
                         </div>
+
                         <div class="tab-content" id="analyticsTabContent">
                             <div class="tab-pane fade show active" id="home1" role="tabpanel" aria-labelledby="home-tab1">
                                 <div id="user-chart"></div>
                             </div>
                         </div>
                     </div>
-                </div>
+                {{-- </div> --}}
             </div>
-            <div class="col-lg-6"> 
-                <h4>{{ __('Device') }}</h4>
-                <div class="card shadow-none mb-0">
-                    <div class="card-body rounded border">
-                        
-                        <div class="tab-content" id="analyticsTabContent">
+            </div>
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="card mb-0">
+                    <div class="card-header">
+                        <h5 class="mb-0"> {{ __('Device') }}</h5>
+                    </div>
+                    <div class="card-body chart-card">
+                        <div class="d-flex gap-2 flex-wrap justify-content-between align-items-center">
+                            {{-- <h3 class="mb-0 d-flex align-items-start">{{ __('WebKit') }} </h3> --}}
+
+                        </div>
+                        <div class="tab-content chart-body-wrp custom-scrollbar" id="analyticsTabContent">
                             <div class="tab-pane fade show active" id="home2" role="tabpanel" aria-labelledby="home-tab2">
                                <div id="WebKit"></div>
                             </div>
@@ -78,12 +99,17 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6"> 
-                <h4>{{ __('Browser') }}</h4>
-                <div class="card shadow-none mb-0">
-                    <div class="card-body rounded border">
-                        
-                        <div class="tab-content" id="analyticsTabContent">
+            <div class="col-lg-6 col-md-6 col-12">
+                <div class="card mb-0">
+                    <div class="card-header">
+                        <h5 class="mb-0">{{ __('Browser') }}</h5>
+                    </div>
+                    <div class="card-body chart-card">
+                        <div class="d-flex gap-2 justify-content-between flex-wrap align-items-center">
+                            {{-- <h3 class="mb-0 d-flex align-items-start">{{ __('Safari') }} </h3> --}}
+
+                        </div>
+                        <div class="tab-content chart-body-wrp custom-scrollbar" id="analyticsTabContent">
                             <div class="tab-pane fade show active" id="home3" role="tabpanel" aria-labelledby="home-tab3">
                                <div id="Safari"></div>
                             </div>
@@ -128,7 +154,7 @@
                         }
                     },
                     colors: ['#ffa21d', '#FF3A6E'],
-        
+
                     grid: {
                         strokeDashArray: 4,
                         show: false,
@@ -148,14 +174,14 @@
                     yaxis: {
                         tickAmount: 3,
                     },
-                   
+
                     fill: {
                         type: 'gradient',
                         gradient: {
                             shade: 'dark',
                             type: "horizontal",
                             shadeIntensity: 0,
-                            gradientToColors: undefined, 
+                            gradientToColors: undefined,
                             inverseColors: true,
                             opacityFrom: 0,
                             opacityTo: 0,
@@ -171,7 +197,7 @@
                 var options = {
                     chart: {
                         type: 'bar',
-                        height: 140,
+                        height: 300,
                         zoom: {
                             enabled: false
                         },
@@ -182,7 +208,7 @@
                     dataLabels: {
                         enabled: false,
                     },
-                    
+
                     plotOptions: {
                         bar: {
                             color: '#fff',
@@ -261,12 +287,12 @@
                 var chart = new ApexCharts(document.querySelector("#user-chart"), options);
                 chart.render();
             })();
-        
+
             var options = {
                     series: {!! json_encode($devicearray['data']) !!},
                     chart: {
                         width: 450,
-                        type: 'pie',
+                        type: 'donut',
                     },
                     colors: ["#6FD943", "#316849", "#1A3C4E", "#EBF7E7", " #EBEDEF"],
                     labels: {!! json_encode($devicearray['label']) !!},
@@ -288,7 +314,7 @@
                     series: {!! json_encode($browserarray['data']) !!},
                     chart: {
                         width: 450,
-                        type: 'pie',
+                        type: 'donut',
                     },
                     colors: ["#6FD943", "#316849", "#1A3C4E", "#EBF7E7", " #EBEDEF"],
                     labels: {!! json_encode($browserarray['label']) !!},
