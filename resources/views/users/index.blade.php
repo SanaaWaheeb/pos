@@ -16,9 +16,11 @@ $profile=\App\Models\Utility::get_file('uploads/profile/');
 @endsection
 @section('action-btn')
 @can('Create User')
-    <a class="btn btn-sm btn-icon text-light btn-primary me-2" data-url="{{ route('users.create') }}" data-title="{{ __('Add User') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
+<div class="action-btn-wrapper">
+    <a class="btn btn-sm btn-icon text-light btn-primary" data-url="{{ route('users.create') }}" data-title="{{ __('Create User') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
         <i  data-feather="plus"></i>
     </a>
+</div>
 @endcan
 @endsection
 @section('filter')
@@ -29,12 +31,12 @@ $logo=\App\Models\Utility::get_file('uploads/profile/');
 @section('content')
     <div class="row">
         @foreach ($users as $user)
-            <div class="col-lg-3 col-sm-6 col-md-6">
-                <div class="card text-center">
+            <div class="col-xl-3 col-lg-4 col-sm-6 col-md-6">
+                <div class="card text-center user-card-wrp">
                     <div class="card-header border-0 pb-0">
                         <div class="d-flex justify-content-between align-items-center">
                             <h6 class="mb-0">
-                                <div class="badge p-2 px-3 rounded bg-primary">{{ ucfirst($user->type) }}</div>
+                                <div class="badge p-2 px-3 tbl-btn-w bg-primary">{{ ucfirst($user->type) }}</div>
                             </h6>
                         </div>
                         @if (Gate::check('Edit User') || Gate::check('Delete User'))
@@ -45,19 +47,19 @@ $logo=\App\Models\Utility::get_file('uploads/profile/');
                                             <i class="feather icon-more-vertical"></i>
                                         </button>
                                     @else
-                                        <div class="btn">
+                                        <div class="">{{--btn--}}
                                             <i class="ti ti-lock"></i>
                                         </div>
                                     @endif
                                 <div class="dropdown-menu dropdown-menu-end">
                                     @can('Edit User')
-                                        <a href="#" class="dropdown-item" data-url="{{ route('users.edit', $user->id) }}" data-size="md" data-ajax-popup="true" data-title="{{ __('Update User') }}">
-                                            <i class="ti ti-edit"></i>
+                                        <a href="#" class="dropdown-item" data-url="{{ route('users.edit', $user->id) }}" data-size="md" data-ajax-popup="true" data-title="{{ __('Update User') }}" title="{{ __('Edit User') }}">
+                                            <i class="ti ti-pencil "></i>
                                             <span class="ms-2">{{ __('Edit') }}</span>
                                         </a>
                                     @endcan
                                     @can('Reset Password')
-                                        <a href="#" class="dropdown-item" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}" data-ajax-popup="true" data-size="md" data-title="{{ __('Change Password') }}">
+                                        <a href="#" class="dropdown-item" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}" data-ajax-popup="true" data-size="md" data-title="{{ __('Change Password') }}" title="{{ __('Change Password') }}">
                                             <i class="ti ti-key"></i>
                                             <span class="ms-2">{{ __('Reset Password') }}</span>
                                         </a>
@@ -68,28 +70,29 @@ $logo=\App\Models\Utility::get_file('uploads/profile/');
                                             data-confirm="{{ __('Are You Sure?') }}"
                                             data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                             data-confirm-yes="delete-form-{{ $user->id }}"
-                                            title="{{ __('Delete') }}" data-bs-toggle="tooltip"
-                                            data-bs-placement="top"><i class="ti ti-trash"></i><span
+                                            title="{{ __('Delete') }}">
+                                            <i class="ti ti-trash"></i><span
                                                 class="ms-2">{{ __('Delete') }}</span></a>
                                         {!! Form::close() !!}
                                     @endcan
                                     {{-- @permission('user login manage') --}}
                                     @if ($user->is_enable_login == 1)
                                         <a href="{{ route('owner.users.login', \Crypt::encrypt($user->id)) }}"
-                                            class="dropdown-item">
+                                            class="dropdown-item" title="{{ __('Login Disable') }}">
                                             <i class="ti ti-road-sign"></i>
                                             <span class="text-danger"> {{ __('Login Disable') }}</span>
                                         </a>
                                     @elseif ($user->is_enable_login == 0 && $user->password == null)
                                         <a href="#" data-url="{{ route('users.reset', \Crypt::encrypt($user->id)) }}"
                                             data-ajax-popup="true" data-size="md" class="dropdown-item login_enable"
-                                            data-title="{{ __('New Password') }}" class="dropdown-item">
+                                            data-title="{{ __('New Password') }}" class="dropdown-item"
+                                            title="{{ __('Login Enable') }}">
                                             <i class="ti ti-road-sign"></i>
                                             <span class="text-success"> {{ __('Login Enable') }}</span>
                                         </a>
                                     @else
                                         <a href="{{ route('owner.users.login', \Crypt::encrypt($user->id)) }}"
-                                            class="dropdown-item">
+                                            class="dropdown-item" title="{{ __('Login Enable') }}">
                                             <i class="ti ti-road-sign"></i>
                                             <span class="text-success"> {{ __('Login Enable') }}</span>
                                         </a>
@@ -101,9 +104,9 @@ $logo=\App\Models\Utility::get_file('uploads/profile/');
                         @endif
                     </div>
                     <div class="card-body">
-                        <div class="avatar">
+                        <div class="">
                             <a href="{{ !empty($user->avatar) ?($profile . $user->avatar) :  $logo."avatar.png" }}" target="_blank">
-                                <img src="{{ !empty($user->avatar) ? ($profile . $user->avatar) :  $logo."avatar.png" }}" class="rounded-circle" alt="">
+                                <img src="{{ !empty($user->avatar) ? ($profile . $user->avatar) :  $logo."avatar.png" }}" class="border border-2 border-primary rounded user-img" alt="user">
                             </a>
                         </div>
                         <h4 class="mt-2 text-primary">{{ $user->name }}</h4>
@@ -112,13 +115,13 @@ $logo=\App\Models\Utility::get_file('uploads/profile/');
                 </div>
             </div>
         @endforeach
-        <div class="col-md-3">
+        <div class="col-xl-3 col-lg-4 col-sm-6 col-md-6 create-user-card">
             @can('Create User')
-                <a class="btn-addnew-project" data-url="{{ route('users.create') }}" data-title="{{ __('Add User') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
-                    <div class="bg-primary proj-add-icon">
-                        <i class="ti ti-plus"></i>
+                <a class="btn-addnew-project border-primary" data-url="{{ route('users.create') }}" data-title="{{ __('Create User') }}" data-ajax-popup="true">
+                    <div class="bg-primary proj-add-icon"  data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
+                        <i class="ti ti-plus my-2"></i>
                     </div>
-                    <h6 class="mt-4 mb-2">{{ __('New User') }}</h6>
+                    <h6 class="mt-2 mb-2">{{ __('New User') }}</h6>
                     <p class="text-muted text-center">{{ __('Click here to add New User') }}</p>
                 </a>
             @endcan

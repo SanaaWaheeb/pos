@@ -1,28 +1,28 @@
 @extends('layouts.admin')
 @section('page-title')
-    {{__('Store')}}
+    {{__('Stores')}}
 @endsection
 @section('title')
     <div class="d-inline-block">
-        <h5 class="h4 d-inline-block font-weight-400 mb-0 text-white">{{__('Store')}}</h5>
+        <h5 class="h4 d-inline-block font-weight-400 mb-0 text-white">{{__('Stores')}}</h5>
     </div>
 @endsection
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Home') }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ __('Store') }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ __('Stores') }}</li>
 @endsection
 @section('action-btn')
-<div class="pr-2">
-    <a href="{{ route('store.subDomain') }}" class="btn btn-sm btn-primary btn-icon m-1" data-bs-toggle="tooltip" data-bs-placement="top"
+<div class="pr-2 d-flex align-items-center gap-2 rating-btn-wrapper">
+    <a href="{{ route('store.subDomain') }}" class="btn btn-sm btn-primary btn-icon" data-bs-toggle="tooltip" data-bs-placement="top"
         title="{{ __('Sub Domain') }}" >{{__('Sub Domain')}}</a>
 
-    <a href="{{ route('store.customDomain') }}" class="btn btn-sm btn-primary btn-icon m-1" data-bs-toggle="tooltip" data-bs-placement="top"
+    <a href="{{ route('store.customDomain') }}" class="btn btn-sm btn-primary btn-icon" data-bs-toggle="tooltip" data-bs-placement="top"
         title="{{ __('Custom Domain') }}" >{{__('Custom Domain')}}</a>
 
-    <a href="{{ route('store-resource.index') }}" class="btn btn-sm btn-primary btn-icon m-1" data-bs-toggle="tooltip"
+    <a href="{{ route('store-resource.index') }}" class="btn btn-sm btn-primary btn-icon" data-bs-toggle="tooltip"
         data-bs-placement="top" title="{{ __('List View') }}"><i class="fas fa-list"></i></a>
     @can('Create Store')
-        <a href="#"  data-size="md" data-url="{{ route('store-resource.create') }}" data-ajax-popup="true" data-title="{{__('Create New Store')}}"  class="btn btn-sm btn-primary btn-icon m-1" data-bs-toggle="tooltip"
+        <a href="#"  data-size="md" data-url="{{ route('store-resource.create') }}" data-ajax-popup="true" data-title="{{__('Create New Store')}}"  class="btn btn-sm btn-primary btn-icon" data-bs-toggle="tooltip"
             data-bs-placement="top" title="{{ __('Create New Store') }}"><i class="ti ti-plus"></i></a>
     @endcan
 </div>
@@ -34,7 +34,7 @@
     @if(\Auth::user()->type = 'super admin')
         <div class="row">
             @foreach($users as $user)
-            <div class="col-md-4 col-xxl-3">
+            <div class="col-md-4 col-xxl-3 col-sm-6 col-12">
                 <div class="card">
                     <div class="card-header border-0 pb-0">
                         <div class="card-header-right">
@@ -45,13 +45,15 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end" style="">
                                     @can('Edit Store')
-                                        <a href="#" data-size="md" data-url="{{ route('store-resource.edit',$user->id) }}" data-ajax-popup="true"  data-title="{{ __('Edit Store') }}" class="dropdown-item"><i
-                                                class="ti ti-edit"></i>
+                                        <a href="#" data-size="md" data-url="{{ route('store-resource.edit',$user->id) }}" title="{{ __('Edit Store') }}"
+                                            data-ajax-popup="true"  data-title="{{ __('Edit Store') }}" class="dropdown-item d-flex align-items-center gap-2"><i
+                                                class="ti ti-pencil "></i>
                                             <span>{{ __('Edit') }}</span>
                                         </a>
                                     @endcan
                                     @can('Upgrade Plans')
-                                        <a href="#" data-size="md" data-url="{{ route('plan.upgrade',$user->id) }}" data-ajax-popup="true" data-title="{{ __('Upgrade Plan') }}" class="dropdown-item"><i class="ti ti-trophy"></i>
+                                        <a href="#" data-size="md" data-url="{{ route('plan.upgrade',$user->id) }}" title="{{ __('Upgrade Plan') }}"
+                                             data-ajax-popup="true" data-title="{{ __('Upgrade Plan') }}" class="dropdown-item d-flex align-items-center gap-2"><i class="ti ti-trophy"></i>
                                             <span>{{ __('Upgrade Plan') }}</span>
                                         </a>
                                     @endcan
@@ -59,17 +61,14 @@
                                         <a href="#" data-size="md"
                                         data-url="{{ route('user.reset', \Crypt::encrypt($user->id)) }}"
                                         data-ajax-popup="true" data-title="{{ __('Reset Password') }}"
-                                        class="dropdown-item"
-                                        title="{{ __('Reset Password') }}">
+                                        class="dropdown-item d-flex align-items-center gap-2" title="{{ __('Reset Password') }}">
                                             <i class="ti ti-key "></i>
                                             <span >{{ __('Reset Password') }} </span>
                                         </a>
                                     @endcan
                                     @if(Auth::user()->type == "super admin")
-                                        <a class="dropdown-item"
-                                            href="{{ route('login.with.owner', $user->id) }}"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top" title="{{ __('Login As Owner') }}">
+                                        <a class="dropdown-item d-flex align-items-center gap-2"
+                                            href="{{ route('login.with.owner', $user->id) }}" title="{{ __('Login As Owner') }}">
                                             <i class="ti ti-replace"></i>
                                             <span >{{ __('Login As Owner') }} </span>
                                         </a>
@@ -77,15 +76,14 @@
                                         <a href="#" data-size="lg"
                                             data-url="{{ route('store.links', $user->id) }}"
                                             data-ajax-popup="true" data-title="{{ __('Store Links') }}"
-                                            class="dropdown-item"
-                                            title="{{ __('Store Links') }}">
+                                            class="dropdown-item d-flex align-items-center gap-2" title="{{ __('Store Links') }}">
                                             <i class="ti ti-adjustments "></i>
                                             <span >{{ __('Store Links') }} </span>
                                         </a>
                                     @endif
                                     @if($user->id != 2)
                                         @can('Delete Store')
-                                            <a class="bs-pass-para dropdown-item trigger--fire-modal-1" href="#"
+                                            <a class="bs-pass-para dropdown-item d-flex align-items-center gap-2 trigger--fire-modal-1" href="#"
                                                 data-title="{{ __('Delete') }}" data-confirm="{{ __('Are You Sure?') }}"
                                                 data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                 data-confirm-yes="delete-form-{{ $user->id }}">
@@ -97,20 +95,20 @@
                                     @endif
                                     @if ($user->is_enable_login == 1)
                                         <a href="{{ route('users.login', \Crypt::encrypt($user->id)) }}"
-                                            class="dropdown-item">
+                                            class="dropdown-item d-flex align-items-center gap-2" title="{{ __('Login Disable') }}">
                                             <i class="ti ti-road-sign"></i>
                                             <span class="text-danger"> {{ __('Login Disable') }}</span>
                                         </a>
                                     @elseif ($user->is_enable_login == 0 && $user->password == null)
                                         <a href="#" data-url="{{ route('user.reset', \Crypt::encrypt($user->id)) }}"
-                                            data-ajax-popup="true" data-size="md" class="dropdown-item login_enable"
-                                            data-title="{{ __('New Password') }}" class="dropdown-item">
+                                            data-ajax-popup="true" data-size="md" class="dropdown-item d-flex align-items-center gap-2 login_enable"
+                                            data-title="{{ __('New Password') }}" title="{{ __('Login Enable') }}">
                                             <i class="ti ti-road-sign"></i>
                                             <span class="text-success"> {{ __('Login Enable') }}</span>
                                         </a>
                                     @else
                                         <a href="{{ route('users.login', \Crypt::encrypt($user->id)) }}"
-                                            class="dropdown-item">
+                                            class="dropdown-item d-flex align-items-center gap-2">
                                             <i class="ti ti-road-sign"></i>
                                             <span class="text-success"> {{ __('Login Enable') }}</span>
                                         </a>
@@ -121,11 +119,11 @@
                     </div>
                     <div class="card-body text-center">
                         <div class="avatar-parent-child">
-                            <img alt="" src="{{ asset(Storage::url("uploads/profile/")).'/'}}{{ !empty($user->avatar)?$user->avatar:'avatar.png' }}" class="img-fluid rounded-circle card-avatar">
+                            <img alt="" src="{{ asset(Storage::url("uploads/profile/")).'/'}}{{ !empty($user->avatar)?$user->avatar:'avatar.png' }}" class="border border-2 border-primary rounded admin-user-img">
                         </div>
 
-                        <h5 class="h6 mt-4 mb-0"> {{$user->name}}</h5>
-                        <a href="#" class="d-block text-sm text-muted my-4"> {{$user->email}}</a>
+                        <h5 class="h6 mt-3 mb-0"> {{$user->name}}</h5>
+                        <a href="#" class="d-block text-sm text-muted my-3"> {{$user->email}}</a>
                         <div class="card mb-0 mt-3">
                             <div class="card-body p-3">
                                 <div class="row">
@@ -159,11 +157,12 @@
                 </div>
             </div>
             @endforeach
-            <div class="col-md-3">
+            <div class="col-md-4 col-xxl-3 col-sm-6 col-12 create-user-card">
                 @can('Create Store')
-                    <a data-url="{{ route('store-resource.create') }}" data-size="md" class="btn-addnew-project" data-ajax-popup="true" data-title="{{__('Create New Store')}}"  ><i class="ti ti-plus text-white"></i>
-                        <div class="bg-primary proj-add-icon">
-                            <i class="ti ti-plus"></i>
+                    <a data-url="{{ route('store-resource.create') }}" data-size="md" class="btn-addnew-project border-primary" data-ajax-popup="true" data-title="{{__('Create New Store')}}"  ><i class="ti ti-plus text-white"></i>
+                        <div class="bg-primary proj-add-icon" data-bs-toggle="tooltip"
+                        data-bs-placement="top" title="{{ __('Create New Store') }}">
+                            <i class="ti ti-plus my-2"></i>
                         </div>
                         <h6 class="mt-4 mb-2">{{ __('New Store') }}</h6>
                         <p class="text-muted text-center">{{ __('Click here to add New Store') }}</p>

@@ -10,8 +10,8 @@
         <label for="variant_options">{{ __('Variant Options') }}</label><x-required></x-required>
         <input class="form-control" name="variant_options" type="text" id="variant_options" placeholder="{{ __('Variant Options separated by|pipe symbol, i.e Black|Blue|Red') }}" required>
     </div>
-    <div class="form-group col-12 d-flex justify-content-end col-form-label">
-        <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+    <div class="form-group col-12 py-0 mb-0 d-flex justify-content-end col-form-label">
+        <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary" data-bs-dismiss="modal">
         <input type="submit" value="{{__('Add Variants')}}" class="btn btn-primary add-variants ms-2">
     </div>
 </form>

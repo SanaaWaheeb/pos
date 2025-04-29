@@ -32,10 +32,10 @@
                 {!! isset($details['customer']['phone_number']) ? 'Phone:  ' . (isset($customer_detail->phone) ? $customer_detail->phone : '') : '' !!}
             </div>
             <div>
-                {!! isset($details['date']) ? 'Date of POS:  ' . $details['date'] : '' !!}
+                {!! isset($details['date']) ? __('Date of POS').':  ' . $details['date'] : '' !!}
             </div>
             <div class="product-border">
-                {!! isset($details['store']['details']) ? 'Store Name:  ' . $details['store']['details'] : '' !!}
+                {!! isset($details['store']['details']) ? __('Store Name').':  ' . $details['store']['details'] : '' !!}
             </div>
         </tbody>
     </table>

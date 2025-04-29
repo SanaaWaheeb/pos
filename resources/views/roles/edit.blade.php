@@ -3,11 +3,11 @@
     <div class="row">
         <div class="form-group">
             {{ Form::label('name', __('Name'), ['class' => 'form-label']) }}<x-required></x-required>
-           
+
                 <div class="form-icon-user">
                     {{ Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('Enter Role Name'),'required'=>'required']) }}
                 </div>
-           
+
             @error('name')
                 <span class="invalid-name" role="alert">
                     <strong class="text-danger">{{ $message }}</strong>
@@ -17,7 +17,7 @@
 
         <div class="form-group">
             @if (!empty($permissions))
-                <h6 class="my-3">{{ __('Assign Permission to Roles') }} </h6>
+                <h6 class="mb-2">{{ __('Assign Permission to Roles') }} </h6>
                 <table class="table  mb-0" id="dataTable-1">
                     <thead>
                         <tr>
@@ -127,7 +127,7 @@
                                                 </div>
                                             @endif
                                         @endif
-                                       
+
                                     </div>
                                 </td>
                             </tr>
@@ -138,8 +138,8 @@
         </div>
     </div>
 </div>
-<div class="modal-footer">
-    <button type="button" class="btn  btn-light" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
+<div class="modal-footer pt-0 mb-0">
+    <button type="button" class="btn  btn-secondary" data-bs-dismiss="modal">{{ __('Cancel') }}</button>
     <input type="submit" value="{{ __('Update') }}" class="btn  btn-primary">
 </div>
 {{ Form::close() }}

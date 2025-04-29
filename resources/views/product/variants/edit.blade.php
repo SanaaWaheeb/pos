@@ -19,8 +19,8 @@
                 placeholder="{{ __('Variant Options separated by|pipe symbol, i.e Black|Blue|Red') }}">
         </div>
     @endforeach
-    <div class="form-group col-12 d-flex justify-content-end col-form-label">
-        <input type="button" value="{{ __('Cancel') }}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+    <div class="form-group col-12 py-0 mb-0 d-flex justify-content-end col-form-label">
+        <input type="button" value="{{ __('Cancel') }}" class="btn btn-secondary" data-bs-dismiss="modal">
         <input type="button" value="{{ __('Add Variants') }}" class="btn btn-primary addOredit-variants ms-2">
     </div>
 </form>

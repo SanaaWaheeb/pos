@@ -9,11 +9,11 @@
             @endforeach
             <th><span>{{ __('Price') }}</span></th>
             <th><span>{{ __('Quantity') }}</span></th>
-            <th></th>
+            <th><span>{{ __('Action') }}</span></th>
         </tr>
         </thead>
         <tbody>
-           
+
             @foreach($possibilities as $counter => $possibility)
             <tr>
                 @foreach(explode(' : ', $possibility) as $key => $values)
@@ -28,7 +28,7 @@
                     <input type="number" id="vquantity_{{ $counter }}" autocomplete="off" spellcheck="false" placeholder="{{ __('Enter Quantity') }}" class="form-control wid-100" name="verians[{{$counter}}][qty]" required>
                 </td>
                 <td>
-                    <a class="align-items-center btn btn-sm btn-icon bg-light-secondary d-inline-flex delete-variant-row"><i class="ti ti-trash"></i></a>
+                    <a class="align-items-center btn btn-sm btn-icon bg-danger text-white  delete-variant-row" data-bs-placement="top"  data-bs-toggle="tooltip" title="{{ __('delete') }}"><i class="ti ti-trash"></i></a>
                 </td>
             </tr>
         @endforeach

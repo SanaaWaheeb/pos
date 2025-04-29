@@ -1,31 +1,31 @@
 @extends('layouts.admin')
 @section('page-title')
-    {{ __('Product Coupons') }}
+    {{ __('Product Coupon') }}
 @endsection
 @section('title')
     <div class="d-inline-block">
-        <h5 class="h4 d-inline-block text-white font-weight-bold mb-2">{{ __('Product Coupons') }}</h5>
+        <h5 class="h4 d-inline-block text-white font-weight-bold mb-2">{{ __('Product Coupon') }}</h5>
     </div>
 @endsection
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Home') }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ __('Product Coupons') }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ __('Product Coupon') }}</li>
 @endsection
 
 @section('action-btn')
-    <a class="btn btn-sm btn-icon  bg-light-secondary me-2" href="{{ route('productcoupon.export') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Export') }}"> 
-        <i  data-feather="download"></i>
+<a class="btn btn-sm btn-icon  bg-light-secondary me-2" href="{{ route('productcoupon.export') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Export') }}"> 
+    <i  data-feather="download"></i>
+</a>
+@can('Create Product Coupan')
+    <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Import') }}" data-ajax-popup="true" data-size="lg" data-title="{{ __('Import Product-coupan CSV File') }}" data-url="{{ route('productcoupon.file.import') }}">
+        <i  data-feather="upload"></i>
     </a>
-    @can('Create Product Coupan')
-        <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Import') }}" data-ajax-popup="true" data-size="lg" data-title="{{ __('Import Product-coupan CSV File') }}" data-url="{{ route('productcoupon.file.import') }}">
-            <i  data-feather="upload"></i>
-        </a>
-    @endcan
-    @can('Create Product Coupan')
-        <a class="btn btn-sm btn-icon  btn-primary me-2 text-white" data-url="{{ route('product-coupon.create') }}" data-title="{{ __('Add Coupon') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
-            <i  data-feather="plus"></i>
-        </a>
-    @endcan
+@endcan
+@can('Create Product Coupan')
+    <a class="btn btn-sm btn-icon  btn-primary me-2 text-white" data-url="{{ route('product-coupon.create') }}" data-title="{{ __('Add Coupon') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
+        <i  data-feather="plus"></i>
+    </a>
+@endcan
 @endsection
 @push('script-page')
     <script>
@@ -58,9 +58,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-border-style">
+                <div class="card-body pb-0 table-border-style">
                     <h5></h5>
-                    <div class="table-responsive">
+                    <div class="table-responsive order-table-wrp">
                         <table class="table mb-0 dataTable">
                             <thead>
                                 <tr>
@@ -87,19 +87,19 @@
                                         <td>{{ $coupon->limit }}</td>
                                         <td>{{ $coupon->product_coupon() }}</td>
                                         <td class="Action">
-                                            <div class="d-flex">
+                                            <div class="d-flex action-btn-wrapper">
                                                 @can('Show Product Coupan')
-                                                    <a href="{{ route('product-coupon.show', $coupon->id) }}" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-tooltip="view" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View Coupon') }}" data-tooltip="View">
+                                                    <a href="{{ route('product-coupon.show', $coupon->id) }}" class="btn btn-sm btn-icon bg-warning text-white me-2" data-tooltip="view" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View Coupon') }}" data-tooltip="View">
                                                         <i  class="ti ti-eye f-20"></i>
                                                     </a>
                                                 @endcan
                                                 @can('Edit Product Coupan')
-                                                    <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-title="{{ __('Edit Coupon') }}" data-url="{{ route('product-coupon.edit', $coupon->id) }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
-                                                        <i  class="ti ti-edit f-20"></i>
+                                                    <a href="#!" class="btn btn-sm btn-icon  bg-info text-white me-2" data-title="{{ __('Edit Coupon') }}" data-url="{{ route('product-coupon.edit', $coupon->id) }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
+                                                        <i  class=" ti ti-pencil f-20"></i>
                                                     </a>
                                                 @endcan
                                                 @can('Delete Product Coupan')
-                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                         data-title="{{ __('Delete Lead') }}"
                                                         data-confirm="{{ __('Are You Sure?') }}"
                                                         data-text="{{ __('This action can not be undone. Do you want to continue?') }}"

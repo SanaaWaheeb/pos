@@ -17,7 +17,7 @@
             {{ Form::label('User Role',__('User Role'),array('class'=>'form-label')) }}<x-required></x-required>
             {{ Form::select('role',$roles,null,array('class'=>'form-control','placeholder'=>__('Select Role'),'required'=>'required')) }}
         </div>
-        <div class="col-6">
+        <div class="col-md-5">
             <div class="form-group">
                 <label for="password_switch">{{ __('Login is enable') }}</label>
                 <div class="form-check form-switch custom-switch-v1 float-end">
@@ -37,9 +37,9 @@
                 @enderror
             </div>
         </div>
-        <div class="form-group col-12 d-flex justify-content-end col-form-label">
-            <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
-            <input type="submit" value="{{__('Save')}}" class="btn btn-primary ms-2">
+        <div class="form-group col-12 py-0 mb-0 d-flex justify-content-end col-form-label">
+            <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary" data-bs-dismiss="modal">
+            <input type="submit" value="{{__('Create')}}" class="btn btn-primary ms-2">
         </div>
     </div>
 </form>

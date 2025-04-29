@@ -13,13 +13,25 @@
             <div class="col ml-n2">
                 <a href="#!" class="d-block h6 mb-0">{{__('Stores')}}</a>
                 <div>
-                    <span class="text-sm">{{$plan->max_stores}}</span>
+                    <span class="text-sm">
+                        @if ($plan->max_stores == '-1')
+                            {{ __('Unlimited') }}
+                        @else
+                            {{$plan->max_stores}}
+                        @endif
+                    </span>
                 </div>
             </div>
             <div class="col ml-n2">
                 <a href="#!" class="d-block h6 mb-0">{{__('Products')}}</a>
                 <div>
-                    <span class="text-sm">{{$plan->max_products}}</span>
+                    <span class="text-sm">
+                        @if ($plan->max_products == '-1')
+                            {{ __('Unlimited') }}
+                        @else
+                            {{$plan->max_products}}
+                        @endif
+                    </span>
                 </div>
             </div>
             <div class="col-auto">
@@ -29,7 +41,7 @@
                     <span class="ms-2">{{ __('Active')}}</span>
                 </span>
                 @else
-                    <a href="{{route('plan.active',[$user->id,$plan->id])}}" class="btn btn-xs btn-primary btn-icon" data-toggle="tooltip" data-original-title="{{__('Click to Upgrade Plan')}}">
+                    <a href="{{route('plan.active',[$user->id,$plan->id])}}" class="btn btn-primary btn-icon" data-toggle="tooltip" data-original-title="{{__('Click to Upgrade Plan')}}" title="{{ __('Click to Upgrade Plan') }}">
                         <span class="btn-inner--icon"><i class="fas fa-cart-plus"></i></span>
                     </a>
                 @endif

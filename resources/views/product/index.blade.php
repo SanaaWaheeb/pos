@@ -15,11 +15,14 @@
         <i  data-feather="download"></i>
     </a>
     @can('Create Products')
-        <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Import') }}" data-ajax-popup="true" data-size="lg" data-title="{{ __('Import Product CSV File') }}" data-url="{{ route('product.file.import') }}">
+        <a href="#!" class="btn btn-sm btn-icon  bg-primary text-white me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Import') }}" data-ajax-popup="true" data-size="lg" data-title="{{ __('Import Product CSV File') }}" data-url="{{ route('product.file.import') }}">
             <i  data-feather="upload"></i>
         </a>
     @endcan
-    
+
+    <a class="btn btn-sm btn-icon  bg-primary text-white me-2" href="{{ route('product.grid') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Grid View') }}">
+        <i  class="ti ti-grid-dots f-30"></i>
+    </a>
     @can('Create Products')
         @if (count($user->stores) > 1)
         <div class="dropdown dash-h-item" style="display: inline-block">
@@ -39,9 +42,7 @@
         </a>
         @endif
     @endcan
-    <a class="btn btn-sm btn-icon  bg-light-secondary" href="{{ route('product.grid') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Grid View') }}">
-        <i  class="ti ti-grid-dots f-30"></i>
-    </a>
+
 </div>
 @endsection
 @php
@@ -60,7 +61,7 @@
     <!-- [ sample-page ] start -->
     <div class="col-sm-12">
         <div class="card">
-            <div class="card-body table-border-style">
+            <div class="card-body pb-0 table-border-style">
                 <div class="table-responsive">
                     <table class="table dataTable" id="pc-dt-satetime-sorting">
                         <thead>
@@ -80,9 +81,9 @@
                                     <td>
                                         <div class="d-flex align-items-center">
                                             @if (!empty($product->is_cover))
-                                                <img src="{{$logo.(isset($product->is_cover) && !empty($product->is_cover)?$product->is_cover:'default.jpg')}}" alt="" class="theme-avtar">
+                                                <img src="{{$logo.(isset($product->is_cover) && !empty($product->is_cover)?$product->is_cover:'default.jpg')}}" alt="" class="theme-avtar border border-2 border-primary rounded">
                                             @else
-                                                <img src="{{$logo.(isset($product->is_cover) && !empty($product->is_cover)?$product->is_cover:'default.jpg')}}" alt="" class="theme-avtar">
+                                                <img src="{{$logo.(isset($product->is_cover) && !empty($product->is_cover)?$product->is_cover:'default.jpg')}}" alt="" class="theme-avtar border border-2 border-primary rounded">
                                             @endif
                                             <div class="ms-3">
                                                 <a href="{{ route('product.show', $product->id) }}" class="text-dark f-w-700">{{ $product->name }}</a>
@@ -127,33 +128,33 @@
                                     </td>
                                     <td class="product-stock" data-id="{{ $product->id }}">
                                         @if ($product->enable_product_variant == 'on')
-                                        <span class="badge rounded p-2 f-w-600  bg-light-primary">{{ __('In Variant') }}</span>
+                                        <span class="badge tbl-btn-w p-2 f-w-600 common-lbl-radius border border-1 border-primary bg-light-primary">{{ __('In Variant') }}</span>
                                         @else
                                             @if ($product->quantity == 0)
-                                                <span class="badge rounded p-2 f-w-600  bg-light-danger">  {{ __('Out of stock') }}</span>
+                                                <span class="badge tbl-btn-w p-2 f-w-600 common-lbl-radius border border-1 border-danger bg-light-danger">  {{ __('Out of stock') }}</span>
                                             @else
-                                                <span class="badge rounded p-2 f-w-600  bg-light-primary"> {{ __('In stock') }}</span>
+                                                <span class="badge tbl-btn-w p-2 f-w-600 common-lbl-radius border border-1 border-primary bg-light-primary"> {{ __('In stock') }}</span>
                                             @endif
                                         @endif
-                                        
+
                                     </td>
                                     <td>
                                         {{ \App\Models\Utility::dateFormat($product->created_at) }}
                                     </td>
                                     <td>
-                                        <div class="d-flex">
+                                        <div class="d-flex action-btn-wrapper">
                                             @can('Show Products')
-                                                <a href="{{ route('product.show', $product->id) }}" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-toggle="tooltip" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View') }}" data-tooltip="View">
+                                                <a href="{{ route('product.show', $product->id) }}" class="btn btn-sm btn-icon  bg-warning text-white me-2" data-toggle="tooltip" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View') }}" data-tooltip="View">
                                                     <i  class="ti ti-eye f-20"></i>
                                                 </a>
                                             @endcan
                                             @can('Edit Products')
-                                                <a class="btn btn-sm btn-icon  bg-light-secondary me-2" href="{{ route('product.edit', $product->id) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
-                                                    <i  class="ti ti-edit f-20"></i>
+                                                <a class="btn btn-sm btn-icon  bg-info text-white me-2" href="{{ route('product.edit', $product->id) }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
+                                                    <i  class=" ti ti-pencil f-20"></i>
                                                 </a>
                                             @endcan
                                             @can('Delete Products')
-                                                <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                     data-title="{{ __('Delete Lead') }}"
                                                     data-confirm="{{ __('Are You Sure?') }}"
                                                     data-text="{{ __('This action can not be undone. Do you want to continue?') }}"

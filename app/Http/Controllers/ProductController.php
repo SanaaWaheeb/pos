@@ -1525,19 +1525,19 @@ class ProductController extends Controller
             if ($request->cat_id !== '' && $request->search == '') {
                 if($request->cat_id == '0'){//->where('enable_product_variant','off')
                     $products = Product::where('store_id',$request->store_id)->get();
-                   
+
                 }else{
-                    
+
                     $products = Product::where('product_categorie', $request->cat_id)->where('store_id',$request->store_id)->get();
                 }
 
             } else {
                 if($request->cat_id == '0'){
                     $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id',$request->store_id)->get();
-                   
+
                 }else{
                     $products = Product::where('name', 'LIKE', "%{$request->search}%")->where('store_id',$request->store_id)->Where('product_categorie', $request->cat_id)->get();
-                   
+
                 }
             }
             if (count($products)>0)
@@ -1569,16 +1569,16 @@ class ProductController extends Controller
 
                         $output .= '
 
-                                <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
+                                <div class="col-xxl-4 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-12">
                                     <div class="tab-pane fade show active toacart w-100" data-url="' . url('addToCart/' . $product->id . '/' . $lastsegment) .'">
-                                        <div class="position-relative card">
+                                        <div class="position-relative border border-primary card mb-0">
                                             <img alt="Image placeholder" src="' . $image_url/*asset(Storage::url($image_url))*/ . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
                                             <div class="p-0 custom-card-body card-body d-flex ">
-                                                <div class="card-body my-2 p-2 text-left card-bottom-content">
+                                                <div class="card-body my-2 p-2 text-center card-bottom-content">
                                                     <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-                                                    <small class="badge badge-primary mb-0">' . Utility::priceFormat($productprice) . '</small>
+                                                    <small class="text-primary fs-6 fw-bold">' . Utility::priceFormat($productprice) . '</small>
 
-                                                    <small class="top-badge badge badge-danger mb-0">'. $quantity. ' QTY'.'</small>
+                                                    <small class="top-badge badge badge-danger mb-0">'. $quantity. ' '. __("QTY") .'</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -1595,14 +1595,14 @@ class ProductController extends Controller
 
                         $output .= '
 
-                                <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6 col-12">
-                                    <div class="tab-pane fade show active w-100" data-url="' . url('pos-productVariant/' . $product->id . '/' . $lastsegment) .'" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="Product Variant" >
-                                        <div class="position-relative card">
+                                <div class="col-xxl-4 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-12">
+                                    <div class="tab-pane fade show active w-100" data-url="' . url('pos-productVariant/' . $product->id . '/' . $lastsegment) .'" data-ajax-popup="true" data-size="lg" data-align="centered" data-title="' . __("Product Variant") . '">
+                                        <div class="position-relative border border-primary card mb-0">
                                             <img alt="Image placeholder" src="' . $image_url/*asset(Storage::url($image_url))*/ . '" class="card-image avatar hover-shadow-lg" style=" height: 6rem; width: 100%;">
                                             <div class="p-0 custom-card-body card-body d-flex ">
-                                                <div class="card-body my-2 p-2 text-left card-bottom-content">
+                                                <div class="card-body my-2 p-2 text-center card-bottom-content">
                                                     <h6 class="mb-2 text-dark product-title-name">' . $product->name . '</h6>
-                                                    <small class="badge badge-primary mb-0">In Variant</small>
+                                                    <small class="text-primary fs-6 fw-bold">'. __("In Variant") .'</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -1732,7 +1732,7 @@ class ProductController extends Controller
 
         $carthtml .= '<tr data-product-id="' . $time . '" id="product-variant-id-' . $variant_id . '">
                         <td class="cart-images">
-                            <img alt="Image placeholder" src="' . $image_url/*asset(Storage::url($image_url))*/ . '" class="card-image avatar shadow hover-shadow-lg">
+                            <img alt="Image placeholder" src="' . $image_url/*asset(Storage::url($image_url))*/ . '" class="card-image avatar border border-2 border-primary rounded shadow hover-shadow-lg">
                         </td>
 
                         <td class="name">' . $productname . '-' . $variant_name . '</td>
@@ -1979,7 +1979,7 @@ class ProductController extends Controller
 
         $carthtml .= '<tr data-product-id="' . $time . '" id="product-id-' . $id . '">
                         <td class="cart-images">
-                            <img alt="Image placeholder" src="' . $image_url/*asset(Storage::url($image_url))*/ . '" class="card-image avatar shadow hover-shadow-lg">
+                            <img alt="Image placeholder" src="' . $image_url/*asset(Storage::url($image_url))*/ . '" class="card-image avatar shadow border border-2 border-primary rounded hover-shadow-lg">
                         </td>
 
                         <td class="name">' . $productname . '</td>

@@ -15,7 +15,7 @@
     <div class="col-sm-12 pb-2">
         {{Form::label('title',__('Rating'), ['class' => 'form-label']) }}<x-required></x-required>
         <div id="rating_div">
-            <div class="rate pl-0">
+            <div class="rate p-0">
                 <input type="radio" class="rating" id="star5" name="rate" value="5" {{($rating->ratting == '5')?'checked':''}}>
                 <label for="star5" title="text">5 stars</label>
                 <input type="radio" class="rating" id="star4" name="rate" value="4" {{($rating->ratting == '4')?'checked':''}}>
@@ -35,8 +35,8 @@
             {{Form::textarea('description',null,array('class'=>'form-control','rows'=>3,'placeholder'=>__('Enter Description'),'required'=>'required'))}}
         </div>
     </div>
-    <div class="form-group col-12 d-flex justify-content-end col-form-label">
-        <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+    <div class="form-group col-12 py-0 mb-0 d-flex justify-content-end col-form-label">
+        <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary" data-bs-dismiss="modal">
         <input type="submit" value="{{__('Save')}}"  id="saverating" class="btn btn-primary ms-2">
     </div>
 </div>

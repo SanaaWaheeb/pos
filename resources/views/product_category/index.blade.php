@@ -26,7 +26,7 @@ $store_logo=\App\Models\Utility::get_file('uploads/product_image/');
     <div class="col-sm-12">
         <div class="card">
             <div class="card-body pb-0 table-border-style">
-                <div class="table-responsive">
+                <div class="table-responsive order-table-wrp">
                     <table class="table dataTable">
                         <thead>
                             <tr>
@@ -41,22 +41,22 @@ $store_logo=\App\Models\Utility::get_file('uploads/product_image/');
                                     <td>
                                         <div class="d-flex align-items-center">
                                             @if ($product_category->categorie_img)
-                                                <img src="{{ $store_logo }}/{{ $product_category->categorie_img }}" alt="" class="theme-avtar">
+                                                <img src="{{ $store_logo }}/{{ $product_category->categorie_img }}" alt="" class="theme-avtar border border-2 border-primary rounded">
                                             @else
-                                                <img src="{{ $store_logo }}/default.jpg" alt="" class="theme-avtar">
+                                                <img src="{{ $store_logo }}/default.jpg" alt="" class="theme-avtar border border-2 border-primary rounded">
                                             @endif
                                         </div>
                                     </td>
                                     <td>{{ $product_category->name }}</td>
                                     <td>
-                                        <div class="d-flex">
+                                        <div class="d-flex action-btn-wrapper">
                                             @can('Edit Product category')
-                                                <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-url="{{ route('product_categorie.edit', $product_category->id) }}"  data-ajax-popup="true" data-title="{{ __('Edit Category') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}" data-tooltip="Edit">
-                                                    <i class="ti ti-edit f-20"></i>
+                                                <a href="#!" class="btn btn-sm btn-icon  bg-info text-white me-2" data-url="{{ route('product_categorie.edit', $product_category->id) }}"  data-ajax-popup="true" data-title="{{ __('Edit Category') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}" data-tooltip="Edit">
+                                                    <i class=" ti ti-pencil f-20"></i>
                                                 </a>
                                             @endcan
                                             @can('Delete Product category')
-                                                <a href="#!" class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" data-title="{{ __('Delete Lead') }}" data-confirm="{{ __('Are You Sure?') }}"  data-text="{{ __('This action can not be undone. Do you want to continue?') }}" data-confirm-yes="delete-form-{{ $product_category->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Delete') }}">
+                                                <a href="#!" class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" data-title="{{ __('Delete Lead') }}" data-confirm="{{ __('Are You Sure?') }}"  data-text="{{ __('This action can not be undone. Do you want to continue?') }}" data-confirm-yes="delete-form-{{ $product_category->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Delete') }}">
                                                     <i class="ti ti-trash f-20"></i>
                                                 </a>
                                                 {!! Form::open(['method' => 'DELETE', 'route' => ['product_categorie.destroy', $product_category->id], 'id' => 'delete-form-' . $product_category->id]) !!}

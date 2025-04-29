@@ -16,9 +16,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-border-style">
+                <div class="card-body pb-0 table-border-style">
                     <h4 class="my-2">{{ $productCoupon->code }}</h4>
-                    <div class="table-responsive">
+                    <div class="table-responsive order-table-wrp">
                         <table class="table mb-0 dataTable">
                             <thead>
                                 <tr>
@@ -32,7 +32,7 @@
                                         colspan="1" aria-label=" Date: activate to sort column ascending"
                                         style="width: 642px;"> {{ __('Date') }}</th>
                                 </tr>
-                            </thead>    
+                            </thead>
                             <tbody>
                                 @foreach ($productCoupons as $userCoupon)
                                     <tr role="row" class="odd">

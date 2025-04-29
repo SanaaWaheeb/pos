@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="form-group col-12 d-flex justify-content-end col-form-label">
-            <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+            <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary" data-bs-dismiss="modal">
             <input type="submit" value="{{__('Upload')}}" class="btn btn-primary ms-2">
         </div>
     </div>

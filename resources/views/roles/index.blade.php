@@ -25,7 +25,7 @@
         <div class="card">
             <div class="card-header card-body table-border-style">
                 <div class="table-responsive">
-                    <table class="table" id="pc-dt-simple">
+                    <table class="table dataTable" id="pc-dt-simple">
                         <thead>
                             <tr>
                                 <th>{{ __('Role') }}</th>
@@ -37,27 +37,27 @@
                             @foreach ($roles as $role)
                                 <tr>
                                     <td>{{ $role->name }}</td>
-                                    <td style="white-space: inherit">
+                                    <td class="permissions-item-wrp" style="white-space: inherit">
                                         @foreach ($role->permissions()->pluck('name') as $permission)
-                                            <span class="badge rounded p-2 m-1 px-3 bg-primary ">
+                                            <span class="badge p-2 m-1 px-3 bg-primary ">
                                                 <a href="#" class="text-white">{{ $permission }}</a>
                                             </span>
                                         @endforeach
                                     </td>
                                     <td>
-                                        <div class="d-flex">
+                                        <div class="d-flex action-btn-wrapper">
                                             @can('Edit Role')
-                                                <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2"
+                                                <a href="#!" class="btn btn-sm btn-icon  bg-info text-white me-2"
                                                     data-url="{{ URL::to('roles/' . $role->id . '/edit')}}"
                                                     data-ajax-popup="true" data-size="lg" data-bs-toggle="tooltip" title=""
                                                     data-title="{{ __('Edit Role') }}"
                                                     data-bs-original-title="{{ __('Edit') }}">
-                                                    <i class="ti ti-edit"></i>
+                                                    <i class="ti ti-pencil "></i>
                                                 </a>
                                             @endcan
                                             @can('Delete Role')
-                                               
-                                                <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+
+                                                <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                     data-title="{{ __('Delete Role') }}"
                                                     data-confirm="{{ __('Are You Sure?') }}"
                                                     data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
@@ -68,7 +68,7 @@
                                                 </a>
                                                 {!! Form::open(['method' => 'DELETE', 'route' => ['roles.destroy', $role->id], 'id' => 'delete-form-' . $role->id]) !!}
                                                 {!! Form::close() !!}
-                                                
+
                                             @endcan
                                         </div>
                                     </td>

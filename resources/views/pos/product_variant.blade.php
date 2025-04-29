@@ -59,7 +59,7 @@
     </div>
 {{-- </div> --}}
 <div class="col-12 d-flex justify-content-end col-form-label">
-    <input type="button" value="{{ __('Cancel') }}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+    <input type="button" value="{{ __('Cancel') }}" class="btn btn-secondary" data-bs-dismiss="modal">
     <a href="#!" type="submit" class="btn btn-primary add_to_cart_variant toacartvariant ms-2" data-toggle="tooltip" data-id="{{ $products->id }}" >{{--data-url="{{ url('addToCartVariant/' . $products->id . '/' . $session_key) }}"--}}
         {{ __('Add To Cart') }}
         <i class="fas fa-shopping-basket ms-1" style="font-size: initial;"></i>
@@ -118,7 +118,7 @@
 
 
         $(document).on('click', '.toacartvariant', function () {
-           
+
            var sum = 0;
            var id = $(this).attr('data-id');
            var session_key = "{{ $session_key }}";
@@ -163,13 +163,13 @@
 
                       $('.discount').val('');
                        }
-                       
+
                        $('#tbody').append(data.carthtml);
                        $('.no-found').addClass('d-none');
                        $('.carttable #product-variant-id-' + data.product.variant_id + ' input[name="quantity"]').val(data.product.quantity);
                        $('#btn-pur button').removeAttr('disabled');
                        $('.btn-empty button').addClass('btn-clear-cart');
-                      
+
                        }
                },
                error: function (data) {

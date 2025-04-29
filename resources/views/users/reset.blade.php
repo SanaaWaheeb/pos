@@ -24,8 +24,8 @@
         </div>
         <div class="login_field d-none"></div>
     </div>
-<div class="d-flex justify-content-end">
-    <input type="button" value="Cancel" class="btn btn-light" data-bs-dismiss="modal">
-    <input type="submit" value="{{ __('Update') }}" class="btn  btn-primary">
+<div class="d-flex py-0 mb-0 justify-content-end">
+    <input type="button" value="{{ __('Cancel') }}" class="btn btn-secondary" data-bs-dismiss="modal">
+    <input type="submit" value="{{ __('Update') }}" class="btn  btn-primary ms-2">
 </div>
 {{ Form::close() }}
