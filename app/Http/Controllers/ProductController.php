@@ -1753,7 +1753,7 @@ class ProductController extends Controller
                         <td class="subtotal">' . Utility::priceFormat($variant_subtotal) . '</td>
 
                         <td class="">
-                                <a href="#" class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" data-confirm="' . __("Are You Sure?") . '" data-text="' . __("This action can not be undone. Do you want to continue?") . '" data-confirm-yes=' . $model_delete_id . ' title="' . __('Delete') . '}" data-id="' . $time . '" title="' . __('Delete') . '"   >
+                                <a href="#" class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" data-confirm="' . __("Are You Sure?") . '" data-text="' . __("This action can not be undone. Do you want to continue?") . '" data-confirm-yes=' . $model_delete_id . ' title="' . __('Delete') . '}" data-id="' . $time . '" title="' . __('Delete') . '"   >
                                 <span class=""><i class="ti ti-trash"></i></span>
                                 </a>
                                 <form method="post" action="' . url('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">
@@ -2000,7 +2000,7 @@ class ProductController extends Controller
                         <td class="subtotal">' . Utility::priceFormat($subtotal) . '</td>
 
                         <td class="">
-                                <a href="#" class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" data-confirm="' . __("Are You Sure?") . '" data-text="' . __("This action can not be undone. Do you want to continue?") . '" data-confirm-yes=' . $model_delete_id . ' title="' . __('Delete') . '}" data-id="' . $time . '" title="' . __('Delete') . '"   >
+                                <a href="#" class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" data-confirm="' . __("Are You Sure?") . '" data-text="' . __("This action can not be undone. Do you want to continue?") . '" data-confirm-yes=' . $model_delete_id . ' title="' . __('Delete') . '}" data-id="' . $time . '" title="' . __('Delete') . '"   >
                                 <span class=""><i class="ti ti-trash"></i></span>
                                 </a>
                                 <form method="post" action="' . url('remove-from-cart') . '"  accept-charset="UTF-8" id="' . $model_delete_id . '">

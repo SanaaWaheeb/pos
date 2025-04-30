@@ -1,40 +1,41 @@
 @extends('layouts.admin')
 @section('page-title')
-    {{ __('Product') }}
+    {{ __('Products') }}
 @endsection
 @section('title')
     <div class="d-inline-block">
-        <h5 class="h4 d-inline-block text-white font-weight-bold mb-0 ">{{ __('Product') }}</h5>
+        <h5 class="h4 d-inline-block text-white font-weight-bold mb-0 ">{{ __('Products') }}</h5>
     </div>
 @endsection
 @section('breadcrumb')
     <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Home') }}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">{{ __('Product') }}</li>
+    <li class="breadcrumb-item active" aria-current="page">{{ __('Products') }}</li>
 @endsection
 @section('action-btn')
-    <a class="btn btn-sm btn-icon  bg-light-secondary me-2" href="{{ route('product.export') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Export') }}"> 
+    <a class="btn btn-sm btn-icon  bg-primary text-white me-2" href="{{ route('product.export') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Export') }}">
         <i  data-feather="download"></i>
     </a>
     @can('Create Products')
-        <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Import') }}" data-ajax-popup="true" data-size="lg" data-title="{{ __('Import Product CSV File') }}" data-url="{{ route('product.file.import') }}">
-            <i  data-feather="upload"></i>
-        </a>
+    <a href="#!" class="btn btn-sm btn-icon  bg-primary text-white me-2" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Import') }}" data-ajax-popup="true" data-size="lg" data-title="{{ __('Import Product CSV File') }}" data-url="{{ route('product.file.import') }}">
+        <i  data-feather="upload"></i>
+    </a>
     @endcan
-    <a href="{{ route('product.index') }}" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-bs-toggle="tooltip"
-            data-bs-placement="top" title="{{ __('List View') }}"><i class="fas fa-list"></i></a>
+    <a href="{{ route('product.index') }}" class="btn btn-sm btn-icon  bg-primary text-white me-2" data-bs-toggle="tooltip"
+    data-bs-placement="top" title="{{ __('List View') }}"><i class="fas fa-list"></i></a>
     @can('Create Products')
-        <a class="btn btn-sm btn-icon  btn-primary me-2" href="{{ route('product.create') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
-            <i  data-feather="plus"></i>
-        </a>
+    <a class="btn btn-sm btn-icon  btn-primary me-2" href="{{ route('product.create') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
+        <i  data-feather="plus"></i>
+    </a>
     @endcan
 @endsection
-@section('filter')
-@endsection
+@php
+    $logo=\App\Models\Utility::get_file('uploads/is_cover_image/');
+@endphp
 @section('content')
-    <div class="row">
+    <div class="row row-gap">
         @foreach ($products as $product)
-            <div class="col-lg-3 col-sm-6 col-md-6">
-                <div class="card text-white text-center">
+            <div class="col-xl-3 col-lg-4 col-sm-6 col-md-6 d-flex flex-column">
+                <div class="card text-white text-center  mb-0 h-100">
                     <div class="card-header border-0 pb-0">
                         <div class="card-header-right">
                             <div class="btn-group card-option">
@@ -44,20 +45,22 @@
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-end" style="">
                                     @can('Show Products')
-                                        <a href="{{ route('product.show', $product->id) }}" class="dropdown-item"><i
+                                        <a href="{{ route('product.show', $product->id) }}" class="dropdown-item d-flex align-items-center gap-2" 
+                                            title="{{ __('View') }}"><i
                                                 class="fas fa-eye"></i>
                                             <span>{{ __('View') }}</span></a>
                                     @endcan
                                     @can('Edit Products')
-                                        <a href="{{ route('product.edit', $product->id) }}" class="dropdown-item"><i
-                                                class="ti ti-edit"></i>
+                                        <a href="{{ route('product.edit', $product->id) }}" class="dropdown-item d-flex align-items-center gap-2" 
+                                            title="{{ __('Edit') }}"><i
+                                                class="ti ti-pencil "></i>
                                             <span>{{ __('Edit') }}</span></a>
                                     @endcan
                                     @can('Delete Products')
-                                        <a class="bs-pass-para dropdown-item trigger--fire-modal-1" href="#"
+                                        <a class="bs-pass-para dropdown-item d-flex align-items-center gap-2 trigger--fire-modal-1" href="#"
                                             data-title="{{ __('Delete Lead') }}" data-confirm="{{ __('Are You Sure?') }}"
                                             data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
-                                            data-confirm-yes="delete-form-{{ $product->id }}">
+                                            data-confirm-yes="delete-form-{{ $product->id }}" title="{{ __('Delete') }}">
                                             <i class="ti ti-trash"></i><span>{{ __('Delete') }} </span>
 
                                         </a>
@@ -68,37 +71,43 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-body product_card">
+                    <div class="card-body product_card h-100">
                         @if (!empty($product->is_cover))
-                        <a href="{{ asset(Storage::url('uploads/is_cover_image/' . $product->is_cover)) }}" target="_blank">
+                        <a href="{{ $logo.(isset($product->is_cover) && !empty($product->is_cover)?$product->is_cover:'default.png') }}" target="_blank">
                             <img alt="Image placeholder"
-                                src="{{ asset(Storage::url('uploads/is_cover_image/' . $product->is_cover)) }}"
-                                class="img-fluid rounded-circle card-avatar" alt="images">
+                                src="{{ $logo.(isset($product->is_cover) && !empty($product->is_cover)?$product->is_cover:'default.png') }}"
+                                class="img-fluid border border-1 border-primary rounded" alt="images" width="70px" height="100%">
                         </a>
                         @else
                         <a href="{{ asset(Storage::url('uploads/is_cover_image/default.jpg')) }}" target="_blank">
                             <img alt="Image placeholder"
                                 src="{{ asset(Storage::url('uploads/is_cover_image/default.jpg')) }}"
-                                class="img-fluid rounded-circle card-avatar" alt="images">
+                                class="img-fluid border border-1 border-primary rounded" alt="images" width="70px" height="100%">
                         </a>
                         @endif
                         <h4 class="text-primary mt-2"> <a
                                 href="{{ route('product.show', $product->id) }}">{{ $product->name }}</a></h4>
                         <h4 class="text-muted">
-                            <small>{{ \App\Models\Utility::priceFormat($product->price) }}</small>
+                            <small>
+                                @if ($product->enable_product_variant == 'on')
+                                    {{ __('In Variant') }}
+                                @else
+                                    {{ \App\Models\Utility::priceFormat($product->price) }}
+                                @endif
+                            </small>
                         </h4>
                         @if ($product->enable_product_variant != 'on')
                             @if ($product->quantity == 0)
-                                <span class="badge bg-danger p-2 px-3 rounded">
+                                <span class="badge bg-light-primary border border-1 border-primary p-2 px-3 tbl-btn-w">
                                     {{ __('Out of stock') }}
                                 </span>
                             @else
-                                <span class="badge bg-primary p-2 px-3 rounded">
+                                <span class="badge bg-light-primary border border-1 border-primary p-2 px-3 tbl-btn-w">
                                     {{ __('In stock') }}
                                 </span>
                             @endif
                         @endif
-                        <div class="row mt-1">
+                        <div class="row mt-2">
                             <div class="col-12 col-sm-12">
                                 <div>
                                     @for ($i = 1; $i <= 5; $i++)
@@ -125,13 +134,13 @@
             </div>
         @endforeach
         @can('Create Products')
-            <div class="col-md-3">
-                <a href="{{ route('product.create') }}" class="btn-addnew-project" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Create Product')}}">
-                    <div class="bg-primary proj-add-icon">
-                        <i class="ti ti-plus"></i>
+            <div class="col-lg-3 col-md-6 col-sm-6 create-user-card d-flex flex-column">
+                <a href="{{ route('product.create') }}" class="btn-addnew-project border-primary h-100">
+                    <div class="bg-primary proj-add-icon" data-bs-toggle="tooltip" data-bs-placement="top" title="{{__('Create Product')}}">
+                        <i class="ti ti-plus my-2"></i>
                     </div>
-                    <h6 class="mt-4 mb-2">{{ __('New Product') }}</h6>
-                    <p class="text-muted text-center">{{ __('Click here to add New Product') }}</p>
+                    <h6 class="mt-2 mb-2">{{ __('New Product') }}</h6>
+                    <p class="text-muted text-center  mb-0">{{ __('Click here to add New Product') }}</p>
                 </a>
             </div>
         @endcan

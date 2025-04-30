@@ -6,10 +6,15 @@
     }else{
         $logo = \App\Models\Utility::get_file('uploads/logo/');
     }
-    
+
     $logo_img = \App\Models\Utility::getValByName('company_logo');
     $logo_light = \App\Models\Utility::getValByName('company_logo_light');
+    $logo_dark = \App\Models\Utility::getValByName('company_logo_dark');
     $s_logo = \App\Models\Utility::get_file('uploads/store_logo/');
+    if (Auth::user()->type != 'super admin') {
+        $theme_name = isset($store_settings) ? $store_settings->theme_dir : 'theme1';
+        $brand_logo = \App\Models\Utility::get_file('uploads/'. $theme_name .'/brand_logo/');
+    }
     $company_favicon = \App\Models\Utility::getValByName('company_favicon');
     $lang = \App\Models\Utility::getValByName('default_language');
     $company_logo = \App\Models\Utility::GetLogo();
@@ -17,22 +22,22 @@
     if (Auth::user()->type !== 'super admin') {
         $store_lang = $store_settings->lang;
     }
-    
+
     // storage setting
     $file_type = config('files_types');
     $setting = App\Models\Utility::settings();
-    
+
     $local_storage_validation = $setting['local_storage_validation'];
     $local_storage_validations = explode(',', $local_storage_validation);
-    
+
     $s3_storage_validation = $setting['s3_storage_validation'];
     $s3_storage_validations = explode(',', $s3_storage_validation);
-    
+
     $wasabi_storage_validation = $setting['wasabi_storage_validation'];
     $wasabi_storage_validations = explode(',', $wasabi_storage_validation);
-    
+
     $setting_color = App\Models\Utility::colorset();
-    
+
     $color = 'theme-3';
     if (!empty($setting_color['color'])) {
         $color = $setting_color['color'];
@@ -56,110 +61,22 @@
         @if (Auth::user()->type == 'super admin')
             <h5 class="h4 d-inline-block font-weight-bold mb-0 text-white">{{ __('Settings') }}</h5>
         @else
-            <h5 class="h4 d-inline-block font-weight-bold mb-0 text-white">{{ __('Store Setting') }}</h5>
+            <h5 class="h4 d-inline-block font-weight-bold mb-0 text-white">{{ __('Store Settings') }}</h5>
         @endif
     </div>
 @endsection
 @section('breadcrumb')
 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">{{ __('Home') }}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{ __('Settings') }}</li>
+@if (Auth::user()->type == 'super admin')
+    <li class="breadcrumb-item active" aria-current="page">{{ __('Settings') }}</li>
+@else
+    <li class="breadcrumb-item active" aria-current="page">{{ __('Store Settings') }}</li>
+@endif
 @endsection
-@section('action-btn')
-    <ul class="nav nav-pills cust-nav   rounded  mb-3" id="pills-tab" role="tablist">
-        @if (Auth::user()->type == 'super admin')
-            <li class="nav-item">
-                <a class="nav-link active" id="site_setting_tab" data-bs-toggle="pill" href="#pills-brand-setting"
-                    role="tab" aria-controls="pills-brand-setting" aria-selected="true">{{ __('Brand Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-payment-setting_tab" data-bs-toggle="pill" href="#pills-payment-setting"
-                    role="tab" aria-controls="pills-payment-setting"
-                    aria-selected="false">{{ __('Payment Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-email-settings_tab" data-bs-toggle="pill" href="#pills-email-settings"
-                    role="tab" aria-controls="pills-email-settings"
-                    aria-selected="false">{{ __('Email Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="recaptcha-settings_tab" data-bs-toggle="pill" href="#pills-recaptcha-settings"
-                    role="tab" aria-controls="pills-recaptcha-settings-tab"
-                    aria-selected="false">{{ __('ReCaptcha Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="storage_settings_tab" data-bs-toggle="pill" href="#storage_settings"
-                    role="tab" aria-controls="pills-storage_settings-tab"
-                    aria-selected="false">{{ __('Storage Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-cache_settings-tab" data-bs-toggle="pill" href="#pills-cache-settings"
-                    role="tab" aria-controls="pills-cache_settings-tab"
-                    aria-selected="false">{{ __('Cache Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-cookie_settings-tab" data-bs-toggle="pill" href="#pills-cookie-settings"
-                    role="tab" aria-controls="pills-cookie_settings-tab"
-                    aria-selected="false">{{ __('Cookie Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-chatgpt-tab" data-bs-toggle="pill" href="#pills-chatgpt-settings"
-                    role="tab" aria-controls="pills-chatgpt-tab"
-                    aria-selected="false">{{ __('Chat GPT Settings') }}</a>
-            </li>
-        @else
-            <li class="nav-item">
-                <a class="nav-link active" id="pills-brand_setting-tab" data-bs-toggle="pill" href="#pills-brand-setting"
-                    role="tab" aria-controls="pills-brandsetting" aria-selected="false">{{ __('Brand Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-store_setting-tab" data-bs-toggle="pill" href="#pills-store_setting"
-                    role="tab" aria-controls="pills-store_setting" aria-selected="false">{{ __('Store Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-store_payment-setting-tab" data-bs-toggle="pill"
-                    href="#pills-store_payment-setting" role="tab" aria-controls="pills-store_payment-setting"
-                    aria-selected="false">{{ __('Payment Settings') }}</a>
-            </li>
-            {{-- <li class="nav-item">
-                <a class="nav-link" id="pills-store_email_setting-tab" data-bs-toggle="pill"
-                    href="#pills-store_email_setting" role="tab" aria-controls="pills-store_email_setting"
-                    aria-selected="false">{{ __('Email Settings') }}</a>
-            </li> --}}
-            <li class="nav-item">
-                <a class="nav-link" id="pills-whatsapp_custom_massage-tab" data-bs-toggle="pill"
-                    href="#pills-whatsapp_custom_massage" role="tab" aria-controls="pills-whatsapp_custom_massage"
-                    aria-selected="false">{{ __('Whatsapp Message Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-twilio_setting-tab" data-bs-toggle="pill" href="#pills-twilio_setting"
-                    role="tab" aria-controls="pills-twilio_setting"
-                    aria-selected="false">{{ __('Twilio Settings') }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="pills-pixel_setting-tab" data-bs-toggle="pill" href="#pixel_settings"
-                    role="tab" aria-controls="pixel_settings"
-                    aria-selected="false">{{ __('Pixel Settings') }}</a>
-            </li>
-            @if ($plan->pwa_store == 'on')
-                <li class="nav-item">
-                    <a class="nav-link" id="pills-pwa_setting-tab" data-bs-toggle="pill" href="#pwa_settings"
-                        role="tab" aria-controls="pwa_settings"
-                        aria-selected="false">{{ __('PWA Settings') }}</a>
-                </li>
-            @endif
-            <li class="nav-item">
-                <a class="nav-link" id="pills-webhook_setting-tab" data-bs-toggle="pill" href="#webhook_settings"
-                    role="tab" aria-controls="webhook_settings"
-                    aria-selected="false">{{ __('Webhook Settings') }}</a>
-            </li>
-        @endif
-    </ul>
-@endsection
-@section('filter')
-@endsection
+
 @push('script-page')
     <script src="{{ asset('custom/libs/summernote/summernote-bs4.js') }}"></script>
-    
+
     <script>
         function check_theme(color_val) {
             $('.theme-color').prop('checked', false);
@@ -213,6 +130,99 @@
 @endpush
 @section('content')
     <div class="row">
+        <div class="col-12">
+            <div class="card rounded">
+        <ul class="nav setting-nav-wrp card-body row row-gap nav-pills" id="pills-tab" role="tablist">
+            @if (Auth::user()->type == 'super admin')
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link active border border-primary common-radius" id="site_setting_tab" data-bs-toggle="pill" href="#pills-brand-setting"
+                    role="tab" aria-controls="pills-brand-setting" aria-selected="true">{{ __('Brand Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="pills-payment-setting_tab" data-bs-toggle="pill" href="#pills-payment-setting"
+                    role="tab" aria-controls="pills-payment-setting"
+                    aria-selected="false">{{ __('Payment Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="pills-email-settings_tab" data-bs-toggle="pill" href="#pills-email-settings"
+                    role="tab" aria-controls="pills-email-settings"
+                    aria-selected="false">{{ __('Email Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="recaptcha-settings_tab" data-bs-toggle="pill" href="#pills-recaptcha-settings"
+                    role="tab" aria-controls="pills-recaptcha-settings-tab"
+                    aria-selected="false">{{ __('ReCaptcha Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="storage_settings_tab" data-bs-toggle="pill" href="#storage_settings"
+                    role="tab" aria-controls="pills-storage_settings-tab"
+                    aria-selected="false">{{ __('Storage Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="pills-cache_settings-tab" data-bs-toggle="pill" href="#pills-cache-settings"
+                    role="tab" aria-controls="pills-cache_settings-tab"
+                    aria-selected="false">{{ __('Cache Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="pills-cookie_settings-tab" data-bs-toggle="pill" href="#pills-cookie-settings"
+                    role="tab" aria-controls="pills-cookie_settings-tab"
+                    aria-selected="false">{{ __('Cookie Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="pills-chatgpt-tab" data-bs-toggle="pill" href="#pills-chatgpt-settings"
+                    role="tab" aria-controls="pills-chatgpt-tab"
+                    aria-selected="false">{{ __('Chat GPT Settings') }}</a>
+            </li>
+        @else
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link active border border-primary common-radius" id="pills-brand_setting-tab" data-bs-toggle="pill" href="#pills-brand-setting"
+                    role="tab" aria-controls="pills-brandsetting" aria-selected="false">{{ __('Brand Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="pills-store_setting-tab" data-bs-toggle="pill" href="#pills-store_setting"
+                    role="tab" aria-controls="pills-store_setting" aria-selected="false">{{ __('Store Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link border border-primary common-radius" id="pills-store_payment-setting-tab" data-bs-toggle="pill"
+                    href="#pills-store_payment-setting" role="tab" aria-controls="pills-store_payment-setting"
+                    aria-selected="false">{{ __('Payment Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link  border border-primary common-radius" id="pills-store_email_setting-tab" data-bs-toggle="pill"
+                    href="#pills-store_email_setting" role="tab" aria-controls="pills-store_email_setting"
+                    aria-selected="false">{{ __('Email Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link  border border-primary common-radius" id="pills-whatsapp_custom_massage-tab" data-bs-toggle="pill"
+                    href="#pills-whatsapp_custom_massage" role="tab" aria-controls="pills-whatsapp_custom_massage"
+                    aria-selected="false">{{ __('Whatsapp Message Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link  border border-primary common-radius" id="pills-twilio_setting-tab" data-bs-toggle="pill" href="#pills-twilio_setting"
+                    role="tab" aria-controls="pills-twilio_setting"
+                    aria-selected="false">{{ __('Twilio Settings') }}</a>
+            </li>
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link  border border-primary common-radius" id="pills-pixel_setting-tab" data-bs-toggle="pill" href="#pixel_settings"
+                    role="tab" aria-controls="pixel_settings"
+                    aria-selected="false">{{ __('Pixel Fields Settings') }}</a>
+            </li>
+            @if ($plan->pwa_store == 'on')
+                <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                    <a class="nav-link  border border-primary common-radius" id="pills-pwa_setting-tab" data-bs-toggle="pill" href="#pwa_settings"
+                        role="tab" aria-controls="pwa_settings"
+                        aria-selected="false">{{ __('PWA Settings') }}</a>
+                </li>
+            @endif
+            <li class="nav-item col-xxl-2 col-xl-3 col-md-4 col-sm-6  col-12 text-center">
+                <a class="nav-link  border border-primary common-radius" id="pills-webhook_setting-tab" data-bs-toggle="pill" href="#webhook_settings"
+                    role="tab" aria-controls="webhook_settings"
+                    aria-selected="false">{{ __('Webhook Settings') }}</a>
+            </li>
+        @endif
+        </ul>
+            </div>
+        </div>
         <!-- [ sample-page ] start -->
         <div class="col-sm-12">
             @if (Auth::user()->type == 'super admin')
@@ -387,7 +397,7 @@
                                                 <div class="form-group col-md-4">
                                                     <div class="form-group">
                                                         {{ Form::label('currency_symbol', __('Currency Symbol*'), ['class' => 'form-label']) }}
-                                                        {{ Form::text('currency_symbol', $settings['currency_symbol'], ['class' => 'form-control']) }}
+                                                        {{ Form::text('currency_symbol', $settings['currency_symbol'], ['class' => 'form-control', 'placeholder' => __('Enter Currency Symbol')]) }}
                                                         <small>{{ __('Note: This value will be automatically assigned whenever a new store is created.') }}</small>
                                                         @error('currency_symbol')
                                                             <span class="invalid-currency_symbol" role="alert">
@@ -399,7 +409,7 @@
                                                 <div class="form-group col-md-4 mb-0">
                                                     <div class="form-group">
                                                         {{ Form::label('currency', __('Currency *'), ['class' => 'form-label']) }}
-                                                        {{ Form::text('currency', $settings['currency'], ['class' => 'form-control font-style']) }}
+                                                        {{ Form::text('currency', $settings['currency'], ['class' => 'form-control font-style', 'placeholder' => __('Enter Currency')]) }}
                                                         <small>{{ __('Note: This value will be automatically assigned whenever a new store is created.') }}</small>
                                                         <small>
                                                             <a href="https://stripe.com/docs/currencies"
@@ -471,7 +481,7 @@
                                                             </h6>
                                                             <hr class="my-2" />
                                                             <div class="color-wrp">
-                                                                <div class="theme-color themes-color">
+                                                                <div class="theme-color color-setting-wrp themes-color">
                                                                     <a href="#!" class="themes-color-change {{ $color == 'theme-1' ? 'active_color' : '' }}" data-value="theme-1"></a>
                                                                     <input type="radio" class="theme_color d-none" name="color" value="theme-1"{{ $color == 'theme-1' ? 'checked' : '' }}>
                                                                     <a href="#!" class="themes-color-change {{ $color == 'theme-2' ? 'active_color' : '' }}" data-value="theme-2"></a>
@@ -495,7 +505,7 @@
                                                                     <input type="radio" class="theme_color d-none" name="color" value="theme-10"{{ $color == 'theme-10' ? 'checked' : '' }}>
                                                                 </div>
                                                                 <div class="color-picker-wrp ">
-                                                                        <input type="color" value="{{ $color ? $color : '' }}" class="colorPicker {{ isset($flag) && $flag == 'true' ? 'active_color' : '' }}" name="custom_color" id="color-picker">                                             
+                                                                        <input type="color" value="{{ $color ? $color : '' }}" class="colorPicker {{ isset($flag) && $flag == 'true' ? 'active_color' : '' }}" name="custom_color" id="color-picker">
                                                                         <input type='hidden' name="color_flag" value = {{  isset($flag) && $flag == 'true' ? 'true' : 'false' }}>
                                                                 </div>
                                                             </div>
@@ -549,10 +559,10 @@
                     <div class="tab-pane fade" id="pills-payment-setting" role="tabpanel" aria-labelledby="pills-brand_setting-tab">
                         <div class="card">
                             <div class="card-header">
-                                <h5>{{ 'Payment Setting' }}</h5>
+                                <h5>{{ 'Payment Settings' }}</h5>
                                 <small>{{__('These details will be used to collect subscription plan payments. Each subscription plan will have a payment button based on the below configuration.')}}</small>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body ">
                                 <form id="setting-form" method="post" action="{{ route('payment.setting') }}">
                                     @csrf
                                     <div class="row">
@@ -563,7 +573,7 @@
                                                     <div class="col-lg-6 col-md-6 col-sm-6 form-group">
                                                         <label class="col-form-label">{{ __('Currency') }}</label>
                                                         <input type="text" name="currency" class="form-control"
-                                                            id="currency" value="{{ isset($admin_payment_setting['currency']) ? $admin_payment_setting['currency'] : '' }}" required>
+                                                            id="currency" value="{{ isset($admin_payment_setting['currency']) ? $admin_payment_setting['currency'] : '' }}" placeholder="{{ __('Enter Currency') }}" required>
                                                         <small class="text-xs">
                                                             {{ __('Note: Add currency code as per three-letter ISO code') }}.
                                                             <a href="https://stripe.com/docs/currencies"
@@ -576,16 +586,16 @@
                                                             class="col-form-label">{{ __('Currency Symbol') }}</label>
                                                         <input type="text" name="currency_symbol"
                                                             class="form-control" id="currency_symbol"
-                                                            value="{{ isset($admin_payment_setting['currency_symbol']) ? $admin_payment_setting['currency_symbol'] : '' }}" required>
+                                                            value="{{ isset($admin_payment_setting['currency_symbol']) ? $admin_payment_setting['currency_symbol'] : '' }}" placeholder="{{ __('Enter Currency Symbol') }}" required>
                                                     </div>
                                                 </div>
                                             </div>
                                             {{-- </div> --}}
                                         </div>
                                     </div>
-                                   
+
                                     <div class="row">
-                                        <div class="faq col-12">
+                                        <div class="setting-faq-wrp faq col-12">
                                             <div class="accordion accordion-flush setting-accordion"
                                                 id="accordionExample">
                                                 <div class="accordion-item">
@@ -616,7 +626,7 @@
                                                         data-bs-parent="#accordionExample">
                                                         <div class="accordion-body">
                                                             <div class="row gy-4">
-                                                                
+
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         {{ Form::label('stripe_key', __('Stripe Key'), ['class' => 'col-form-label']) }}
@@ -816,7 +826,7 @@
                                                                         <br>
                                                                         <div class="d-flex flex-wrap">
                                                                             <div class="mr-2" style="margin-right: 15px;">
-                                                                                <div class="border card p-3">
+                                                                                <div class="border card p-3 mb-0">
                                                                                     <div class="form-check">
                                                                                         <label
                                                                                             class="form-check-labe text-dark">
@@ -831,7 +841,7 @@
                                                                                 </div>
                                                                             </div>
                                                                             <div class="mr-2 me-2">
-                                                                                <div class="border card p-3">
+                                                                                <div class="border card p-3 mb-0">
                                                                                     <div class="form-check">
                                                                                         <label
                                                                                             class="form-check-labe text-dark">
@@ -864,7 +874,7 @@
                                                                                 id="paypal_secret_key" class="form-control"
                                                                                 value="{{ !isset($admin_payment_setting['paypal_secret_key']) || is_null($admin_payment_setting['paypal_secret_key']) ? '' : $admin_payment_setting['paypal_secret_key'] }}"
                                                                                 placeholder="{{ __('Secret Key') }}">
-                                                                        </div>  
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -983,9 +993,9 @@
                                                             <div class="d-flex align-items-center">
                                                                 <span class="me-2">{{ __('On/Off') }}:</span>
                                                                 <div class="form-check form-switch custom-switch-v1">
-                                                                    <input type="hidden" name="is_razorpay_enabled" value="off"> 
+                                                                    <input type="hidden" name="is_razorpay_enabled" value="off">
                                                                     <input type="checkbox"
-                                                                        class="form-check-input input-primary" 
+                                                                        class="form-check-input input-primary"
                                                                         name="is_razorpay_enabled"
                                                                         id="is_razorpay_enabled"  {{ isset($admin_payment_setting['is_razorpay_enabled']) && $admin_payment_setting['is_razorpay_enabled'] == 'on' ? 'checked="checked"' : '' }}>
                                                                     <label class="form-check-label"
@@ -1041,7 +1051,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -1056,7 +1066,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -1146,7 +1156,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -1161,7 +1171,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -1206,7 +1216,7 @@
                                                                 <span class="me-2">{{ __('On/Off') }}:</span>
                                                                 <div class="form-check form-switch custom-switch-v1">
                                                                     <input type="hidden" name="is_mollie_enabled" value="off">
-                                                                    <input type="checkbox" name="is_mollie_enabled" 
+                                                                    <input type="checkbox" name="is_mollie_enabled"
                                                                         class="form-check-input input-primary"
                                                                         id="is_mollie_enabled"  {{ isset($admin_payment_setting['is_mollie_enabled']) && $admin_payment_setting['is_mollie_enabled'] == 'on' ? 'checked="checked"' : '' }}>
                                                                     <label class="form-check-label"
@@ -1218,7 +1228,7 @@
                                                     <div id="collapseeight" class="accordion-collapse collapse" aria-labelledby="headingeight" data-bs-parent="#accordionExample">
                                                         <div class="accordion-body">
                                                             <div class="row">
-                                                                
+
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         <label for="mollie_api_key"
@@ -1334,7 +1344,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label class="form-check-labe text-dark">
                                                                                         <input type="radio"
@@ -1348,7 +1358,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -1523,7 +1533,7 @@
                                                                     <br>
                                                                     <div class="d-flex">
                                                                         <div class="me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark {{ isset($admin_payment_setting['payfast_mode']) && $admin_payment_setting['payfast_mode'] == 'sandbox' ? 'active' : '' }}">
@@ -1537,7 +1547,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark {{ isset($admin_payment_setting['payfast_mode']) && $admin_payment_setting['payfast_mode'] == 'live' ? 'active' : '' }}">
@@ -1633,7 +1643,7 @@
                                                                     <br>
                                                                     <div class="d-flex">
                                                                         <div class="me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark {{ isset($admin_payment_setting['iyzipay_mode']) && $admin_payment_setting['iyzipay_mode'] == 'sandbox' ? 'active' : '' }}">
@@ -1647,7 +1657,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark {{ isset($admin_payment_setting['iyzipay_mode']) && $admin_payment_setting['iyzipay_mode'] == 'live' ? 'active' : '' }}">
@@ -1860,7 +1870,7 @@
                                                         data-bs-parent="#accordionExample">
                                                         <div class="accordion-body">
                                                             <div class="row gy-4">
-                                                                
+
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         {{ Form::label('benefit_api_key', __('Benefit Key'), ['class' => 'col-form-label']) }}
@@ -1918,6 +1928,42 @@
                                                         data-bs-parent="#accordionExample">
                                                         <div class="accordion-body">
                                                             <div class="row gy-4">
+                                                                <div class="col-lg-12 pb-4">
+                                                                    <label class="cashfree-label col-form-label" for="cashfree_mode">{{ __('Cashfree Mode') }}</label>
+                                                                    <br>
+                                                                    <div class="d-flex flex-wrap">
+                                                                        <div class="mr-2" style="margin-right: 15px;">
+                                                                            <div class="border card p-3 mb-0">
+                                                                                <div class="form-check">
+                                                                                    <label
+                                                                                        class="form-check-labe text-dark">
+                                                                                        <input type="radio"
+                                                                                            name="cashfree_mode"
+                                                                                            value="sandbox"
+                                                                                            class="form-check-input"
+                                                                                            {{ !isset($store_payment_setting['cashfree_mode']) || $store_payment_setting['cashfree_mode'] == '' || $store_payment_setting['cashfree_mode'] == 'sandbox' ? 'checked="checked"' : '' }}>
+                                                                                        {{ __('Sandbox') }}
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="mr-2 me-2">
+                                                                            <div class="border card p-3 mb-0">
+                                                                                <div class="form-check">
+                                                                                    <label
+                                                                                        class="form-check-labe text-dark">
+                                                                                        <input type="radio"
+                                                                                            name="cashfree_mode"
+                                                                                            value="live"
+                                                                                            class="form-check-input"
+                                                                                            {{ isset($store_payment_setting['cashfree_mode']) && $store_payment_setting['cashfree_mode'] == 'live' ? 'checked="checked"' : '' }}>
+                                                                                        {{ __('Live') }}
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                                 <div class="col-lg-6">
                                                                     <div class="form-group">
                                                                         {{ Form::label('cashfree_api_key', __('Cashfree Key'), ['class' => 'col-form-label']) }}
@@ -2094,7 +2140,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseTwentyFive" class="accordion-collapse collapse" aria-labelledby="headingTwentyFive" data-bs-parent="#accordionExample">
@@ -2145,7 +2191,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseTwentySix" class="accordion-collapse collapse" aria-labelledby="headingTwentySix" data-bs-parent="#accordionExample">
@@ -2156,7 +2202,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2171,7 +2217,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2222,7 +2268,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseTwentySeven" class="accordion-collapse collapse" aria-labelledby="headingTwentySeven" data-bs-parent="#accordionExample">
@@ -2273,7 +2319,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseTwentyEight" class="accordion-collapse collapse" aria-labelledby="headingTwentyEight" data-bs-parent="#accordionExample">
@@ -2284,7 +2330,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2299,7 +2345,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2360,7 +2406,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseTwentyNine" class="accordion-collapse collapse" aria-labelledby="headingTwentyNine" data-bs-parent="#accordionExample">
@@ -2401,7 +2447,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseThirty" class="accordion-collapse collapse" aria-labelledby="headingThirty" data-bs-parent="#accordionExample">
@@ -2412,7 +2458,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2427,7 +2473,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2488,7 +2534,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseThirtyOne" class="accordion-collapse collapse" aria-labelledby="headingThirtyOne" data-bs-parent="#accordionExample">
@@ -2499,7 +2545,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2514,7 +2560,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2595,7 +2641,7 @@
                                                                         for="customswitchv1-2"></label>
                                                                 </div>
                                                             </div>
-        
+
                                                         </button>
                                                     </h2>
                                                     <div id="collapseThirtyTwo" class="accordion-collapse collapse" aria-labelledby="headingThirtyTwo" data-bs-parent="#accordionExample">
@@ -2697,7 +2743,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2712,7 +2758,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2784,7 +2830,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2799,7 +2845,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2871,7 +2917,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2886,7 +2932,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -2978,7 +3024,7 @@
                                         </div>
                                         <div class="col-lg-3 col-md-6 col-sm-6 form-group">
                                             {{ Form::label('mail_host', __('Mail Host'), ['class' => 'form-label']) }}
-                                            {{ Form::text('mail_host', isset($settings['mail_host']) ? $settings['mail_host'] : '', ['class' => 'form-control ', 'id' => 'mail_host', 'placeholder' => __('Enter Mail Driver')]) }}
+                                            {{ Form::text('mail_host', isset($settings['mail_host']) ? $settings['mail_host'] : '', ['class' => 'form-control ', 'id' => 'mail_host', 'placeholder' => __('Enter Mail Host')]) }}
                                             @error('mail_host')
                                                 <span class="invalid-mail_driver" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
@@ -3032,7 +3078,7 @@
                                         </div>
                                         <div class="col-lg-3 col-md-6 col-sm-6 form-group">
                                             {{ Form::label('mail_from_name', __('Mail From Name'), ['class' => 'form-label']) }}
-                                            {{ Form::text('mail_from_name', isset($settings['mail_from_name']) ? $settings['mail_from_name'] : '', ['class' => 'form-control', 'id' => 'mail_from_name', 'placeholder' => __('Enter Mail Encryption')]) }}
+                                            {{ Form::text('mail_from_name', isset($settings['mail_from_name']) ? $settings['mail_from_name'] : '', ['class' => 'form-control', 'id' => 'mail_from_name', 'placeholder' => __('Enter Mail From Name')]) }}
                                             @error('mail_from_name')
                                                 <span class="invalid-mail_from_name" role="alert">
                                                     <strong class="text-danger">{{ $message }}</strong>
@@ -3047,7 +3093,7 @@
                                                 <div class="card-footer p-0">
                                                     <div class="col-sm-12 mt-3 px-2">
                                                         <div class="d-flex justify-content-between gap-2 flex-column flex-sm-row">
-                                                            <a href="#" 
+                                                            <a href="#"
                                                                 data-size="md" data-url="{{ route('test.mail') }}"
                                                                 data-title="{{ __('Send Test Mail') }}"
                                                                 class="btn btn-xs  btn-primary send_email">
@@ -3101,7 +3147,7 @@
 
                                         @csrf
                                         <div class="row recaptcha">
-                                            <div class="col-lg-4 col-md-4 col-sm-4 form-group">  
+                                            <div class="col-lg-4 col-md-4 col-sm-4 form-group">
                                                 <div class="form-group col switch-width">
                                                     {{ Form::label('google_recaptcha_version', __('Google Recaptcha Version'), ['class' => 'form-label']) }}
                                                     {{ Form::select('google_recaptcha_version', $google_recaptcha_version, isset($settings['google_recaptcha_version']) ? $settings['google_recaptcha_version'] : 'v2', ['id' => 'google_recaptcha_version', 'class' => 'form-control choices', 'searchEnabled' => 'true']) }}
@@ -3301,7 +3347,7 @@
                             </div>
                         {{Form::close()}}
                         </div>
-                    </div> 
+                    </div>
                     <div class="tab-pane fade" id="pills-cache-settings" role="tabpanel" aria-labelledby="pills-cache_settings-tab">
                         <div class="card mb-3">
                             <div class="card-header">
@@ -3335,7 +3381,7 @@
                     <div class="tab-pane fade" id="pills-cookie-settings" role="tabpanel" aria-labelledby="pills-cookie_settings-tab">
                         <div class="col-xl-12 col-lg-12 col-md-12">
                             <div class="card">
-                
+
                                 {{Form::model($settings,array('route'=>'cookie.setting','method'=>'post'))}}
                                     <div class="card-header flex-column flex-lg-row  d-flex align-items-lg-center gap-2 justify-content-between">
                                         <h5>{{ __('Cookie Settings') }}</h5>
@@ -3365,11 +3411,11 @@
                                                 </div>
                                                 <div class="form-group" >
                                                     {{ Form::label('cookie_title', __('Cookie Title'), ['class' => 'col-form-label' ]) }}
-                                                    {{ Form::text('cookie_title', null, ['class' => 'form-control cookie_setting'] ) }}
+                                                    {{ Form::text('cookie_title', null, ['class' => 'form-control cookie_setting', 'placeholder'=>__('Enter Cookie Title')] ) }}
                                                 </div>
                                                 <div class="form-group ">
                                                     {{ Form::label('cookie_description', __('Cookie Description'), ['class' => ' form-label']) }}
-                                                    {!! Form::textarea('cookie_description', null, ['class' => 'form-control cookie_setting', 'rows' => '3']) !!}
+                                                    {!! Form::textarea('cookie_description', null, ['class' => 'form-control cookie_setting', 'rows' => '3', 'placeholder'=>__('Enter Cookie Description')]) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -3380,42 +3426,42 @@
                                                 </div>
                                                 <div class="form-group ">
                                                     {{ Form::label('strictly_cookie_title', __(' Strictly Cookie Title'), ['class' => 'col-form-label']) }}
-                                                    {{ Form::text('strictly_cookie_title', null, ['class' => 'form-control cookie_setting']) }}
+                                                    {{ Form::text('strictly_cookie_title', null, ['class' => 'form-control cookie_setting', 'placeholder'=>__('Enter Strictly Cookie Title')]) }}
                                                 </div>
                                                 <div class="form-group ">
                                                     {{ Form::label('strictly_cookie_description', __('Strictly Cookie Description'), ['class' => ' form-label']) }}
-                                                    {!! Form::textarea('strictly_cookie_description', null, ['class' => 'form-control cookie_setting ', 'rows' => '3']) !!}
+                                                    {!! Form::textarea('strictly_cookie_description', null, ['class' => 'form-control cookie_setting ', 'rows' => '3', 'placeholder'=>__('Enter Strictly Cookie Description')]) !!}
                                                 </div>
                                             </div>
-                                            
+
                                             <div class="col-12">
                                                 <h5>{{__('More Information')}}</h5>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group ">
                                                     {{ Form::label('more_information_description', __('Contact Us Description'), ['class' => 'col-form-label']) }}
-                                                    {{ Form::text('more_information_description', null, ['class' => 'form-control cookie_setting']) }}
+                                                    {{ Form::text('more_information_description', null, ['class' => 'form-control cookie_setting', 'placeholder'=>__('Enter Contact Us Description')]) }}
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group ">
                                                     {{ Form::label('contactus_url', __('Contact Us URL'), ['class' => 'col-form-label']) }}
-                                                    {{ Form::text('contactus_url', null, ['class' => 'form-control cookie_setting']) }}
+                                                    {{ Form::text('contactus_url', null, ['class' => 'form-control cookie_setting', 'placeholder'=>__('Enter Contact Us URL')]) }}
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
                                     </div>
                                     <div class="card-footer d-flex align-items-center gap-2 flex-sm-column flex-lg-row justify-content-between" >
                                         <div>
                                             @if(isset($settings['cookie_logging']) && $settings['cookie_logging'] == 'on')
-                                            <label for="file" class="form-label">{{__('Download cookie accepted data')}}</label>
-                                                <a href="{{ asset(Storage::url('uploads/sample')) . '/data.csv' }}" class="btn btn-primary mr-2 ">
+                                            <label for="file" class="form-label action-btn-wrapper me-2">{{__('Download cookie accepted data')}}</label>
+                                                <a href="{{ asset(Storage::url('uploads/sample')) . '/data.csv' }}" class="btn btn-sm btn-primary" data-bs-placement="top"  data-bs-toggle="tooltip" title="{{ __('Download') }}">
                                                     <i class="ti ti-download"></i>
                                                 </a>
                                                 @endif
                                         </div>
-                                        <input type="submit" value="{{ __('Save') }}" class="btn btn-primary">
+                                        <input type="submit" value="{{ __('Save Changes') }}" class="btn btn-primary">
                                     </div>
                                 {{ Form::close() }}
                             </div>
@@ -3442,7 +3488,7 @@
                                         </div>
                                     </div>
                                     <div class="card-footer text-end">
-                                        <button class="btn btn-primary" type="submit">{{ __('Save') }}</button>
+                                        <button class="btn btn-primary" type="submit">{{ __('Save Chnages') }}</button>
                                     </div>
                                 {{ Form::close() }}
                             </div>
@@ -3473,12 +3519,10 @@
                                                                 <div class="mt-4">  {{-- logo-content --}}
                                                                     {{-- <img src="{{ $logo . '/' . (isset($logo_dark) && !empty($logo_dark) ? $logo_dark : ' logo-dark.png') }}"
                                                                         class="img-setting" width="170px"> --}}
-
-                                                                    <a href="{{ route('dashboard') }}" class="b-brand">
-                                                                        <img src="{{ $logo . '/' . (isset($company_logo) && !empty($company_logo) ? $company_logo : 'logo-dark.png') . '?timestamp='. time() }}"
-                                                                            alt="{{ config('app.name', 'Storego') }}"
-                                                                            id="adminlogoDark"
-                                                                            class="logo logo-lg nav-sidebar-logo fix-logo">
+                                                                    <a href="{{ $logo . '/' . (isset($logo_dark) && !empty($logo_dark) ? $logo_dark : 'logo-dark.png') }}" target="_blank">
+                                                                        <img src="{{ $logo . '/' . (isset($logo_dark) && !empty($logo_dark) ? $logo_dark : 'logo-dark.png') . '?timestamp='. time() }}"
+                                                                            class=" img_setting fix-logo" width="170px"
+                                                                            id="logo-dark">
                                                                     </a>
                                                                 </div>
                                                                 <div class="choose-files mt-5">
@@ -3489,7 +3533,7 @@
                                                                             <input type="file" id="company_logo"
                                                                                 data-filename="company_logo_update"
                                                                                 name="logo_dark" class="form-control file"
-                                                                                onchange=" document.getElementById('adminlogoDark').src = window.URL.createObjectURL(this.files[0])">
+                                                                                onchange=" document.getElementById('logo-dark').src = window.URL.createObjectURL(this.files[0])">
                                                                         </div>
                                                                         {{-- <input type="file" name="logo_dark"
                                                                         id="company_logo" class="form-control file "
@@ -3523,7 +3567,7 @@
                                                                             class=" img_setting fix-logo" width="170px"
                                                                             id="logo-light">
                                                                     </a>
-                                                                    
+
                                                                     {{--  <a href="{{ $logo . 'logo-light.png' }}" target="_blank">
                                                                         <img id="logo-light" alt="your image"
                                                                             src="{{ $logo . 'logo-light.png' }}" width="170px"
@@ -3649,7 +3693,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    {{Form::label('timezone',__('Timezone'),array('class' => 'form-control-label'))}}
+                                                    {{Form::label('timezone',__('Timezone'),array('class' => 'form-control-label mb-2'))}}
                                                     <select type="text" name="timezone" class="form-control custom-select" id="timezone">
                                                         <option value="">{{__('Select Timezone')}}</option>
                                                         @foreach($timezones as $k=>$timezone)
@@ -3660,7 +3704,7 @@
 
                                                 <div class="form-group col-6 col-md-3">
                                                     <div class="custom-control form-switch p-0">
-                                                        <label class="form-check-label"
+                                                        <label class="form-check-label mb-2"
                                                             for="SITE_RTL">{{ __('Enable RTL') }}</label><br>
                                                         <input type="checkbox" class="form-check-input"
                                                             data-toggle="switchbutton" data-onstyle="primary" name="SITE_RTL"
@@ -3677,9 +3721,9 @@
                                                                     class="me-2"></i>{{ __('Primary Color Settings') }}
                                                             </h6>
                                                             <hr class="my-2" />
-                                                            
+
                                                             <div class="color-wrp">
-                                                                <div class="theme-color themes-color">
+                                                                <div class="theme-color color-setting-wrp themes-color">
                                                                     <a href="#!" class="themes-color-change {{ $color == 'theme-1' ? 'active_color' : '' }}" data-value="theme-1"></a>
                                                                     <input type="radio" class="theme_color d-none" name="color" value="theme-1"{{ $color == 'theme-1' ? 'checked' : '' }}>
                                                                     <a href="#!" class="themes-color-change {{ $color == 'theme-2' ? 'active_color' : '' }}" data-value="theme-2"></a>
@@ -3703,7 +3747,7 @@
                                                                     <input type="radio" class="theme_color d-none" name="color" value="theme-10"{{ $color == 'theme-10' ? 'checked' : '' }}>
                                                                 </div>
                                                                 <div class="color-picker-wrp ">
-                                                                        <input type="color" value="{{ $color ? $color : '' }}" class="colorPicker {{ isset($flag) && $flag == 'true' ? 'active_color' : '' }}" name="custom_color" id="color-picker">                                             
+                                                                        <input type="color" value="{{ $color ? $color : '' }}" class="colorPicker {{ isset($flag) && $flag == 'true' ? 'active_color' : '' }}" name="custom_color" id="color-picker">
                                                                         <input type='hidden' name="color_flag" value = {{  isset($flag) && $flag == 'true' ? 'true' : 'false' }}>
                                                                 </div>
                                                             </div>
@@ -3716,9 +3760,9 @@
                                                             <hr class="my-2" />
                                                             <div class="form-check form-switch">
                                                                 <input type="checkbox" class="form-check-input"
-                                                                    id="cust-theme-bg" name="cust_theme_bg" 
+                                                                    id="cust-theme-bg" name="cust_theme_bg"
                                                                     {{ Utility::getValByName('cust_theme_bg') == 'on' ? 'checked' : '' }} />
-                                                                <label class="form-check-label f-w-600 pl-1" 
+                                                                <label class="form-check-label f-w-600 pl-1"
                                                                     for="cust-theme-bg">{{ __('Transparent layout') }}</label>
                                                             </div>
                                                         </div>
@@ -3778,16 +3822,10 @@
                                                         <div class="card-body pt-0">
                                                             <div class=" setting-card">
                                                                 <div class="logo-content mt-3">
-                                                                    {{-- <a href="{{ $store_logo . '/' . (isset($store_settings['logo']) && !empty($store_settings['logo']) ? $store_settings['logo'] : 'logo.png') }}"
-                                                                    target="_blank">
-                                                                    <img src="{{ $store_logo . '/' . (isset($store_settings['logo']) && !empty($store_settings['logo']) ? $store_settings['logo'] : 'logo.png') }}"
-                                                                        class="big-logo invoice_logo img_setting"
-                                                                        id="storeLogo">
-                                                                </a> --}}
-                                                                    <a href="{{ $s_logo . (isset($store_settings['logo']) && !empty($store_settings['logo']) ? $store_settings['logo'] : 'logo.png') }}"
+                                                                    <a href="{{ (isset($store_settings['logo']) && !empty($store_settings['logo']) ? $s_logo .  $store_settings['logo'] : $brand_logo . 'brand_logo.png') }}"
                                                                         target="_blank">
                                                                         <img id="StorelogoOwner" alt="your image"
-                                                                            src="{{ $s_logo . (isset($store_settings['logo']) && !empty($store_settings['logo']) ? $store_settings['logo'] : 'logo.png') . '?timestamp='. time() }}"
+                                                                            src="{{ (isset($store_settings['logo']) && !empty($store_settings['logo']) ? $s_logo .  $store_settings['logo'] : $brand_logo . 'brand_logo.png') . '?timestamp='. time() }}"
                                                                             class="big-logo invoice_logo img_setting"
                                                                             id="storeLogo">
                                                                     </a>
@@ -3823,16 +3861,10 @@
                                                         <div class="card-body pt-0">
                                                             <div class=" setting-card">
                                                                 <div class="logo-content mt-3">
-                                                                    {{-- <a href="{{ $store_logo . '/' . (isset($store_settings['invoice_logo']) && !empty($store_settings['invoice_logo']) ? $store_settings['invoice_logo'] : 'invoice_logo.png') }}"
-                                                                    target="_blank">
-                                                                    <img src="{{ $store_logo . '/' . (isset($store_settings['invoice_logo']) && !empty($store_settings['invoice_logo']) ? $store_settings['invoice_logo'] : 'invoice_logo.png') }}"
-                                                                        class="big-logo invoice_logo img_setting"
-                                                                        id="invoiceLogo">
-                                                                </a> --}}
-                                                                    <a href="{{ $s_logo . (isset($store_settings['invoice_logo']) && !empty($store_settings['invoice_logo']) ? $store_settings['invoice_logo'] : 'invoice_logo.png') }}"
+                                                                    <a href="{{ (isset($store_settings['invoice_logo']) && !empty($store_settings['invoice_logo']) ? $s_logo . $store_settings['invoice_logo'] : $brand_logo . 'brand_logo.png') }}"
                                                                         target="_blank">
                                                                         <img id="invoiceOwner" alt="your image"
-                                                                            src="{{ $s_logo . (isset($store_settings['invoice_logo']) && !empty($store_settings['invoice_logo']) ? $store_settings['invoice_logo'] : 'invoice_logo.png') . '?timestamp='. time() }}"
+                                                                            src="{{ (isset($store_settings['invoice_logo']) && !empty($store_settings['invoice_logo']) ? $s_logo . $store_settings['invoice_logo'] : $brand_logo . 'brand_logo.png') . '?timestamp='. time() }}"
                                                                             width="150px"
                                                                             class="big-logo invoice_logo img_setting"
                                                                             id="invoiceLogo">
@@ -4224,7 +4256,7 @@
                                                             'rows' => 3,
                                                             'placeholder' => __('Meta Description'),
                                                         ]) !!}
-    
+
                                                         @error('meta_description')
                                                             <span class="invalid-about" role="alert">
                                                                 <strong class="text-danger">{{ $message }}</strong>
@@ -4233,14 +4265,14 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    
+
                                                     <div class="form-group pt-0">
                                                         <div class=" setting-card">
                                                             <label for="" class="form-label">{{ __('Meta Image') }}</label>
                                                             <div class="logo-content mt-4">
-                                                                
+
                                                                 <a href="{{$metaimage.(isset($store_settings->metaimage) && !empty($store_settings->metaimage)? $store_settings->metaimage:'default.png')}}" target="_blank">
-                                                                    <img id="meta_image" alt="your image" src="{{$metaimage.(isset($store_settings->metaimage) && !empty($store_settings->metaimage)? $store_settings->metaimage:'default.png')}}" width="150px" class="img_setting">
+                                                                    <img id="meta_image" alt="your image" src="{{$metaimage.(isset($store_settings->metaimage) && !empty($store_settings->metaimage)? $store_settings->metaimage:'default.png')}}" width="150px" class="img_setting border border-2 border-primary rounded">
                                                                 </a>
                                                             </div>
                                                             <div class="choose-files mt-5">
@@ -4271,12 +4303,12 @@
                                     <div class="card-footer">
                                         <div class="col-sm-12 px-2">
                                             <div class="text-end">
-                                                <button type="button" class="btn bs-pass-para btn-secondary btn-light"
+                                                <button type="button" class="btn bs-pass-para btn-secondary me-2"
                                                     data-title="{{ __('Delete') }}"
                                                     data-confirm="{{ __('Are You Sure?') }}"
                                                     data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                     data-confirm-yes="delete-form-{{ $store_settings->id }}">
-                                                    <span class="text-black">{{ __('Delete Store') }}</span>
+                                                    <span class="text-white">{{ __('Delete Store') }}</span>
                                                 </button>
                                                 {{ Form::submit(__('Save Changes'), ['class' => 'btn btn-xs btn-primary']) }}
                                             </div>
@@ -4312,7 +4344,7 @@
                                             <div class="col-lg-6 col-md-6 col-sm-6 form-group">
                                                 <label class="col-form-label">{{ __('Currency') }}</label>
                                                 <input type="text" name="currency" class="form-control"
-                                                    id="currency" value="{{ $store_settings['currency_code'] }}"
+                                                    id="currency" value="{{ $store_settings['currency_code'] }}" placeholder="{{ __('Enter Currency') }}"
                                                     required>
                                                 <small class="text-xs">
                                                     {{ __('Note: Add currency code as per three-letter ISO code') }}.
@@ -4325,7 +4357,7 @@
                                                 <label for="currency_symbol"
                                                     class="col-form-label">{{ __('Currency Symbol') }}</label>
                                                 <input type="text" name="currency_symbol" class="form-control"
-                                                    id="currency_symbol" value="{{ $store_settings['currency'] }}"
+                                                    id="currency_symbol" value="{{ $store_settings['currency'] }}" placeholder="{{ __('Enter Currency Symbol') }}"
                                                     required>
                                             </div>
 
@@ -4426,9 +4458,9 @@
                                         </div>
                                     </div>
                                 </div>
-                              
+
                                 <div class="row">
-                                    <div class="faq col-12">
+                                    <div class="setting-faq-wrp faq col-12">
                                         <div class="accordion accordion-flush setting-accordion"
                                             id="accordionExample">
                                             {{-- ------------------------ EdfaPay ------------------------- --}}
@@ -4521,14 +4553,14 @@
                                                     data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="row gy-4">
-                                                            
+
                                                             <div class="col-6 py-2">
                                                                 <small>
                                                                     {{ __('Note : Enable or disable cash on delivery.') }}</small><br>
                                                                 <small>
                                                                     {{ __('This detail will use for make checkout of shopping cart.') }}</small>
                                                             </div>
-                                                            
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -4595,7 +4627,7 @@
                                                         </span>
                                                         <div class="d-flex align-items-center">
                                                             <span class="me-2">{{ __('On/Off') }}:</span>
-                                                            
+
                                                             <div class="form-check form-switch custom-switch-v1">
                                                                 <input type="hidden" name="enable_whatsapp" value="off">
                                                                 <input type="checkbox" class="form-check-input input-primary" name="enable_whatsapp" id="enable_whatsapp" {{ $store_settings['enable_whatsapp'] == 'on' ? 'checked="checked"' : '' }}>
@@ -4648,7 +4680,7 @@
                                                                     for="enable_bank"></label>
                                                             </div>
                                                         </div>
-                                                       
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseSeventeen"
@@ -4698,7 +4730,7 @@
                                                     data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="row gy-4">
-                                                            
+
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
                                                                     {{ Form::label('stripe_key', __('Stripe Key'), ['class' => 'col-form-label']) }}
@@ -4760,7 +4792,7 @@
                                                                     <br>
                                                                     <div class="d-flex flex-wrap">
                                                                         <div class="mr-2" style="margin-right: 15px;">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -4775,7 +4807,7 @@
                                                                             </div>
                                                                         </div>
                                                                         <div class="mr-2 me-2">
-                                                                            <div class="border card p-3">
+                                                                            <div class="border card p-3 mb-0">
                                                                                 <div class="form-check">
                                                                                     <label
                                                                                         class="form-check-labe text-dark">
@@ -4808,7 +4840,7 @@
                                                                             id="paypal_secret_key" class="form-control"
                                                                             value="{{ !isset($store_payment_setting['paypal_secret_key']) || is_null($store_payment_setting['paypal_secret_key']) ? '' : $store_payment_setting['paypal_secret_key'] }}"
                                                                             placeholder="{{ __('Secret Key') }}">
-                                                                    </div>  
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -4927,9 +4959,9 @@
                                                         <div class="d-flex align-items-center">
                                                             <span class="me-2">{{ __('On/Off') }}:</span>
                                                             <div class="form-check form-switch custom-switch-v1">
-                                                                <input type="hidden" name="is_razorpay_enabled" value="off"> 
+                                                                <input type="hidden" name="is_razorpay_enabled" value="off">
                                                                 <input type="checkbox"
-                                                                    class="form-check-input input-primary" 
+                                                                    class="form-check-input input-primary"
                                                                     name="is_razorpay_enabled"
                                                                     id="is_razorpay_enabled"  {{ isset($store_payment_setting['is_razorpay_enabled']) && $store_payment_setting['is_razorpay_enabled'] == 'on' ? 'checked="checked"' : '' }}>
                                                                 <label class="form-check-label"
@@ -4985,7 +5017,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -5000,7 +5032,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -5090,7 +5122,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -5098,14 +5130,14 @@
                                                                                         name="mercado_mode"
                                                                                         value="sandbox"
                                                                                         class="form-check-input"
-                                                                                        {{ (isset($store_payment_setting['mercado_mode']) && $store_payment_setting['mercado_mode'] == '') || (isset($store_payment_setting['mercado_mode']) && $store_payment_setting['mercado_mode'] == 'sandbox') ? 'checked="checked"' : '' }}>
+                                                                                        {{ (!isset($store_payment_setting['mercado_mode'])) || (isset($store_payment_setting['mercado_mode']) && $store_payment_setting['mercado_mode'] == '') || (isset($store_payment_setting['mercado_mode']) && $store_payment_setting['mercado_mode'] == 'sandbox') ? 'checked="checked"' : '' }}>
                                                                                     {{ __('Sandbox') }}
                                                                                 </label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -5150,7 +5182,7 @@
                                                             <span class="me-2">{{ __('On/Off') }}:</span>
                                                             <div class="form-check form-switch custom-switch-v1">
                                                                 <input type="hidden" name="is_mollie_enabled" value="off">
-                                                                <input type="checkbox" name="is_mollie_enabled" 
+                                                                <input type="checkbox" name="is_mollie_enabled"
                                                                     class="form-check-input input-primary"
                                                                     id="is_mollie_enabled"  {{ isset($store_payment_setting['is_mollie_enabled']) && $store_payment_setting['is_mollie_enabled'] == 'on' ? 'checked="checked"' : '' }}>
                                                                 <label class="form-check-label"
@@ -5162,7 +5194,7 @@
                                                 <div id="collapseeight" class="accordion-collapse collapse" aria-labelledby="headingeight" data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="row">
-                                                            
+
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
                                                                     <label for="mollie_api_key"
@@ -5278,7 +5310,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label class="form-check-labe text-dark">
                                                                                     <input type="radio"
@@ -5292,7 +5324,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -5470,7 +5502,7 @@
                                                                 <br>
                                                                 <div class="d-flex">
                                                                     <div class="me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark {{ isset($store_payment_setting['payfast_mode']) && $store_payment_setting['payfast_mode'] == 'sandbox' ? 'active' : '' }}">
@@ -5484,7 +5516,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark {{ isset($store_payment_setting['payfast_mode']) && $store_payment_setting['payfast_mode'] == 'live' ? 'active' : '' }}">
@@ -5580,7 +5612,7 @@
                                                                 <br>
                                                                 <div class="d-flex">
                                                                     <div class="me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark {{ isset($store_payment_setting['iyzipay_mode']) && $store_payment_setting['iyzipay_mode'] == 'sandbox' ? 'active' : '' }}">
@@ -5594,7 +5626,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark {{ isset($store_payment_setting['iyzipay_mode']) && $store_payment_setting['iyzipay_mode'] == 'live' ? 'active' : '' }}">
@@ -5806,7 +5838,7 @@
                                                     data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="row gy-4">
-                                                            
+
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
                                                                     {{ Form::label('benefit_api_key', __('Benefit Key'), ['class' => 'col-form-label']) }}
@@ -5864,7 +5896,42 @@
                                                     data-bs-parent="#accordionExample">
                                                     <div class="accordion-body">
                                                         <div class="row gy-4">
-                                                            
+                                                            <div class="col-lg-12 pb-4">
+                                                                <label class="cashfree-label col-form-label" for="cashfree_mode">{{ __('Cashfree Mode') }}</label>
+                                                                <br>
+                                                                <div class="d-flex flex-wrap">
+                                                                    <div class="mr-2" style="margin-right: 15px;">
+                                                                        <div class="border card p-3 mb-0">
+                                                                            <div class="form-check">
+                                                                                <label
+                                                                                    class="form-check-labe text-dark">
+                                                                                    <input type="radio"
+                                                                                        name="cashfree_mode"
+                                                                                        value="sandbox"
+                                                                                        class="form-check-input"
+                                                                                        {{ !isset($store_payment_setting['cashfree_mode']) || $store_payment_setting['cashfree_mode'] == '' || $store_payment_setting['cashfree_mode'] == 'sandbox' ? 'checked="checked"' : '' }}>
+                                                                                    {{ __('Sandbox') }}
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="mr-2 me-2">
+                                                                        <div class="border card p-3 mb-0">
+                                                                            <div class="form-check">
+                                                                                <label
+                                                                                    class="form-check-labe text-dark">
+                                                                                    <input type="radio"
+                                                                                        name="cashfree_mode"
+                                                                                        value="live"
+                                                                                        class="form-check-input"
+                                                                                        {{ isset($store_payment_setting['cashfree_mode']) && $store_payment_setting['cashfree_mode'] == 'live' ? 'checked="checked"' : '' }}>
+                                                                                    {{ __('Live') }}
+                                                                                </label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                             <div class="col-lg-6">
                                                                 <div class="form-group">
                                                                     {{ Form::label('cashfree_api_key', __('Cashfree Key'), ['class' => 'col-form-label']) }}
@@ -6041,7 +6108,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseTwentyFive" class="accordion-collapse collapse" aria-labelledby="headingTwentyFive" data-bs-parent="#accordionExample">
@@ -6092,7 +6159,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseTwentySix" class="accordion-collapse collapse" aria-labelledby="headingTwentySix" data-bs-parent="#accordionExample">
@@ -6103,7 +6170,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6118,7 +6185,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6169,7 +6236,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseTwentySeven" class="accordion-collapse collapse" aria-labelledby="headingTwentySeven" data-bs-parent="#accordionExample">
@@ -6220,7 +6287,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseTwentyEight" class="accordion-collapse collapse" aria-labelledby="headingTwentyEight" data-bs-parent="#accordionExample">
@@ -6231,7 +6298,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6246,7 +6313,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6307,7 +6374,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseTwentyNine" class="accordion-collapse collapse" aria-labelledby="headingTwentyNine" data-bs-parent="#accordionExample">
@@ -6348,7 +6415,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseThirty" class="accordion-collapse collapse" aria-labelledby="headingThirty" data-bs-parent="#accordionExample">
@@ -6359,7 +6426,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6374,7 +6441,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6435,7 +6502,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseThirtyOne" class="accordion-collapse collapse" aria-labelledby="headingThirtyOne" data-bs-parent="#accordionExample">
@@ -6446,7 +6513,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6461,7 +6528,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6542,7 +6609,7 @@
                                                                     for="customswitchv1-2"></label>
                                                             </div>
                                                         </div>
-    
+
                                                     </button>
                                                 </h2>
                                                 <div id="collapseThirtyTwo" class="accordion-collapse collapse" aria-labelledby="headingThirtyTwo" data-bs-parent="#accordionExample">
@@ -6644,7 +6711,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6659,7 +6726,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6731,7 +6798,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6746,7 +6813,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6818,7 +6885,7 @@
                                                                 <br>
                                                                 <div class="d-flex flex-wrap">
                                                                     <div class="mr-2" style="margin-right: 15px;">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6833,7 +6900,7 @@
                                                                         </div>
                                                                     </div>
                                                                     <div class="mr-2 me-2">
-                                                                        <div class="border card p-3">
+                                                                        <div class="border card p-3 mb-0">
                                                                             <div class="form-check">
                                                                                 <label
                                                                                     class="form-check-labe text-dark">
@@ -6882,8 +6949,9 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>                                            
-                                            
+                                            </div>
+
+
                                         </div>
                                     </div>
                                 </div>
@@ -7123,7 +7191,7 @@
                                             </div>
                                         </div>
                                     </div>
-                        
+
                                     <div class="card-body p-4">
                                         <div class="row">
 
@@ -7185,30 +7253,35 @@
                                 </div>
                                 <div class="card-body table-border-style">
                                     <div class="datatable-container">
-                                    
+
                                         <div class="table-responsive custom-field-table">
-                                            
+
                                             <table class="table dataTable-table" id="pc-dt-simple" data-repeater-list="fields">
                                                 <thead class="thead-light">
                                                     <tr>
                                                         <th>{{ __('Platform') }}</th>
                                                         <th>{{ __('Pixel Id') }}</th>
-                    
+
                                                         <th class="text-right">{{ __('Action') }}</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($PixelFields as  $PixelField)
                                                         <tr>
-                                                            <td class="text-capitalize"> 
+                                                            <td class="text-capitalize">
                                                                 {{ $PixelField->platform }}
                                                             </td>
                                                             <td>
                                                                 {{ $PixelField->pixel_id }}
                                                             </td>
                                                             <td class="text-center">
-                                                                <div class="d-flex">
-                                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#" data-title="{{ __('Delete pixel') }}" data-confirm="{{ __('Are You Sure?') }}" data-text="{{ __('This action can not be undone. Do you want to continue?') }}" data-confirm-yes="pixel-delete-form-{{ $PixelField->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Delete') }}">
+                                                                <div class="d-flex action-btn-wrapper">
+                                                                    <a href="#" class="btn btn-sm btn-icon bg-info text-white me-2" data-ajax-popup="true"
+                                                                    data-url="{{ route('owner.pixel.edit',$PixelField->id) }}" data-bs-toggle="tooltip" data-bs-placement="top"
+                                                                    title="{{ __('Edit') }}" data-title="{{ __('Edit New Pixel') }}">
+                                                                        <i class="ti ti-pencil f-20"></i>
+                                                                    </a>
+                                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#" data-title="{{ __('Delete pixel') }}" data-confirm="{{ __('Are You Sure?') }}" data-text="{{ __('This action can not be undone. Do you want to continue?') }}" data-confirm-yes="pixel-delete-form-{{ $PixelField->id }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Delete') }}">
                                                                         <i class="ti ti-trash f-20"></i>
                                                                     </a>
                                                                     {!! Form::open(['method' => 'DELETE', 'route' => ['pixel.delete', $PixelField->id], 'id' => 'pixel-delete-form-' . $PixelField->id]) !!}
@@ -7220,7 +7293,7 @@
                                                 </tbody>
                                             </table>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -7282,17 +7355,15 @@
                     </div>
                     <div class="tab-pane fade" id="webhook_settings" role="tabpanel" aria-labelledby="webhook_settings-tab">
                         <div id="webhook_settings" class="card">
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <h5>{{ __('Webhook Settings') }}</h5>
-                                        <small>{{ __('Edit your Webhook Settings') }}</small>
-                                    </div>
-                                    <div class="col-6 text-end">
-                                        <a href="#" class="btn btn-sm btn-icon  btn-primary me-2" data-size="md" data-ajax-popup="true" data-url="{{ route('webhook.create') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}" data-title="{{ __('Create New Webhook') }}">
-                                            <i  data-feather="plus"></i>
-                                        </a>
-                                    </div>
+                            <div class="card-header d-flex align-items-center justify-content-between">
+                                <div class="">
+                                    <h5>{{ __('Webhook Settings') }}</h5>
+                                    <small>{{ __('Edit your Webhook Settings') }}</small>
+                                </div>
+                                <div class="action-btn-wrapper d-flex">
+                                    <a href="#" class="btn btn-sm btn-icon  btn-primary" data-size="md" data-ajax-popup="true" data-url="{{ route('webhook.create') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}" data-title="{{ __('Create New Webhook') }}">
+                                        <i  data-feather="plus"></i>
+                                    </a>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -7318,21 +7389,21 @@
                                                 <td>{{ $webhook->method }}</td>
                                                 <td>{{ $webhook->url }}</td>
                                                 <td>
-                                                    <div class="d-flex">
+                                                    <div class="d-flex action-btn-wrapper">
                                                         <a href="#"
-                                                            class="btn btn-sm btn-icon bg-light-secondary me-2"
+                                                            class="btn btn-sm btn-icon bg-info text-white me-2"
                                                             data-url="{{ route('webhook.edit', $webhook) }}"
                                                             data-ajax-popup="true" data-size="md"
-                                                            data-title="{{ __('Edit') }}" data-toggle="tooltip"
+                                                            data-title="{{ __('Edit') }}" title="{{ __('Edit') }}" data-bs-toggle="tooltip" data-bs-placement="top"
                                                             data-original-title="{{ __('Edit') }}">
-                                                            <i class="ti ti-edit f-20"></i>
+                                                            <i class=" ti ti-pencil f-20"></i>
                                                         </a>
                                                         {!! Form::open([
                                                             'method' => 'DELETE',
                                                             'route' => ['webhook.destroy', $webhook->id],
                                                             'id' => 'delete-form-' . $webhook->id,
                                                         ]) !!}
-                                                        <a class=" show_confirm btn btn-sm btn-icon bg-light-secondary me-2"
+                                                        <a class=" show_confirm btn btn-sm btn-icon bg-danger text-white me-2"
                                                             href="#" data-bs-toggle="tooltip"
                                                             data-bs-placement="top" title="{{ __('Delete') }}">
                                                             <i class="ti ti-trash f-20"></i>
@@ -7346,7 +7417,7 @@
                             </div>
                         </div>
                     </div>
-                </div> 
+                </div>
             @endif
         </div>
         <!-- [ sample-page ] end -->
@@ -7495,13 +7566,20 @@
                     .classList.remove("transprent-bg");
             }
         });
-
+        
+        if("{{\Auth::user()->type == 'super admin'}}"){
+            var light_logo = "{{ $logo . '/logo-light.png?timestamp='. time() }}";
+            var dark_logo = "{{ $logo . '/logo-dark.png?timestamp='. time() }}";
+        }else{
+            var light_logo = "{{ $logo . '/' . (isset($logo_light) && !empty($logo_light) ? $logo_light : 'logo-light.png') . '?timestamp='. time() }}";
+            var dark_logo = "{{ $logo . '/' . (isset($logo_dark) && !empty($logo_dark) ? $logo_dark : 'logo-dark.png') . '?timestamp='. time() }}";
+        }
         var custdarklayout = document.querySelector("#cust-darklayout");
         custdarklayout.addEventListener("click", function() {
             if (custdarklayout.checked) {
                 document
                     .querySelector(".m-header > .b-brand > .logo-lg")
-                    .setAttribute("src","{{ asset('/storage/uploads/logo/logo-light.png') }}");
+                    .setAttribute("src", light_logo);
                 document
                     .querySelector("#main-style-link")
                     .setAttribute("href","{{ asset('assets/css/style-dark.css') }}");
@@ -7510,7 +7588,7 @@
             } else {
                 document
                     .querySelector(".m-header > .b-brand > .logo-lg")
-                    .setAttribute("src", "{{ asset('/storage/uploads/logo/logo-dark.png') }}");
+                    .setAttribute("src", dark_logo);
                 document
                     .querySelector("#main-style-link")
                     .setAttribute("href", "{{ asset('assets/css/style.css') }}");
@@ -7529,7 +7607,7 @@
         }
     </script>
 
-<script>       
+<script>
     $('.colorPicker').on('click', function(e) {
                $('body').removeClass('custom-color');
                if (/^theme-\d+$/) {
@@ -7546,16 +7624,16 @@
                 }
                $(`input[name='color_flag`).val('true');
            });
-   
+
            $('.themes-color-change').on('click', function() {
-   
+
            $(`input[name='color_flag`).val('false');
-   
+
                var color_val = $(this).data('value');
                $('body').removeClass('custom-color');
                if(/^theme-\d+$/)
                {
-                   $('body').removeClassRegex(/^theme-\d+$/);                
+                   $('body').removeClassRegex(/^theme-\d+$/);
                }
                $('body').addClass(color_val);
                $('.theme-color').prop('checked', false);
@@ -7564,7 +7642,7 @@
                $(this).addClass('active_color');
                $(`input[value=${color_val}]`).prop('checked', true);
            });
-           
+
            $.fn.removeClassRegex = function(regex) {
        return $(this).removeClass(function(index, classes) {
            return classes.split(/\s+/).filter(function(c) {

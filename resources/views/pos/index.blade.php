@@ -770,7 +770,13 @@
 
     </script>
     <script>
-        var site_currency_symbol_position = '{{ \App\Models\Utility::getValByName('currency_symbol_position') }}';
-        var site_currency_symbol = '{{ \App\Models\Store::where('id',\Auth::user()->current_store)->first()->currency }}';
+        const storeSetting = @json($storesetting);
+        var site_currency_symbol_position = storeSetting['currency_symbol_position'];
+        var site_currency_symbol_space = storeSetting['currency_symbol_space'];
+        var site_currency_symbol = storeSetting['currency'];
+        window.translations = {
+            yes: "{{ __('Yes') }}",
+            cancel: "{{ __('CANCEL') }}"
+        };
     </script>
 @endpush
