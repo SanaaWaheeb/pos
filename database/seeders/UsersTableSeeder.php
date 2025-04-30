@@ -531,6 +531,30 @@ class UsersTableSeeder extends Seeder
                 "created_at" => date('Y-m-d H:i:s'),
                 "updated_at" => date('Y-m-d H:i:s'),
             ],
+            [
+                "name"=>"Manage Testimonial",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name"=>"Create Testimonial",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name"=>"Edit Testimonial",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
+            [
+                "name"=>"Delete Testimonial",
+                "guard_name" => "web",
+                "created_at" => date('Y-m-d H:i:s'),
+                "updated_at" => date('Y-m-d H:i:s'),
+            ],
         ];
         Permission::insert($arrPermissions);
         
@@ -655,6 +679,10 @@ class UsersTableSeeder extends Seeder
             "Create Pos",
             "Manage Themes",
             "Edit Themes",
+            'Manage Testimonial',
+            'Create Testimonial',
+            'Edit Testimonial',
+            'Delete Testimonial',
         ];
         $ownerRole->givePermissionTo($ownerPermissions);
         $admin = User::create(

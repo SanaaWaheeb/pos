@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
         }else{
             Utility::languagecreate();
             // Utility::defaultEmail();
+            $this->call(PermissionTableSeeder::class);
         }
         Artisan::call('module:migrate LandingPage');
         Artisan::call('module:seed LandingPage');

@@ -206,7 +206,11 @@
                             </a>
                         </li>
                     @endcan
-                    <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'product' || Request::segment(1) == 'product_categorie' || Request::segment(1) == 'product_tax' || Request::segment(1) == 'product-coupon' || Request::segment(1) == 'shipping' || Request::segment(1) == 'subscriptions' || Request::segment(1) == 'custom-page' || Request::segment(1) == 'blog' || Request::segment(1) == 'products' ? ' active dash-trigger' : 'collapsed' }}">
+                    <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'product' || Request::segment(1) == 'product_categorie' || Request::segment(1) == 'product_tax' || Request::segment(1) == 'product-coupon' || Request::segment(1) == 'shipping' || Request::segment(1) == 'subscriptions' || Request::segment(1) == 'custom-page' || Request::segment(1) == 'blog' || Request::segment(1) == '
+Create New Store
+The Treasure
+English
+testimonial' || Request::segment(1) == 'products' ? ' active dash-trigger' : 'collapsed' }}">
                         <a href="#!" class="dash-link">
                             <span class="dash-micon">
                                 <i class="ti ti-license"></i>
@@ -276,6 +280,13 @@
                                     </li>
                                 @endcan
                             @endif
+                            @can('Manage Testimonial')
+                                <li
+                                    class="dash-item {{ Request::route()->getName() == 'testimonial.index' ? ' active' : '' }}">
+                                    <a class="dash-link" href="{{ route('testimonial.index') }}">{{ __('Testimonial') }}</a>
+                                </li>
+                            @endcan
+                         
                         </ul>
                     </li>
                     @can('Manage Customers')

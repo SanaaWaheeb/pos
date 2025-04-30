@@ -54,6 +54,7 @@ use App\Http\Controllers\PayHereController;
 use App\Http\Controllers\PaytrController;
 use App\Http\Controllers\ReferralProgramController;
 use App\Http\Controllers\TapPaymentController;
+use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\YooKassaController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
@@ -455,6 +456,7 @@ Route::group(['middleware' => ['verified']], function () {
     Route::post('product-image-delete', [StoreController::class, 'image_delete'])->name('product.image.delete')->middleware(['auth', 'XSS']);
 
     // Email Templates
+    Route::resource('email_templates', EmailTemplateController::class)->middleware(['auth', 'XSS']);
     Route::get('email_template_lang/{lang?}', [EmailTemplateController::class, 'emailTemplate'])->name('email_template')->middleware(['auth', 'XSS']);
     Route::get('email_template_lang/{id}/{lang?}', [EmailTemplateController::class, 'manageEmailLang'])->name('manage.email.language')->middleware(['auth', 'XSS']);
     Route::put('email_template_lang/{id}/', [EmailTemplateController::class, 'updateEmailSettings'])->name('updateEmail.settings')->middleware(['auth', 'XSS']);
@@ -486,6 +488,8 @@ Route::group(['middleware' => ['verified']], function () {
 
     //=========================================storage setting ==========================================
     Route::post('storage-settings', [SettingController::class, 'storageSettingStore'])->name('storage.setting.store')->middleware(['auth', 'XSS']);
+
+    Route::resource('testimonial', TestimonialController::class)->middleware(['auth', 'XSS']);
 });
 
 Route::get('rating/{slug?}/product/{id}', [RattingController::class, 'rating'])->name('rating')->middleware(['SetLocale']);
