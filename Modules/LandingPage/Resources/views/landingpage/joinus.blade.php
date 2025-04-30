@@ -143,8 +143,8 @@
                                                 <tr>
                                                     <td>{{ $value->email }}</td>
                                                     <td>
-                                                        <span>
-                                                            <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                        <div class="d-flex action-btn-wrapper">
+                                                            <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                                 data-confirm="{{ __('Are You Sure?') }}"
                                                                 data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                                 data-confirm-yes="delete-form-{{ $value->id }}"
@@ -154,7 +154,7 @@
                                                             </a>
                                                             {!! Form::open(['method' => 'DELETE', 'route' => ['join_us.destroy', $value->id],'id'=>'delete-form-'.$value->id]) !!}
                                                             {!! Form::close() !!}
-                                                        </span>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             @endforeach

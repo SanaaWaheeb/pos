@@ -208,7 +208,7 @@
                                         {{ Form::label('Banner', __('Banner'), ['class' => 'form-label']) }}
                                         <div class="logo-content mt-4">
                                             <img id="image" src="{{ $logo . '/' . $settings['home_banner'] }}"
-                                                class="big-logo">
+                                                class="big-logo border border-2 border-primary rounded">
                                         </div>
                                         <div class="choose-files mt-5">
                                             <label for="home_banner">
@@ -230,9 +230,9 @@
                                 </div>
 
                                 <div class="col-md-6">
-                                    <div class="text-end">
-                                        <button class="btn btn-sm btn-primary btn-icon m-1 " data-repeater-create
-                                            type="button"><i class="ti ti-plus"></i></button>
+                                    <div class="d-flex justify-content-end action-btn-wrapper">
+                                        <button class="btn btn-sm btn-primary btn-icon m-1" data-repeater-create
+                                            type="button" data-bs-toggle="tooltip" data-title="{{__('Add')}}" title="{{__('Add')}}"><i class="ti ti-plus"></i></button>
                                     </div>
                                     <div data-repeater-list="home_logo">
                                         <div data-repeater-item class="text-end">
@@ -251,7 +251,7 @@
 
                                                             </p>
                                                         </div>
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -273,16 +273,16 @@
                                                                         data-dz-thumbnail="">
                                                                 </p>
                                                             </div>
-                                                            <div class="col-auto actions">
-                                                                <a class="action-item btn btn-sm btn-icon btn-light-secondary"
+                                                            <div class="col-auto actions action-btn-wrapper">
+                                                                <a class="action-item btn btn-sm btn-icon btn-primary text-white"
                                                                     href="{{ $logo . '/' . $home_logo }}" download=""
-                                                                    data-toggle="tooltip" data-original-title="Download">
+                                                                    data-toggle="tooltip" data-original-title="Download" data-bs-toggle="tooltip" data-title="{{__('Download')}}" title="{{__('Download')}}">
                                                                     <i class="ti ti-download"></i>
                                                                 </a>
                                                             </div>
-                                                            <div class="col-auto actions">
-                                                                <a class="action-item btn btn-sm btn-icon btn-light-secondary delete-button"
-                                                                    data-image="{{ $home_logo }}">
+                                                            <div class="col-auto actions action-btn-wrapper">
+                                                                <a class="action-item btn btn-sm btn-icon btn-danger text-white delete-button"
+                                                                    data-image="{{ $home_logo }}" data-bs-toggle="tooltip" data-title="{{__('Delete')}}" title="{{__('Delete')}}">
                                                                     <i class="ti ti-trash"></i>
                                                                 </a>
                                                             </div>

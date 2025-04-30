@@ -13,11 +13,9 @@
 @endsection
 
 @section('action-btn')
-@can('Create Coupans')
-    <a class="btn btn-sm btn-icon  btn-primary me-2 text-white" data-url="{{ route('coupons.create') }}" data-title="{{ __('Add Coupon') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
+<a class="btn btn-sm btn-icon  btn-primary me-2 text-white" data-url="{{ route('coupons.create') }}" data-title="{{ __('Add Coupon') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
         <i  data-feather="plus"></i>
     </a>
-@endcan
 @endsection
 
 @push('script-page')
@@ -40,7 +38,7 @@
     <!-- [ basic-table ] start -->
     <div class="col-xl-12">
         <div class="card">
-            <div class="card-body table-border-style">
+            <div class="card-body pb-0 table-border-style">
                 <div class="table-responsive">
                     <table class="table dataTable">
                         <thead>
@@ -50,7 +48,7 @@
                                 <th> {{__('Discount (%)')}}</th>
                                 <th> {{__('Limit')}}</th>
                                 <th> {{__('Used')}}</th>
-                                <th> {{__('Action')}}</th>
+                                <th width="40"> {{__('Action')}}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -62,19 +60,19 @@
                                 <td>{{ $coupon->limit }}</td>
                                 <td>{{ $coupon->used_coupon() }}</td>
                                 <td class="Action">
-                                    <div class="d-flex">
+                                    <div class="d-flex action-btn-wrapper">
                                         @can('Show Coupans')
-                                            <a href="{{ route('coupons.show', $coupon->id) }}" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-tooltip="Edit" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View Coupon') }}" data-tooltip="View">
+                                            <a href="{{ route('coupons.show', $coupon->id) }}" class="btn btn-sm btn-icon  bg-warning text-white me-2" data-tooltip="Edit" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View Coupon') }}" data-tooltip="View">
                                                 <i  class="ti ti-eye f-20"></i>
                                             </a>
                                         @endcan
                                         @can('Edit Coupans')
-                                            <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-url="{{ route('coupons.edit', $coupon->id) }}"  data-title="{{ __('Edit Coupon') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
-                                                <i  class="ti ti-edit f-20"></i>
+                                            <a href="#!" class="btn btn-sm btn-icon  bg-info text-white me-2" data-url="{{ route('coupons.edit', $coupon->id) }}"  data-title="{{ __('Edit Coupon') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
+                                                <i  class=" ti ti-pencil f-20"></i>
                                             </a>
                                         @endcan
                                         @can('Delete Coupans')
-                                            <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                            <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                 data-title="{{ __('Delete Lead') }}"
                                                 data-confirm="{{ __('Are You Sure?') }}"
                                                 data-text="{{ __('This action can not be undone. Do you want to continue?') }}"

@@ -16,7 +16,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-border-style">
+                <div class="card-body pb-0 table-border-style">
                     <h4 class="my-2">{{ $coupon->code }}</h4>
                     <div class="table-responsive">
                         <table class="table mb-0 dataTable">
