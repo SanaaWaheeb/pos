@@ -20,7 +20,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     {{ Form::label('Description', __('Description'), ['class' => 'form-label']) }}
-                    {{ Form::textarea('testimonials_description', $testimonial['testimonials_description'], ['class' => 'form-control', 'placeholder' => __('Enter Description'), 'id'=>'mytextarea']) }}
+                    {{ Form::textarea('testimonials_description', $testimonial['testimonials_description'], ['class' => 'form-control','rows'=>'3', 'placeholder' => __('Enter Description'), 'id'=>'mytextarea']) }}
                 </div>
             </div>
             <div class="col-md-6">
@@ -32,11 +32,11 @@
             <div class="col-md-6">
                 <div class="form-group">
                     {{ Form::label('Designation', __('Designation'), ['class' => 'form-label']) }}<x-required></x-required>
-                    {{ Form::text('testimonials_designation',$testimonial['testimonials_designation'], ['class' => 'form-control ', 'placeholder' => __('Enter Designation'),'required'=>'required']) }}
+                    {{ Form::text('testimonials_designation',$testimonial['testimonials_designation'], ['class' => 'form-control ','rows'=>'3', 'placeholder' => __('Enter Designation'),'required'=>'required']) }}
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="form-group">
                     {{ Form::label('User Avtar', __('User Avtar'), ['class' => 'form-label']) }}
                     <input type="file" name="testimonials_user_avtar" class="form-control">
@@ -46,8 +46,8 @@
 
         </div>
     </div>
-    <div class="modal-footer">
-        <input type="button" value="{{__('Cancel')}}" class="btn  btn-light" data-bs-dismiss="modal">
+    <div class="modal-footer pb-0">
+        <input type="button" value="{{__('Cancel')}}" class="btn  btn-secondary" data-bs-dismiss="modal">
         <input type="submit" value="{{__('Update')}}" class="btn  btn-primary">
     </div>
 

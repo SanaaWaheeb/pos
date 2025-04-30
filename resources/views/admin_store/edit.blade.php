@@ -14,7 +14,7 @@
     <div class="col-12">
         <div class="form-group">
             {{Form::label('store_name',__('Store Name'),array('class'=>'form-label'))}}<x-required></x-required>
-            {{Form::text('store_name',$store->name,array('class'=>'form-control','placeholder'=>__('Store Name'),'required'=>'required'))}}
+            {{Form::text('store_name',$store->name,array('class'=>'form-control','placeholder'=>__('Enter Store Name'),'required'=>'required'))}}
             @error('store_name')
             <span class="invalid-store_name" role="alert">
                     <strong class="text-danger">{{ $message }}</strong>
@@ -58,8 +58,8 @@
     </div>
 
 </div>
-<div class="form-group col-12 d-flex justify-content-end col-form-label">
-    <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+<div class="form-group col-12 py-0 mb-0 d-flex justify-content-end col-form-label">
+    <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary" data-bs-dismiss="modal">
     <input type="submit" value="{{__('Update')}}" class="btn btn-primary ms-2">
 </div>
 {{Form::close()}}

@@ -122,7 +122,7 @@
                                     <div class="col-lg-9 col-md-9 col-sm-9">
                                         <h5>{{ __('Menu Bar') }}</h5>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-3 justify-content-end d-flex">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 justify-content-end d-flex action-btn-wrapper">
                                         <a data-size="lg" data-url="{{ route('custom_page.create') }}" data-ajax-popup="true"  data-bs-toggle="tooltip" data-title="{{__('Create Page')}}" title="{{__('Create Page')}}" class="btn btn-sm btn-primary">
                                             <i class="ti ti-plus text-light"></i>
                                         </a>
@@ -152,12 +152,12 @@
                                                         <td>{{ $value['menubar_page_name'] }}</td>
                                                         <td>
                                                             <span>
-                                                                <div class="d-flex">
-                                                                    <a href="#" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-url="{{ route('custom_page.edit',$key) }}" data-ajax-popup="true" data-title="{{__('Edit Page')}}" data-size="lg" data-bs-toggle="tooltip"  title="{{__('Edit Page')}}" data-original-title="{{__('Edit')}}">
+                                                                <div class="d-flex action-btn-wrapper">
+                                                                    <a href="#" class="btn btn-sm btn-icon  bg-info text-white me-2" data-url="{{ route('custom_page.edit',$key) }}" data-ajax-popup="true" data-title="{{__('Edit Page')}}" data-size="lg" data-bs-toggle="tooltip"  title="{{__('Edit Page')}}" data-original-title="{{__('Edit')}}">
                                                                         <i class="ti ti-pencil"></i>
                                                                     </a>
                                                                     @if($value['page_slug'] != 'terms_and_conditions' && $value['page_slug'] != 'about_us' && $value['page_slug'] != 'privacy_policy')
-                                                                        <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                                        <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                                             data-confirm="{{ __('Are You Sure?') }}"
                                                                             data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                                             data-confirm-yes="delete-form-{{ $key }}"
@@ -168,7 +168,7 @@
                                                                         {!! Form::open(['method' => 'DELETE', 'route' => ['custom_page.destroy', $key], 'id' => 'delete-form-' . $key]) !!}
                                                                         {!! Form::close() !!}
                                                                     @endif
-                                                                </div>                                                              
+                                                                </div>
                                                             </span>
                                                         </td>
                                                     </tr>

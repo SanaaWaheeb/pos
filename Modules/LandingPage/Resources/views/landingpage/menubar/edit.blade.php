@@ -3,7 +3,7 @@
     <div class="row">
         <div class="form-group col-md-12">
             {{Form::label('name',__('Page Name'),['class'=>'form-label'])}}<x-required></x-required>
-            {{Form::text('menubar_page_name',$page['menubar_page_name'],array('class'=>'form-control font-style','placeholder'=>__('Enter Plan Name'),'required'=>'required'))}}
+            {{Form::text('menubar_page_name',$page['menubar_page_name'],array('class'=>'form-control font-style','placeholder'=>__('Enter Page Name'),'required'=>'required'))}}
         </div>
         <div class="form-group">
             <div class="form-check form-check-inline">
@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <div class="form-group col-md-12 page_content">
+        <div class="form-group col-md-12 page_content mb-0">
             {{ Form::label('description', __('Page Content'), ['class' => 'form-label']) }}
             {!! Form::textarea('menubar_page_contant', (isset($page['menubar_page_contant']) && !empty($page['menubar_page_contant'])) ? $page['menubar_page_contant'] : '' , [
                 'class' => 'form-control summernote-simple',
@@ -30,7 +30,7 @@
             ]) !!}
         </div>
 
-        <div class="form-group col-md-12 page_url">
+        <div class="form-group col-md-12 page_url mb-0">
             {{ Form::label('page_url', __('Page URL'), ['class' => 'form-label']) }}
             {{ Form::text('page_url', ( isset($page['page_url']) && !empty($page['page_url'])) ? $page['page_url'] : '', ['class' => 'form-control font-style', 'placeholder' => __('Enter Page URL')]) }}
         </div>
@@ -56,8 +56,8 @@
             </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <input type="button" value="{{__('Cancel')}}" class="btn  btn-light" data-bs-dismiss="modal">
+    <div class="modal-footer pb-0">
+        <input type="button" value="{{__('Cancel')}}" class="btn  btn-secondary" data-bs-dismiss="modal">
         <input type="submit" value="{{__('Update')}}" class="btn  btn-primary">
     </div>
 {{ Form::close() }}

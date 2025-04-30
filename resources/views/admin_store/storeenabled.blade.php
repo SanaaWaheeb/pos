@@ -8,7 +8,7 @@
 <div class="form-group text-right">
 </div>
 <div class="form-group col-12 d-flex justify-content-end col-form-label">
-    <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+    <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary" data-bs-dismiss="modal">
     <button class="btn btn-primary ms-2" value="{{$users->store_display}}" type="submit">{{ __('Yes') }}</button>
 </div>
 

@@ -110,7 +110,7 @@
                                 <div class="card-footer text-end">
                                     <button class="btn btn-print-invoice btn-primary m-r-10" type="submit" >{{ __('Save Changes') }}</button>
                                 </div>
-                                
+
                             </div>
                         {{ Form::close() }}
 
@@ -121,7 +121,7 @@
                                     <div class="col-lg-9 col-md-9 col-sm-9">
                                         <h5>{{ __('Testimonial List') }}</h5>
                                     </div>
-                                    <div class="col-lg-3 col-md-3 col-sm-3 justify-content-end d-flex">
+                                    <div class="col-lg-3 col-md-3 col-sm-3 justify-content-end d-flex action-btn-wrapper">
                                         <a data-size="lg" data-url="{{ route('testimonials_create') }}" data-ajax-popup="true"  data-bs-toggle="tooltip" data-title="{{__('Create Testimonial')}}" title="{{__('Create Testimonial')}}" class="btn btn-sm btn-primary">
                                             <i class="ti ti-plus text-light"></i>
                                         </a>
@@ -149,11 +149,11 @@
                                                         <td>{{ $value['testimonials_title'] }}</td>
                                                         <td>
                                                             <span>
-                                                                <div class="d-flex">
-                                                                    <a href="#" class="btn btn-sm btn-icon bg-light-secondary me-2" data-url="{{ route('testimonials_edit',$key) }}" data-ajax-popup="true" data-title="{{__('Edit Testimonial')}}" data-size="lg" data-bs-toggle="tooltip"  title="{{__('Edit Testimonial')}}" data-original-title="{{__('Edit')}}">
+                                                                <div class="d-flex action-btn-wrapper">
+                                                                    <a href="#" class="btn btn-sm btn-icon bg-info text-white me-2" data-url="{{ route('testimonials_edit',$key) }}" data-ajax-popup="true" data-title="{{__('Edit Testimonial')}}" data-size="lg" data-bs-toggle="tooltip"  title="{{__('Edit Testimonial')}}" data-original-title="{{__('Edit')}}">
                                                                         <i class="ti ti-pencil "></i>
                                                                     </a>
-                                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                                         data-confirm="{{ __('Are You Sure?') }}"
                                                                         data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
                                                                         data-confirm-yes="delete-form-{{ $key }}"

@@ -1,5 +1,4 @@
-<div class="modal-body">
-    <div class="row">
+<div class="row">
     <div class="table-responsive">
         <table class="table">
             <thead>
@@ -25,5 +24,5 @@
             </tbody>
         </table>
     </div>
-    </div>
 </div>
+

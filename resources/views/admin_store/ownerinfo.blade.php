@@ -112,8 +112,8 @@
                                                 <div class="mb-3 mb-sm-0">
                                                     <h6>
                                                         <img src="{{ !empty($user->avatar) ? $profile . '/' . $user->avatar : $profile . '/avatar.png' }}"
-                                                            class=" rounded-circle mx-2" alt="image"
-                                                            height="30">
+                                                            class="  border border-2 border-primary rounded mx-2" alt="image"
+                                                            style="width:40px;height:40px;">
                                                         <label for="user"
                                                             class="form-label">{{ $user->name }}</label>
                                                     </h6>
