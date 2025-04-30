@@ -25,11 +25,11 @@
         <div class="custom-control form-switch">
             <input type="checkbox" class="form-check-input" name="enable_page_header" id="enable_page_header"
                 {{ $pageOption['enable_page_header'] == 'on' ? 'checked=checked' : '' }}>
-            {{ Form::label('enable_page_header', __('Page Header Display'), ['class' => 'form-check-label mb-3']) }}
+            {{ Form::label('enable_page_header', __('Page Header Display'), ['class' => 'form-check-label mb-0']) }}
         </div>
     </div>
-    <div class="form-group col-md-12">
-        {{ Form::label('contents', __('Contents'), ['class' => 'col-form-label']) }}
+    <div class="form-group col-md-12 mb-0">
+        {{ Form::label('contents', __('Contents'), ['class' => 'form-label']) }}
         {{ Form::textarea('contents', null, ['class' => 'form-control summernote-simple','rows' => 3,'placeholder' => __('Contents')]) }} {{-- pc-tinymce-2 --}}
         @error('contents')
             <span class="invalid-contents" role="alert">
@@ -38,7 +38,7 @@
         @enderror
     </div>
     <script src="{{ asset('assets/js/plugins/tinymce/tinymce.min.js') }}"></script>
-  
+
     <script>
         if ($(".pc-tinymce-2").length) {
             tinymce.init({
@@ -51,8 +51,8 @@
         }
     </script>
 </div>
-<div class="form-group col-12 d-flex justify-content-end col-form-label">
-    <input type="button" value="{{ __('Cancel') }}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
+<div class="form-group col-12 py-0 mb-0 d-flex justify-content-end col-form-label">
+    <input type="button" value="{{ __('Cancel') }}" class="btn btn-secondary" data-bs-dismiss="modal">
     <input type="submit" value="{{ __('Update') }}" class="btn btn-primary ms-2">
 </div>
 {{ Form::close() }}

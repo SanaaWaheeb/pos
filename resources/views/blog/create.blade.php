@@ -24,16 +24,16 @@
             <img id="blogImg" src="" width="20%" class="mt-2"/>
         </div>
     </div>
-    <div class="form-group col-md-12">
-        {{Form::label('detail',__('Detail'),array('class'=>'col-form-label')) }}
+    <div class="form-group col-md-12 mb-0">
+        {{Form::label('detail',__('Detail'),array('class'=>'col-form-label pt-0')) }}
         {{Form::textarea('detail',null,array('class'=>'form-control summernote-simple','rows'=>3,'placeholder'=>__('Detail')))}} {{-- pc-tinymce-2 --}}
     </div>
-    <div class="form-group col-12 d-flex justify-content-end col-form-label">
-        <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary btn-light" data-bs-dismiss="modal">
-        <input type="submit" value="{{__('Save')}}" class="btn btn-primary ms-2">
+    <div class="form-group col-12 d-flex py-0 mb-0 justify-content-end col-form-label pt-0">
+        <input type="button" value="{{__('Cancel')}}" class="btn btn-secondary" data-bs-dismiss="modal">
+        <input type="submit" value="{{__('Create')}}" class="btn btn-primary ms-2">
     </div>
     <script src="{{ asset('assets/js/plugins/tinymce/tinymce.min.js') }}"></script>
-  
+
     <script>
         if ($(".pc-tinymce-2").length) {
             tinymce.init({

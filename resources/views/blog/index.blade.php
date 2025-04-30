@@ -33,7 +33,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-border-style">
+                <div class="card-body pb-0 table-border-style">
                     <div class="table-responsive">
                         <table class="table mb-0 dataTable">
                             <thead>
@@ -49,17 +49,17 @@
                                 {{-- @DD($store_logo. $blog->blog_cover_image ) --}}
                                     <tr data-name="{{ $blog->title }}">
                                         <td>
-                                            <div class="d-flex align-items-center">
+                                            <div class="d-flex align-items-center ">
                                                 @if (!empty($blog->blog_cover_image))
                                                 <a href="{{ $store_logo . $blog->blog_cover_image }}" target="_blank">
                                                     <img alt="Image placeholder"
                                                         src="{{ $store_logo . $blog->blog_cover_image }}"
-                                                       class="rounded-circle" alt="images">
+                                                       class="border border-2 border-primary rounded theme-avtar" alt="images">
                                                 </a>
                                                 @else
                                                 <a href="{{ $store_logo . '/avatar.png' }}" target="_blank">
                                                     <img alt="Image placeholder" src="{{ $store_logo . '/avatar.png' }}"
-                                                       class="rounded-circle" alt="images">
+                                                       class="border border-2 border-primary rounded theme-avtar" alt="images">
                                                 </a>
                                                 @endif
                                             </div>
@@ -68,14 +68,14 @@
                                         <td>
                                             {{ \App\Models\Utility::dateFormat($blog->created_at) }}</td>
                                         <td class="Action">
-                                            <div class="d-flex">
+                                            <div class="d-flex action-btn-wrapper">
                                                 @can('Edit Blog')
-                                                <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-url="{{ route('blog.edit', $blog->id) }}" data-title="{{ __('Edit Blog') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
-                                                    <i  class="ti ti-edit f-20"></i>
+                                                <a href="#!" class="btn btn-sm btn-icon bg-info text-white me-2" data-url="{{ route('blog.edit', $blog->id) }}" data-title="{{ __('Edit Blog') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
+                                                    <i  class=" ti ti-pencil f-20"></i>
                                                 </a>
                                                 @endcan
                                                 @can('Delete Blog')
-                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                         data-title="{{ __('Delete Lead') }}"
                                                         data-confirm="{{ __('Are You Sure?') }}"
                                                         data-text="{{ __('This action can not be undone. Do you want to continue?') }}"

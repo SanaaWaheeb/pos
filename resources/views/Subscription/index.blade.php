@@ -13,11 +13,13 @@
     <li class="breadcrumb-item active" aria-current="page">{{ __('Subscriber') }}</li>
 @endsection
 @section('action-btn')
-    @can('Create Subscriber')
+
+@can('Create Subscriber')
         <a class="btn btn-sm btn-icon  btn-primary me-2 text-white" data-url="{{ route('subscriptions.create') }}" data-title="{{ __('Add Subscriber') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Add Subscriber') }}">
             <i  data-feather="plus"></i>
         </a>
     @endcan
+
 @endsection
 @section('filter')
 @endsection
@@ -25,9 +27,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-border-style">
+                <div class="card-body pb-0 table-border-style">
                     <h5></h5>
-                    <div class="table-responsive">
+                    <div class="table-responsive order-table-wrp">
                         <table class="table mb-0 dataTable ">
                             <thead>
                                 <tr>
@@ -41,8 +43,8 @@
                                         <td>{{ $sub->email }}</td>
                                         <td class="Action">
                                             @can('Delete Subscriber')
-                                                <div class="d-flex">
-                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                <div class="d-flex action-btn-wrapper">
+                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                         data-title="{{ __('Delete Lead') }}"
                                                         data-confirm="{{ __('Are You Sure?') }}"
                                                         data-text="{{ __('This action can not be undone. Do you want to continue?') }}"

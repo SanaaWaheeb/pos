@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-body table-border-style">
+                <div class="card-body pb-0 table-border-style">
                     <div class="table-responsive">
                         <table class="table mb-0 dataTable">
                             <thead>
@@ -63,14 +63,14 @@
                                             {{ ucfirst($pageoption->enable_page_header == 'on' ? $pageoption->enable_page_header : 'Off') }}
                                         </td>
                                         <td class="Action">
-                                            <div class="d-flex">
+                                            <div class="d-flex action-btn-wrapper">
                                                 @can('Edit Custom Page')
-                                                    <a href="#!" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-title="{{ __('Edit Page') }}" data-url="{{ route('custom-page.edit', $pageoption->id) }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
-                                                        <i  class="ti ti-edit f-20"></i>
+                                                    <a href="#!" class="btn btn-sm btn-icon  bg-info text-white me-2" data-title="{{ __('Edit Page') }}" data-url="{{ route('custom-page.edit', $pageoption->id) }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Edit') }}">
+                                                        <i  class=" ti ti-pencil f-20"></i>
                                                     </a>
                                                 @endcan
                                                 @can('Delete Custom Page')
-                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                    <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                         data-title="{{ __('Delete Lead') }}"
                                                         data-confirm="{{ __('Are You Sure?') }}"
                                                         data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
