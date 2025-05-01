@@ -285,6 +285,7 @@ class AuthorizeNetController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -296,10 +297,11 @@ class AuthorizeNetController extends Controller
 
                 try {
                     $get_amount = round($get_amount);
+                    $price = round($price);
                     $data = [
                         'authuser'  =>  $authuser,
                         'slug'      => $slug,
-                        'get_amount'=> $get_amount,
+                        'get_amount'=> $price,
                         'orderId'   => $orderID,
                         'product_id'=> $product_id,
                     ];

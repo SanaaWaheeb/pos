@@ -273,7 +273,7 @@ class FedapayController extends Controller
                     $price          = $price - $discount_value;
                 }
             }
-            
+            $get_amount = $price;
             if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
             {
                 $shipping = Shipping::find($cart['shipping']['shipping_id']);
@@ -307,8 +307,8 @@ class FedapayController extends Controller
                     "description" => "Fedapay Payment",
                     "amount" => round($price),
                     "currency" => ["iso" => $currency],
-                    "callback_url" => route('order.fedapay.status', ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id]),
-                    "cancel_url" => route('order.fedapay.status', ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id]),
+                    "callback_url" => route('order.fedapay.status', ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id]),
+                    "cancel_url" => route('order.fedapay.status', ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id]),
                 ]);
 
                 $token = $transaction->generateToken();

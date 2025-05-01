@@ -202,6 +202,12 @@ class PayfastController extends Controller
                     $get_amount = $get_amount - $discount_value;
                 }
             }
+            $order_id = time();
+            $success = Crypt::encrypt([
+                'product' => $product['product_id'],
+                'order_id' => $order_id,
+                'product_amount' => $get_amount
+            ]);
             if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                 $shipping = Shipping::find($cart['shipping']['shipping_id']);
                 if (!empty($shipping)) {

@@ -53,7 +53,7 @@ class XenditController extends Controller
                     return redirect()->back()->with('error', __('This coupon code is invalid or has expired.'));
                 }
             }
-            $response = ['orderId' => $orderID, 'user' => $user, 'get_amount' => $get_amount, 'plan' => $plan, 'currency' => $currency,'coupon'=>$request->coupon];
+            $response = ['orderId' => $orderID, 'user' => $user->id, 'get_amount' => $get_amount, 'plan' => $plan->id, 'currency' => $currency,'coupon'=>$request->coupon];
             Xendit::setApiKey($xendit_api);
             $params = [
                 'external_id' => $orderID,
@@ -110,7 +110,7 @@ class XenditController extends Controller
                 $coupons = Coupon::where('code', strtoupper($request->coupon))->where('is_active', '1')->first();
                 if (!empty($coupons)) {
                     $userCoupon = new UserCoupon();
-                    $userCoupon->user = $user->id;
+                    $userCoupon->user = $user;
                     $userCoupon->coupon = $coupons->id;
                     $userCoupon->order = $request->orderId;
                     $userCoupon->save();
@@ -228,16 +228,17 @@ class XenditController extends Controller
                 $pdata['user_id'] = '';
             }
             try {
-                $response = ['orderId' => $orderId, 'get_amount' => $price, 'slug' => $slug];
-                Xendit::setApiKey($xendit_api);
                 $orderID = strtoupper(str_replace('.', '', uniqid('', true)));
+                $response = ['orderId' => $orderID, 'get_amount' => $price, 'slug' => $slug];
+                Xendit::setApiKey($xendit_api);
                 $params = [
                     'external_id' => $orderID,
-                    'payer_email' => isset($cart['customer']['email']) ? $cart['customer']['email'] : '',
-                    'description' => 'Payment for order ' . $orderId,
+                    'payer_email' => isset($cart['customer']['email']) ? $cart['customer']['email'] : 'test@example.com',
+                    'description' => 'Payment for order ' . $orderID,
                     'amount' => $price,
                     'callback_url' =>  route('order.xendit.status'),
-                    'success_redirect_url' => route('order.xendit.status', $response)
+                    'success_redirect_url' => route('order.xendit.status', $response),
+                    'failure_redirect_url' => route('order.xendit.status'),
                 ];
                 $invoice = \App\Xendit\Invoice::create($params);
                 Session::put('invoice',$invoice);

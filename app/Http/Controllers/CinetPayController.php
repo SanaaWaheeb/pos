@@ -397,7 +397,7 @@ class CinetPayController extends Controller
                     $price          = $price - $discount_value;
                 }
             }
-            
+            $get_amount = $price;
             if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
             {
                 $shipping = Shipping::find($cart['shipping']['shipping_id']);
@@ -483,7 +483,7 @@ class CinetPayController extends Controller
                 if ($response_body['code'] == '201') {
                     $cinetpaySession = [
                         'product_id' => $product_id, 
-                        'amount' => $price, 
+                        'amount' => $get_amount, 
                         'orderId' => $orderID, 
                         'slug' => $slug,
                         'currency' => $currency,

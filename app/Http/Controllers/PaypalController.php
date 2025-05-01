@@ -255,7 +255,7 @@ class PaypalController extends Controller
     }
 
 
-    public function planGetPaymentStatus(Request $request, $plan_id, $amount)
+    public function planGetPaymentStatus(Request $request, $plan_id, $amount, $coupon_id)
     {
         $this->paymentconfig();
         $user = Auth::user();
@@ -272,8 +272,8 @@ class PaypalController extends Controller
             $order_id = strtoupper(str_replace('.', '', uniqid('', true)));
 
             // $status  = ucwords(str_replace('_', ' ', $result['state']));
-            if ($request->has('coupon_id') && $request->coupon_id != '') {
-                $coupons = Coupon::find($request->coupon_id);
+            if (isset($coupon_id) && $coupon_id != '') {
+                $coupons = Coupon::find($coupon_id);
                 if (!empty($coupons)) {
                     $userCoupon = new UserCoupon();
                     $userCoupon->user = $user->id;

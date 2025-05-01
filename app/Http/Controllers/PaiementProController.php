@@ -280,7 +280,7 @@ class PaiementProController extends Controller
                     $price          = $price - $discount_value;
                 }
             }
-            
+            $get_amount = $price;
             if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
             {
                 $shipping = Shipping::find($cart['shipping']['shipping_id']);
@@ -306,7 +306,7 @@ class PaiementProController extends Controller
             // $currency = 'NPR';
 
             $orderID = strtoupper(str_replace('.', '', uniqid('', true)));
-            $response = ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id, 'coupon' => $cart['coupon']['coupon']??'0'];  //'user' => $user
+            $response = ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id, 'coupon' => $cart['coupon']['coupon']??'0'];  //'user' => $user
 
             try {
                 $data = array(

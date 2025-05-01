@@ -40,9 +40,16 @@ class CashfreeController extends Controller
         $plan = Plan::find($planID);
         $user = \Auth::user();
         $this->paymentConfig();
-
-        $url = config('services.cashfree.url');
         $payment_setting = Utility::getAdminPaymentSetting();
+
+        $url = 'https://sandbox.cashfree.com/pg/orders';
+        if (isset($payment_setting['cashfree_mode']) && !is_null($payment_setting['cashfree_mode'])) {
+            if ($payment_setting['cashfree_mode'] == 'live') {
+                $url = 'https://api.cashfree.com/pg/orders';
+            } else {
+                $url = 'https://sandbox.cashfree.com/pg/orders';
+            }
+        }
         if ($plan) {
 
             $get_amount = $plan->price;
@@ -103,55 +110,51 @@ class CashfreeController extends Controller
                         return redirect()->back()->with('error', __('This coupon code is invalid or has expired.'));
                     }
                 }
-                    $coupon = (empty($request->coupon)) ? "0" : $request->coupon;
-                    $orderID = strtoupper(str_replace('.', '', uniqid('', true)));
+                $coupon = (empty($request->coupon)) ? "0" : $request->coupon;
+                $orderID = strtoupper(str_replace('.', '', uniqid('', true)));
 
-                    $headers = array(
-                        "Content-Type: application/json",
-                        "x-api-version: 2022-01-01",
-                        "x-client-id: " . config('services.cashfree.key'),
-                        "x-client-secret: " . config('services.cashfree.secret')
-                    );
+                $headers = array(
+                    "Content-Type: application/json",
+                    "x-api-version: 2022-01-01",
+                    "x-client-id: " . config('services.cashfree.key'),
+                    "x-client-secret: " . config('services.cashfree.secret')
+                );
 
-                    $data = json_encode([
-                        'order_id' => $orderID,
-                        'order_amount' => $get_amount,
-                        "order_currency" => isset($payment_setting['currency']) && !empty($payment_setting['currency']) ? $payment_setting['currency'] : 'USD',
-                        "order_name" => $plan->name,
-                        "customer_details" => [
-                            "customer_id" => 'customer_' . $user->id,
-                            "customer_name" => $user->name,
-                            "customer_email" => $user->email,
-                            "customer_phone" => '1234567890',
-                        ],
-                        "order_meta" => [
-                            "return_url" => route('cashfreePayment.success') . '?order_id={order_id}&order_token={order_token}&plan_id=' . $plan->id . '&amount=' . $get_amount . '&coupon=' . $coupon . ''
+                $data = json_encode([
+                    'order_id' => $orderID,
+                    'order_amount' => $get_amount,
+                    "order_currency" => isset($payment_setting['currency']) && !empty($payment_setting['currency']) ? $payment_setting['currency'] : 'USD',
+                    "order_name" => $plan->name,
+                    "customer_details" => [
+                        "customer_id" => 'customer_' . $user->id,
+                        "customer_name" => $user->name,
+                        "customer_email" => $user->email,
+                        "customer_phone" => '1234567890',
+                    ],
+                    "order_meta" => [
+                        "return_url" => route('cashfreePayment.success') . '?order_id={order_id}&order_token={order_token}&plan_id=' . $plan->id . '&amount=' . $get_amount . '&coupon=' . $coupon . ''
 
-                        ]
-                    ]);
-                    try {
+                    ]
+                ]);
+                try {
 
-                        $curl = curl_init($url);
-                        curl_setopt($curl, CURLOPT_URL, $url);
-                        curl_setopt($curl, CURLOPT_POST, true);
-                        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+                    $curl = curl_init($url);
+                    curl_setopt($curl, CURLOPT_URL, $url);
+                    curl_setopt($curl, CURLOPT_POST, true);
+                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+                    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                    curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 
-                        $resp = curl_exec($curl);
-                        curl_close($curl);
-                        return redirect()->to(json_decode($resp)->payment_link);
-                    } catch (\Throwable $th) {
-                        return redirect()->back()->with('error', __('Currency Not Supported.Contact To Your Site Admin'));
-                    }           
-
-
-                
-                } catch (\Exception $e) {
-
-                    return redirect()->back()->with('error', $e);
+                    $resp = curl_exec($curl);
+                    curl_close($curl);
+                    return redirect()->to(json_decode($resp)->payment_link);
+                } catch (\Exception $th) {
+                    return redirect()->back()->with('error', __('Currency Not Supported.Contact To Your Site Admin'));
                 }
+            } catch (\Exception $e) {
 
+                return redirect()->back()->with('error', $e);
+            }
         } else {
             return redirect()->route('plans.index')->with('error', __('Plan is deleted.'));
         }
@@ -176,9 +179,18 @@ class CashfreeController extends Controller
             $coupons = null;
         }
 
+        $url = 'https://sandbox.cashfree.com/pg/orders';
+        if (isset($payment_setting['cashfree_mode']) && !is_null($payment_setting['cashfree_mode'])) {
+            if ($payment_setting['cashfree_mode'] == 'live') {
+                $url = 'https://api.cashfree.com/pg/orders';
+            } else {
+                $url = 'https://sandbox.cashfree.com/pg/orders';
+            }
+        }
+
         try {
             $client = new \GuzzleHttp\Client();
-            $response = $client->request('GET', config('services.cashfree.url') . '/' . $request->get('order_id') . '/settlements', [
+            $response = $client->request('GET', $url . '/' . $request->get('order_id') . '/settlements', [
                 'headers' => [
                     'accept' => 'application/json',
                     'x-api-version' => '2022-09-01',
@@ -191,7 +203,7 @@ class CashfreeController extends Controller
             $respons = json_decode($response->getBody());
             if ($respons->order_id && $respons->cf_payment_id != NULL) {
 
-                $response = $client->request('GET', config('services.cashfree.url') . '/' . $respons->order_id . '/payments/' . $respons->cf_payment_id . '', [
+                $response = $client->request('GET', $url . '/' . $respons->order_id . '/payments/' . $respons->cf_payment_id . '', [
                     'headers' => [
                         'accept' => 'application/json',
                         'x-api-version' => '2022-09-01',
@@ -256,7 +268,8 @@ class CashfreeController extends Controller
         }
 
     }
-    public function payWithCashfree(Request $request,$slug){
+    public function payWithCashfree(Request $request, $slug)
+    {
         try {
             $cart = session()->get($slug);
             $products = $cart['products'];
@@ -270,7 +283,14 @@ class CashfreeController extends Controller
                     'services.cashfree.secret' => isset($storepaymentSetting['cashfree_secret_key']) ? $storepaymentSetting['cashfree_secret_key'] : '',
                 ]
             );
-            $url = config('services.cashfree.url');
+            $url = 'https://sandbox.cashfree.com/pg/orders';
+            if (isset($storepaymentSetting['cashfree_mode']) && !is_null($storepaymentSetting['cashfree_mode'])) {
+                if ($storepaymentSetting['cashfree_mode'] == 'live') {
+                    $url = 'https://api.cashfree.com/pg/orders';
+                } else {
+                    $url = 'https://sandbox.cashfree.com/pg/orders';
+                }
+            }
             $total_tax = $sub_total = $total = $sub_tax = 0;
             $product_name = [];
             $product_id = [];
@@ -304,15 +324,16 @@ class CashfreeController extends Controller
 
                 if (isset($cart['coupon'])) {
                     if ($cart['coupon']['coupon']['enable_flat'] == 'off') {
-                       
+
                         $discount_value = ($get_amount / 100) * $cart['coupon']['coupon']['discount'];
                         $get_amount = $get_amount - $discount_value;
                     } else {
-                       
+
                         $discount_value = $cart['coupon']['coupon']['flat_discount'];
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -340,7 +361,7 @@ class CashfreeController extends Controller
                         "customer_phone" => '1234567890',
                     ],
                     "order_meta" => [
-                        "return_url" => route('store.cashfreePayment.success') . '?order_id={order_id}&order_token={order_token}&product_id=' . implode(',',$product_id) . '&amount=' . $get_amount . '&coupon=' . $coupon  . '&slug=' . $slug  . ''
+                        "return_url" => route('store.cashfreePayment.success') . '?order_id={order_id}&order_token={order_token}&product_id=' . implode(',', $product_id) . '&amount=' . $price . '&coupon=' . $coupon  . '&slug=' . $slug  . ''
                     ]
                 ]);
                 try {
@@ -356,9 +377,8 @@ class CashfreeController extends Controller
                     curl_close($curl);
                     return redirect()->to(json_decode($resp)->payment_link);
                 } catch (\Throwable $th) {
-                    return redirect()->back()->with('error', __('Currency Not Supported.Contact To Your Site Admin'));
-                }    
-                
+                    return redirect()->back()->with('error', __('Something went wrong with cashfree payment gateway'));
+                }
             } else {
                 return redirect()->back()->with('error', __('product is not found.'));
             }
@@ -367,7 +387,8 @@ class CashfreeController extends Controller
             return redirect()->back()->with('error', __($e->getMessage()));
         }
     }
-    public function storeCashfreePaymentSuccess(Request $request){
+    public function storeCashfreePaymentSuccess(Request $request)
+    {
         $getAmount = $request->amount;
         $product_id = $request->product_id;
         $slug = $request->slug;
@@ -379,21 +400,17 @@ class CashfreeController extends Controller
                 'services.cashfree.secret' => isset($storepaymentSetting['cashfree_secret_key']) ? $storepaymentSetting['cashfree_secret_key'] : '',
             ]
         );
-        try{
+        try {
             $store = Store::where('slug', $slug)->first();
             $cart = session()->get($slug);
             $products       = $cart['products'];
             $cust_details = $cart['customer'];
-            if(isset($cart['coupon']['data_id']))
-            {
+            if (isset($cart['coupon']['data_id'])) {
                 $coupon = ProductCoupon::where('id', $cart['coupon']['data_id'])->first();
-            }
-            else
-            {
+            } else {
                 $coupon = '';
             }
-            if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
-            {
+            if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                 $shipping       = Shipping::find($cart['shipping']['shipping_id']);
                 $shipping_name  = $shipping->name;
                 $shipping_price = $shipping->price;
@@ -404,14 +421,22 @@ class CashfreeController extends Controller
                         'location_id' => $cart['shipping']['location_id'],
                     ]
                 );
-            }
-            else
-            {
+            } else {
                 $shipping_data = '';
             }
 
+            $url = 'https://sandbox.cashfree.com/pg/orders';
+            if (isset($storepaymentSetting['cashfree_mode']) && !is_null($storepaymentSetting['cashfree_mode'])) {
+                if ($storepaymentSetting['cashfree_mode'] == 'live') {
+                    $url = 'https://api.cashfree.com/pg/orders';
+                } else {
+                    $url = 'https://sandbox.cashfree.com/pg/orders';
+                }
+            }
+
+
             $client = new \GuzzleHttp\Client();
-            $response = $client->request('GET', config('services.cashfree.url') . '/' . $request->get('order_id') . '/settlements', [
+            $response = $client->request('GET', $url . '/' . $request->get('order_id') . '/settlements', [
                 'headers' => [
                     'accept' => 'application/json',
                     'x-api-version' => '2022-09-01',
@@ -422,7 +447,7 @@ class CashfreeController extends Controller
             $respons = json_decode($response->getBody());
             if ($respons->order_id && $respons->cf_payment_id != NULL) {
 
-                $response = $client->request('GET', config('services.cashfree.url') . '/' . $respons->order_id . '/payments/' . $respons->cf_payment_id . '', [
+                $response = $client->request('GET', $url . '/' . $respons->order_id . '/payments/' . $respons->cf_payment_id . '', [
                     'headers' => [
                         'accept' => 'application/json',
                         'x-api-version' => '2022-09-01',
@@ -436,7 +461,7 @@ class CashfreeController extends Controller
                     $customer               = Auth::guard('customers')->user();
                     $order                  = new Order();
                     $order->order_id        = time();
-                    $order->name            = isset($cust_details['name']) ? $cust_details['name'] : '' ;
+                    $order->name            = isset($cust_details['name']) ? $cust_details['name'] : '';
                     $order->email           = isset($cust_details['email']) ? $cust_details['email'] : '';
                     $order->card_number     = '';
                     $order->card_exp_month  = '';
@@ -458,7 +483,7 @@ class CashfreeController extends Controller
                     $order->user_id         = $store['id'];
                     $order->customer_id     = isset($customer->id) ? $customer->id : '';
                     $order->save();
-    
+
                     //webhook
                     $module = 'New Order';
                     $webhook =  Utility::webhook($module, $store->id);
@@ -471,9 +496,8 @@ class CashfreeController extends Controller
                             $msg  = 'Webhook call failed.';
                         }
                     }
-                    if ((!empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'on') ){
-                        foreach($products as $product_id)
-                        {
+                    if ((!empty(Auth::guard('customers')->user()) && $store->is_checkout_login_required == 'on')) {
+                        foreach ($products as $product_id) {
                             $purchased_products = new PurchasedProducts();
                             $purchased_products->product_id  = $product_id['product_id'];
                             $purchased_products->customer_id = $customer->id;
@@ -482,42 +506,39 @@ class CashfreeController extends Controller
                         }
                     }
                     $order_email = $order->email;
-                    $owner=User::find($store->created_by);
-                    $owner_email=$owner->email;
+                    $owner = User::find($store->created_by);
+                    $owner_email = $owner->email;
                     $order_id = Crypt::encrypt($order->id);
                     // if(isset($store->mail_driver) && !empty($store->mail_driver))
                     // {
-                        $dArr = [
-                            'order_name' => $order->name,
-                        ];
-                        $resp = Utility::sendEmailTemplate('Order Created', $order_email, $dArr, $store, $order_id);
-                        $resp1=Utility::sendEmailTemplate('Order Created For Owner', $owner_email, $dArr, $store, $order_id);
+                    $dArr = [
+                        'order_name' => $order->name,
+                    ];
+                    $resp = Utility::sendEmailTemplate('Order Created', $order_email, $dArr, $store, $order_id);
+                    $resp1 = Utility::sendEmailTemplate('Order Created For Owner', $owner_email, $dArr, $store, $order_id);
                     // }
-                    if(isset($store->is_twilio_enabled) && $store->is_twilio_enabled=="on")
-                    {
-                        Utility::order_create_owner($order,$owner,$store);
-                        Utility::order_create_customer($order,$customer,$store);
+                    if (isset($store->is_twilio_enabled) && $store->is_twilio_enabled == "on") {
+                        Utility::order_create_owner($order, $owner, $store);
+                        Utility::order_create_customer($order, $customer, $store);
                     }
                     $msg = redirect()->route(
-                        'store-complete.complete', [
-                                                    $store->slug,
-                                                    Crypt::encrypt($order->id),
-                                                ]
+                        'store-complete.complete',
+                        [
+                            $store->slug,
+                            Crypt::encrypt($order->id),
+                        ]
                     )->with('success', __('Transaction has been success'));
-    
+
                     session()->forget($slug);
-    
-                    return $msg;    
-                }
-                else{
+
+                    return $msg;
+                } else {
                     return redirect()->route('plans.index')->with('error', __('Your Transaction is fail please try again'));
                 }
-            }
-            else{
+            } else {
                 return redirect()->route('plans.index')->with('error', 'Payment Failed.');
             }
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', __($e->getMessage()));
         }
     }

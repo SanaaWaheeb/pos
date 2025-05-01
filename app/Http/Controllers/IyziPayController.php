@@ -217,6 +217,7 @@ class IyziPayController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -237,7 +238,7 @@ class IyziPayController extends Controller
             $request->setPrice($get_amount);
             $request->setPaidPrice($get_amount);
             $request->setCurrency($currency);
-            $request->setCallbackUrl(route('iyzipay.callback',[$slug, $get_amount]));
+            $request->setCallbackUrl(route('iyzipay.callback',[$slug, $price]));
             $request->setEnabledInstallments(array(1));
             $request->setPaymentGroup(\Iyzipay\Model\PaymentGroup::PRODUCT);
             $buyer = new \Iyzipay\Model\Buyer();

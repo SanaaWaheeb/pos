@@ -186,7 +186,7 @@ class PaymentWallController extends Controller
         $store    = Store::where('slug', $slug)->first();
         $admin_payment_setting = Utility::getPaymentSetting($store->id);
 
-        return view('storefront.paymentwall',compact('data','admin_payment_setting','store','slug'));
+        return view('storefront.checkout.paymentwall',compact('data','admin_payment_setting','store','slug'));
 
     }
 

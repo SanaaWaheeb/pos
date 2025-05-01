@@ -307,6 +307,7 @@ class AamarpayController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -346,9 +347,9 @@ class AamarpayController extends Controller
                         //country
                         'cus_phone' => '1234567890',
                         //customer phone number
-                        'success_url' => route('store.pay.aamarpay.success', Crypt::encrypt(['response'=>'success','slug' => $slug, 'product_id' => $product_id, 'price' => $get_amount, 'order_id' => $orderID])),
+                        'success_url' => route('store.pay.aamarpay.success', Crypt::encrypt(['response'=>'success','slug' => $slug, 'product_id' => $product_id, 'price' => $price, 'order_id' => $orderID])),
                         //your success route
-                        'fail_url' => route('store.pay.aamarpay.success', Crypt::encrypt(['response'=>'failure','slug' => $slug, 'product_id' => $product_id, 'price' => $get_amount, 'order_id' => $orderID])),
+                        'fail_url' => route('store.pay.aamarpay.success', Crypt::encrypt(['response'=>'failure','slug' => $slug, 'product_id' => $product_id, 'price' => $price, 'order_id' => $orderID])),
                         //your fail route
                         'cancel_url' => route('store.pay.aamarpay.success', Crypt::encrypt(['response'=>'cancel'])),
                         //your cancel url

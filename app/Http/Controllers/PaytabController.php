@@ -255,6 +255,7 @@ class PaytabController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -273,8 +274,8 @@ class PaytabController extends Controller
                     ->sendCart(1, $get_amount, 'plan payment')
                     ->sendCustomerDetails(isset($customers->name) ? $customers->name : "", isset($customers->email) ? $customers->email : '', '', '', '', '', '', '', '')
                     ->sendURLs(
-                        route('paytab.success', ['success' => 1, 'data' => $request->all(), 'slug'=>$slug, 'amount'=> $get_amount , 'product_id'=>$product_id]),
-                        route('paytab.success', ['success' => 0, 'data' => $request->all(), 'slug'=>$slug, 'amount'=> $get_amount , 'product_id'=>$product_id])
+                        route('paytab.success', ['success' => 1, 'data' => $request->all(), 'slug'=>$slug, 'amount'=> $price , 'product_id'=>$product_id]),
+                        route('paytab.success', ['success' => 0, 'data' => $request->all(), 'slug'=>$slug, 'amount'=> $price , 'product_id'=>$product_id])
                     )
                     ->sendLanguage('en')
                     ->sendFramed($on = false)

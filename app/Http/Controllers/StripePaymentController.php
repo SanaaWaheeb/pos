@@ -197,7 +197,7 @@ class StripePaymentController extends Controller
         }
 
         $coupon_id = null;
-        $price     = $total + $total_tax;
+        $price     = $total;
         if($products)
         {
             try
@@ -215,7 +215,7 @@ class StripePaymentController extends Controller
                         $price          = $price - $discount_value;
                     }
                 }
-                $price = $total;
+                // $price = $total;
                 if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
                 {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
@@ -443,28 +443,6 @@ class StripePaymentController extends Controller
                     $data['paid']            = 1;
                     $data['captured']        = 1;
                     $data['status']          = 'succeeded';
-                }
-                $shipping_data = '';
-                if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
-                {
-                    $shipping = Shipping::find($cart['shipping']['shipping_id']);
-                    if(!empty($shipping))
-                    {
-                        $shipping_name  = $shipping->name;
-                        $shipping_price = $shipping->price;
-
-                        $shipping_data = json_encode(
-                            [
-                                'shipping_name' => $shipping_name,
-                                'shipping_price' => $shipping_price,
-                                'location_id' => $cart['shipping']['location_id'],
-                            ]
-                        );
-                    }
-                    else
-                    {
-                        $shipping_data = '';
-                    }
                 }
 
                 if($data['amount_refunded'] == 0 && empty($data['failure_code']) && $data['paid'] == 1 && $data['captured'] == 1)

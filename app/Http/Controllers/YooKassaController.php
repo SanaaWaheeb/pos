@@ -152,7 +152,6 @@ class YooKassaController extends Controller
 
                 $plan = Plan::find($planId);
                 $user = auth()->user();
-                $orderID = strtoupper(str_replace('.', '', uniqid('', true)));
                 try {
                     $Order                 = PlanOrder::where('order_id', $request->order_id)->first();
                     $Order->payment_status = 'success';
@@ -165,7 +164,7 @@ class YooKassaController extends Controller
                             $userCoupon = new UserCoupon();
                             $userCoupon->user = $user->id;
                             $userCoupon->coupon = $coupons->id;
-                            $userCoupon->order = $orderID;
+                            $userCoupon->order = $request->order_id;
                             $userCoupon->save();
                             $usedCoupun = $coupons->used_coupon();
                             if ($coupons->limit <= $usedCoupun) {

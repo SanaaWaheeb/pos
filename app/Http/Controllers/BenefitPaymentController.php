@@ -267,6 +267,7 @@ class BenefitPaymentController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -288,7 +289,7 @@ class BenefitPaymentController extends Controller
                         "customer" => ["first_name" => $customers['name'], "middle_name" => "", "last_name" => "", "email" => $customers['email'], "phone" => ["country_code" => 965, "number" => 51234567]],
                         "source" => ["id" => "src_bh.benefit"],
                         "post" => ["url" => "https://webhook.site/fd8b0712-d70a-4280-8d6f-9f14407b3bbd"],
-                        "redirect" => ["url" => route('store.benefit.call_back', ['product_id' => $product_id, 'amount' => $get_amount,'slug' => $slug])],
+                        "redirect" => ["url" => route('store.benefit.call_back', ['product_id' => $product_id, 'amount' => $price,'slug' => $slug])],
                       
                     ];
                 $responseData = json_encode($customerData);

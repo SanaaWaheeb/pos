@@ -62,7 +62,7 @@ class PaytrController extends Controller
 
                 $orderID = strtoupper(str_replace('.', '', uniqid('', true)));
                 $email = $authuser->email;
-                $payment_amount = $plan->price;
+                $payment_amount = intval(round($get_amount));
                 $merchant_oid = $orderID;
                 $user_name = $authuser->name;
                 $user_address =  'no address';
@@ -172,7 +172,7 @@ class PaytrController extends Controller
                 }
                 $payment_setting = Utility::getAdminPaymentSetting();
 
-                $order = new Order();
+                $order = new PlanOrder();
                 $order->order_id = $request->orderID;
                 $order->name = $user->name;
                 $order->card_number = '';
@@ -286,6 +286,7 @@ class PaytrController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -328,7 +329,7 @@ class PaytrController extends Controller
 
                 $request['orderID'] = $orderID;
                 $request['slug'] = $slug;
-                $request['price'] = $get_amount;
+                $request['price'] = $price;
                 $request['product_id'] = $product_id;
                 $request['payment_status'] = 'failed';
                 $payment_failed = $request->all();
@@ -381,7 +382,7 @@ class PaytrController extends Controller
                     return redirect()->back()->with('error', 'Currency Not Supported.Contact To Your Site Admin');
                 }
 
-                return view('storefront.paytr_payment', compact('token'));
+                return view('storefront.checkout.paytr_payment', compact('token'));
             
             }
         }catch(Exception $e){
@@ -444,7 +445,7 @@ class PaytrController extends Controller
                 $order->product         = json_encode($products);
                 $order->price_currency  = $store->currency_code;
                 $order->txn_id          = isset($pay_id) ? $pay_id : '';
-                $order->payment_type    = 'Paytab';
+                $order->payment_type    = 'PayTR';
                 $order->payment_status  = 'approved';
                 $order->receipt         = '';
                 $order->user_id         = $store['id'];

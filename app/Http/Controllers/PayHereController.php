@@ -302,7 +302,7 @@ class PayHereController extends Controller
                     $price          = $price - $discount_value;
                 }
             }
-            
+            $get_amount = $price;
             if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
             {
                 $shipping = Shipping::find($cart['shipping']['shipping_id']);
@@ -369,10 +369,10 @@ class PayHereController extends Controller
                 return PayHere::checkOut()
                     ->data($data)
                     ->successUrl(route('order.payhere.status', [
-                        'slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id
+                        'slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id
                     ]))
                     ->failUrl(route('order.payhere.status', [
-                        'slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id
+                        'slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id
                     ]))
                     ->renderView();
 

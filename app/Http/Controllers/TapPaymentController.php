@@ -270,6 +270,7 @@ class TapPaymentController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -302,7 +303,7 @@ class TapPaymentController extends Controller
                         //    'id' => 'YOUR-MERCHANT-ID'  //Include this when you are going to live
                         // ],
                         'redirect' => [
-                            'url' => route('order.tap.status', ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id])
+                            'url' => route('order.tap.status', ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id])
                         ]
                     ],true);
                 } catch (\Throwable $e) {

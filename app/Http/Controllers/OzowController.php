@@ -326,6 +326,7 @@ class OzowController extends Controller
                         $get_amount = $get_amount - $discount_value;
                     }
                 }
+                $price = $get_amount;
                 if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                     $shipping = Shipping::find($cart['shipping']['shipping_id']);
                     if (!empty($shipping)) {
@@ -348,10 +349,10 @@ class OzowController extends Controller
                     $bankReference  = time().'FKU';
                     $transactionReference = time();
 
-                    $cancelUrl  = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id]);
-                    $errorUrl   = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id]);
-                    $successUrl = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id]);
-                    $notifyUrl  = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $get_amount, 'orderId' => $orderID, 'product_id' => $product_id]);
+                    $cancelUrl  = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id]);
+                    $errorUrl   = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id]);
+                    $successUrl = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id]);
+                    $notifyUrl  = route('order.get.ozow.status', ['slug' => $slug, 'amount' => $price, 'orderId' => $orderID, 'product_id' => $product_id]);
 
                     // Calculate the hash with the exact same data being sent
                     $inputString    = $siteCode . $countryCode . $currencyCode . $amount . $transactionReference . $bankReference . $cancelUrl . $errorUrl . $successUrl . $notifyUrl . $isTest . $privateKey;

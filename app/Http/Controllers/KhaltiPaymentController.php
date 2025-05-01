@@ -361,7 +361,7 @@ class KhaltiPaymentController extends Controller
             if (isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping'])) {
                 $shipping = Shipping::find($cart['shipping']['shipping_id']);
                 if (!empty($shipping)) {
-                    $price = $price + $shipping->price;
+                    // $price = $price + $shipping->price;
                     $shipping_name = $shipping->name;
                     $shipping_price = $shipping->price;
                     $shipping_data = json_encode(
