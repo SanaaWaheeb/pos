@@ -644,8 +644,17 @@ class PaymentController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $response = json_decode(curl_exec($ch));
             // check that payment is authorized by razorpay or not
+            curl_close($ch);
 
-            if($response->status == 'authorized')
+            $ch = curl_init('https://api.razorpay.com/v1/payments/' . $pay_id . '/capture');
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($ch, CURLOPT_USERPWD, $store_payment_setting['razorpay_public_key'] . ':' . $store_payment_setting['razorpay_secret_key']);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['amount' => $response->amount ?? 0, 'currency' => $store->currency_code ?? 'INR']));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $captureResponse = json_decode(curl_exec($ch));
+            curl_close($ch);
+
+            if($response->status == 'authorized' && $captureResponse->status == 'captured')
             {
                 if (Utility::CustomerAuthCheck($store->slug)) {
                     $customer = Auth::guard('customers')->user()->id;
@@ -2890,8 +2899,17 @@ class PaymentController extends Controller
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 $response = json_decode(curl_exec($ch));
                 // check that payment is authorized by razorpay or not
+                curl_close($ch);
 
-                if($response->status == 'authorized')
+                $ch = curl_init('https://api.razorpay.com/v1/payments/' . $pay_id . '/capture');
+                curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+                curl_setopt($ch, CURLOPT_USERPWD, $admin_payment_setting['razorpay_public_key'] . ':' . $admin_payment_setting['razorpay_secret_key']);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(['amount' => $response->amount ?? 0, 'currency' => isset($admin_payment_setting['currency']) && !empty($admin_payment_setting['currency']) ? $admin_payment_setting['currency'] : 'INR']));
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $captureResponse = json_decode(curl_exec($ch));
+                curl_close($ch);
+
+                if($response->status == 'authorized' && $captureResponse->status == 'captured')
                 {
 
                     if($request->has('coupon_id') && $request->coupon_id != '')
@@ -3713,6 +3731,18 @@ class PaymentController extends Controller
         {
             $admin_payment_setting = Utility::getAdminPaymentSetting();
 
+            $coupon_id = 0;
+            if(!empty($request->coupon))
+            {
+                $coupons = Coupon::where('code', strtoupper($request->coupon))->where('is_active', '1')->first();
+                if(!empty($coupons))
+                {
+                    $coupon_id = $coupons->id;
+                } else {
+                    return redirect()->back()->with('error', __('This coupon code is invalid or has expired.'));
+                }
+            }
+
             $mollie = new \Mollie\Api\MollieApiClient();
             $mollie->setApiKey($admin_payment_setting['mollie_api_key']);
             $value_price = str_replace(",","",number_format($request->total_price, 2));
@@ -3728,6 +3758,7 @@ class PaymentController extends Controller
                         'plan.mollie.callback', [
                                                   $store->slug,
                                                   $request->plan_id,
+                                                  $coupon_id,
                                               ]
                     ),
 
@@ -3741,7 +3772,7 @@ class PaymentController extends Controller
 
     }
 
-    public function molliePlanGetPayment(Request $request, $slug, $plan_id)
+    public function molliePlanGetPayment(Request $request, $slug, $plan_id, $coupon_id)
     {
         $user                  = Auth::user();
         $store_id              = Auth::user()->current_store;
@@ -3764,9 +3795,9 @@ class PaymentController extends Controller
 
                     if($payment->isPaid())
                     {
-                        if($request->has('coupon_id') && $request->coupon_id != '')
+                        if(isset($coupon_id) && $coupon_id != '')
                         {
-                            $coupons = Coupon::find($request->coupon_id);
+                            $coupons = Coupon::find($coupon_id);
                             if(!empty($coupons))
                             {
                                 $userCoupon         = new UserCoupon();
@@ -3793,8 +3824,8 @@ class PaymentController extends Controller
                         $planorder->price          = $payment->amount->value;
                         $planorder->price_currency = isset($admin_payment_setting['currency']) && !empty($admin_payment_setting['currency']) ? $admin_payment_setting['currency'] : 'USD';
                         $planorder->txn_id         = $payment->id;
-                        $planorder->payment_type   = __('Razorpay');
-                        $planorder->payment_status = $payment->status == 'authorized' ? 'success' : 'failed';
+                        $planorder->payment_type   = __('Mollie');
+                        $planorder->payment_status = ($payment->status == 'authorized') || ($payment->status == 'paid') ? 'success' : 'failed';
                         $planorder->receipt        = '';
                         $planorder->user_id        = $user->id;
                         $planorder->store_id       = $store_id;
@@ -3865,6 +3896,19 @@ class PaymentController extends Controller
 
         if($plan)
         {
+            $coupon_id = 0;
+            if(!empty($request->coupon))
+            {
+                $coupons = Coupon::where('code', strtoupper($request->coupon))->where('is_active', '1')->first();
+                if(!empty($coupons))
+                {
+                    $coupon_id = $coupons->id;
+                }
+                else
+                {
+                    return redirect()->back()->with('error', __('This coupon code is invalid or has expired.'));
+                }
+            }
 
             $admin_payment_setting = Utility::getAdminPaymentSetting();
             $order                 = $request->all();
@@ -3907,6 +3951,8 @@ class PaymentController extends Controller
                     'trans_id' => MD5($request['transaction_id']),
                     'currency' => $store->currency_code,
                     'slug' => $store->slug,
+                    'plan_id' => $plan->id,
+                    'coupon_id' => $coupon_id,
                 ];
                 session()->put('skrill_data', $data);
 
@@ -3921,20 +3967,21 @@ class PaymentController extends Controller
         $user                  = Auth::user();
         $store_id              = Auth::user()->current_store;
         $admin_payment_setting = Utility::getAdminPaymentSetting();
-        $plan_id               = $request->ORDERID;
-        $plan                  = Plan::find($plan_id);
-
-        if($plan)
+        
+        if(session()->has('skrill_data'))
         {
-
-            if(session()->has('skrill_data'))
+            $get_data = session()->get('skrill_data');
+            $plan_id  = $get_data['plan_id'];
+            $plan     = Plan::find($plan_id);
+    
+            if($plan)
             {
-                $get_data = session()->get('skrill_data');
+               
                 $orderID  = time();
 
-                if($request->has('coupon_id') && $request->coupon_id != '')
+                if($get_data['coupon_id'] && $get_data['coupon_id'] != '')
                 {
-                    $coupons = Coupon::find($request->coupon_id);
+                    $coupons = Coupon::find($get_data['coupon_id']);
                     if(!empty($coupons))
                     {
                         $userCoupon         = new UserCoupon();
@@ -3974,26 +4021,15 @@ class PaymentController extends Controller
                 if($assignPlan['is_success'])
                 {
                     return redirect()->route('plans.index')->with('success', __('Plan activated Successfully.'));
-                }
-                else
-                {
-
-
+                } else {
                     return redirect()->route('plans.index')->with('error', $assignPlan['error']);
                 }
 
+            } else {
+                return redirect()->route('plans.index')->with('error', __('Plan is deleted.'));
             }
-            else
-            {
-                return redirect()->back()->with('error', __('Transaction Unsuccesfull'));
-            }
-
-            session()->forget('mollie_payment_id');
-
-        }
-        else
-        {
-            return redirect()->route('plans.index')->with('error', __('Plan is deleted.'));
+        } else {
+            return redirect()->back()->with('error', __('Transaction Unsuccesfull'));
         }
     }
 
@@ -4021,6 +4057,20 @@ class PaymentController extends Controller
 
         if($plan)
         {
+            $coupon_id = 0;
+            if(!empty($request->coupon))
+            {
+                $coupons = Coupon::where('code', strtoupper($request->coupon))->where('is_active', '1')->first();
+                if(!empty($coupons))
+                {
+                    $coupon_id = $coupons->id;
+                }
+                else
+                {
+                    return redirect()->back()->with('error', __('This coupon code is invalid or has expired.'));
+                }
+            }
+
             $admin_payment_setting = Utility::getAdminPaymentSetting();
             $order                 = $request->all();
             Coingate::config(
@@ -4037,9 +4087,9 @@ class PaymentController extends Controller
                 'price_amount' => $price,
                 'price_currency' => isset($admin_payment_setting['currency']) && !empty($admin_payment_setting['currency']) ? $admin_payment_setting['currency'] : 'USD',
                 'receive_currency' => isset($admin_payment_setting['currency']) && !empty($admin_payment_setting['currency']) ? $admin_payment_setting['currency'] : 'USD',
-                'callback_url' => url('coingate-payment-plan') . '?plan_id=' . $plan->id . '&user_id=' . Auth::user()->id,
+                'callback_url' => url('coingate-payment-plan') . '?plan_id=' . $plan->id . '&price=' . $price . '&coupon_id=' . $coupon_id,
                 'cancel_url' => route('plans.index'),
-                'success_url' => url('coingate-payment-plan') . '?plan_id=' . $plan->id . '&user_id=' . Auth::user()->id,
+                'success_url' => url('coingate-payment-plan') . '?plan_id=' . $plan->id . '&price=' . $price . '&coupon_id=' . $coupon_id,
                 'title' => 'Order #' . time(),
             );
 
@@ -4095,10 +4145,10 @@ class PaymentController extends Controller
                 $planorder->card_exp_year  = '';
                 $planorder->plan_name      = $plan->name;
                 $planorder->plan_id        = $plan->id;
-                $planorder->price          = $plan->price;
+                $planorder->price          = $request->price ?? 0;
                 $planorder->price_currency = isset($admin_payment_setting['currency']) && !empty($admin_payment_setting['currency']) ? $admin_payment_setting['currency'] : 'USD';
                 $planorder->txn_id         = '-';
-                $planorder->payment_type   = __('CoinGAte');
+                $planorder->payment_type   = __('CoinGate');
                 $planorder->payment_status = 'success';
                 $planorder->receipt        = '';
                 $planorder->user_id        = $user->id;
@@ -4169,7 +4219,7 @@ class PaymentController extends Controller
         $plan    = Plan::find($plan_id);
         $price = $plan->price;
 
-        $order = PlanOrder::where('plan_id' , $plan->id)->where('payment_status' , 'Pending')->first();
+        $order = PlanOrder::where('plan_id' , $plan->id)->where('user_id', $user->id)->where('payment_status' , 'Pending')->first();
         if($order){
             return redirect()->route('plans.index')->with('error', __('You already send Payment request to this plan.'));
         }

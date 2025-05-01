@@ -128,7 +128,7 @@ class SettingController extends Controller
                     } elseif (!empty($custom_domain_request->status) && $custom_domain_request->status == 2) {
                         $request_msg = __('Admin has rejected your custom domain request.');
                     }
-                    
+
                     return view('settings.index', compact('settings', 'store_settings','timezones', 'store_payment_setting', 'plan', 'serverIp', 'subdomain_name', 'subdomain_Ip', 'subdomainPointing', 'domainip', 'domainPointing',	 'pwa_data', 'PixelFields', 'request_msg'));
                     // return view('settings.index', compact('settings', 'store_settings','timezones', 'store_payment_setting', 'plan', 'serverIp', 'subdomain_name', 'subdomain_Ip', 'subdomainPointing', 'domainip', 'domainPointing',	 'pwa_data', 'PixelFields'));
                 } else {
@@ -140,7 +140,7 @@ class SettingController extends Controller
             return redirect()->back()->with('error', 'Permission denied.');
         }
     }
-  
+
     public function saveBusinessSettings(Request $request)
     {
         $user = \Auth::user();
@@ -311,10 +311,10 @@ class SettingController extends Controller
                         'currency_symbol' => 'required|string|max:10',
                         ]
                     );
-    
+
                 $currency_data['currency_symbol'] = $request->currency_symbol;
                 $currency_data['currency'] = $request->currency;
-    
+
             } else {
                 $currency_data['currency_symbol'] = '$';
                 $currency_data['currency'] = 'USD';
@@ -363,7 +363,7 @@ class SettingController extends Controller
 
             }
             if ($request->logo_light) {
-                
+
                 $lightlogoName = time() . 'logo-light.png';
                 $dir = 'uploads/logo/';
                 $validation =[
@@ -376,7 +376,7 @@ class SettingController extends Controller
                     $logo_light = $path['url'];
                 }else{
                     return redirect()->back()->with('error', __($path['msg']));
-                }   
+                }
                 $company_logo = !empty($request->logo_light) ? $lightlogoName : 'logo-light.png';
                 \DB::insert(
                     'insert into settings (`value`, `name`,`created_by`,`store_id`) values (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ', [
@@ -434,7 +434,7 @@ class SettingController extends Controller
                     $post['color'] = $request->custom_color;
                 }
                 $post['color_flag'] = $request->color_flag;
-                
+
                 unset($post['_token'], $post['logo_dark'], $post['logo_light'], $post['favicon']);
 
                 // $settings = Utility::settings();
@@ -461,7 +461,7 @@ class SettingController extends Controller
                 }
             }
 
-        } 
+        }
 
         return redirect()->back()->with('success', __('Business setting successfully saved.'));
     }
@@ -555,7 +555,7 @@ class SettingController extends Controller
 
     public function saveSystemSettings(Request $request)
     {
-       
+
         $request->validate(
             [
                 'site_currency' => 'required',
@@ -582,7 +582,7 @@ class SettingController extends Controller
         }
 
         return redirect()->back()->with('success', __('Setting successfully updated.'));
-       
+
     }
 
     public function savePusherSettings(Request $request)
@@ -655,7 +655,7 @@ class SettingController extends Controller
     public function saveOwnerPaymentSettings(Request $request, $slug)
     {
         $store = Store::where('slug', $slug)->first();
-        
+
         $validator = \Validator::make(
             $request->all(), [
                 'currency' => 'required|string|max:255',
@@ -740,7 +740,7 @@ class SettingController extends Controller
         self::shopePaymentSettings($request);
 
         return redirect()->back()->with('success', __('Payment Store setting successfully created.'));
-        
+
     }
 
     public function saveOwneremailSettings(Request $request, $slug)
@@ -975,7 +975,7 @@ class SettingController extends Controller
         if (isset($request->custom_field_title_4) ) {
             $post['custom_field_title_4'] = $request->custom_field_title_4;
         }
-        
+
         if (isset($request->is_stripe_enabled) && $request->is_stripe_enabled == 'on') {
             $request->validate(
                 [
@@ -1280,11 +1280,13 @@ class SettingController extends Controller
         if (isset($request->is_cashfree_enabled) && $request->is_cashfree_enabled == 'on') {
             $request->validate(
                 [
+                    'cashfree_mode'=>'required',
                     'cashfree_api_key' => 'required',
                     'cashfree_secret_key'=>'required',
                 ]
             );
             $post['is_cashfree_enabled'] = $request->is_cashfree_enabled;
+            $post['cashfree_mode'] = $request->cashfree_mode;
             $post['cashfree_api_key'] = $request->cashfree_api_key;
             $post['cashfree_secret_key'] = $request->cashfree_secret_key;
         } else {
@@ -1305,7 +1307,7 @@ class SettingController extends Controller
         } else {
             $post['is_aamarpay_enabled'] = 'off';
         }
-        
+
         if (isset($request->is_paytr_enabled) && $request->is_paytr_enabled == 'on') {
             $request->validate(
                 [
@@ -1706,7 +1708,7 @@ class SettingController extends Controller
         } else {
             $post['is_coingate_enabled'] ='off';
         }
-       
+
         if (isset($request->is_paymentwall_enabled) && $request->is_paymentwall_enabled == 'on') {
 
             $validator = \Validator::make(
@@ -1825,14 +1827,14 @@ class SettingController extends Controller
         {
             $post['enable_bank'] = 'off';
         }
-        
+
         if (isset($request->is_skrill_enabled) && $request->is_skrill_enabled == 'on') {
             $request->validate(
                 [
                     'skrill_email' => 'required|email',
                 ]
             );
-           
+
             $post['is_skrill_enabled'] = $request->is_skrill_enabled;
             $post['skrill_email'] = $request->skrill_email;
         } else {
@@ -1885,11 +1887,13 @@ class SettingController extends Controller
         if (isset($request->is_cashfree_enabled) && $request->is_cashfree_enabled == 'on') {
             $request->validate(
                 [
+                    'cashfree_mode' => 'required',
                     'cashfree_api_key' => 'required',
                     'cashfree_secret_key'=>'required',
                 ]
             );
             $post['is_cashfree_enabled'] = $request->is_cashfree_enabled;
+            $post['cashfree_mode'] = $request->cashfree_mode;
             $post['cashfree_api_key'] = $request->cashfree_api_key;
             $post['cashfree_secret_key'] = $request->cashfree_secret_key;
         } else {
@@ -2185,13 +2189,13 @@ class SettingController extends Controller
             $post['NOCAPTCHA_SECRET']   = $request->google_recaptcha_secret;
             foreach($post as $key => $data)
             {
-    
+
                 $arr = [
                     $data,
                     $key,
                     \Auth::user()->id,
                 ];
-    
+
                 \DB::insert(
                     'insert into settings (`value`, `name`,`created_by`) values (?, ?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`) ', $arr
                 );
@@ -2296,10 +2300,10 @@ class SettingController extends Controller
     public function CreatePixel(){
         $user = Auth::user();
         $store_settings = Store::where('id', $user->current_store)->first();
-        return view('settings.edit_pixel',compact('store_settings'));
+        return view('settings.create_pixel',compact('store_settings'));
     }
     public function savePixelSettings(Request $request, $slug){
-    
+
         $store = Store::where('slug', $slug)->where('created_by',\Auth::user()->creatorId())->first();
 
         $request->validate([
@@ -2314,16 +2318,39 @@ class SettingController extends Controller
 
         return redirect()->back()->with('success', __('Fields Saves Successfully.!'));
     }
+    public function editPixel($id){
+        $user = Auth::user();
+        $store_settings = Store::where('id', $user->current_store)->first();
+        $pixelfield= PixelFields::find($id);
+        return view('settings.edit_pixel',compact('store_settings','pixelfield'));
+    }
+    public function updatePixel(Request $request, $slug, $id){
+
+        $store = Store::where('slug', $slug)->where('created_by',\Auth::user()->creatorId())->first();
+
+        $request->validate([
+            'platform'=>'required',
+            'pixel_id'=>'required'
+        ]);
+        $pixel_fields= PixelFields::find($id);
+        $pixel_fields->platform = $request->platform;
+        $pixel_fields->pixel_id = $request->pixel_id;
+        $pixel_fields->store_id = $store->id;
+        $pixel_fields->save();
+
+        return redirect()->back()->with('success', __('Fields Saves Successfully.!'));
+    }
     public function pixelDelete($id){
         $pixelfield= PixelFields::find($id);
         $pixelfield->delete();
         return redirect()->back()->with('success', __('Pixel Deleted Successfully!'));
     }
+
     public function CookieConsent(Request $request)
     {
 
         $settings= Utility::settings();
-        
+
         if($settings['enable_cookie'] == "on" && $settings['cookie_logging'] == "on"){
             $allowed_levels = ['necessary', 'analytics', 'targeting'];
             $levels = array_filter($request['cookie'], function($level) use ($allowed_levels) {
@@ -2455,5 +2482,5 @@ class SettingController extends Controller
         } else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
-    }   
+    }
 }
