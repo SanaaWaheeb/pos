@@ -22,14 +22,14 @@ class ProductCategorieController extends Controller
             $user = \Auth::user()->current_store;
 
             $product_categorys = ProductCategorie::where('store_id', $user)->where('created_by', \Auth::user()->creatorId())->get();
-    
+
             return view('product_category.index', compact('product_categorys'));
         }
         else
         {
             return redirect()->back()->with('error', 'Permission denied.');
         }
-     
+
     }
 
     /**
@@ -79,7 +79,7 @@ class ProductCategorieController extends Controller
             {
                 $image_size = $request->file('categorie_img')->getSize();
                 $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
-               
+
                 if($result==1)
                 {
                     $filenameWithExt  = $request->file('categorie_img')->getClientOriginalName();
@@ -202,7 +202,7 @@ class ProductCategorieController extends Controller
                             $dir        = 'uploads/product_image/';
                     }
                     $path = Utility::upload_file($request,'categorie_img',$fileNameToStores,$dir,[]);
-    
+
                     if($path['flag'] == 1){
                         $url = $path['url'];
                     }else{
@@ -261,7 +261,7 @@ class ProductCategorieController extends Controller
             {
                 $fileName = $productCategorie->categorie_img !== 'default.jpg' ? $productCategorie->categorie_img : '' ;
                 $filePath ='uploads/product_image/'. $fileName;
-                
+
                 Utility::changeStorageLimit(\Auth::user()->creatorId(),$filePath);
                 $productCategorie->delete();
 
@@ -276,8 +276,8 @@ class ProductCategorieController extends Controller
     }
     public function getProductCategories(){
         $user = \Auth::user()->current_store;
-        $productCategory = ProductCategorie::where('store_id',$user)->get();    
-        $html = '<div class="mb-3 mr-2 mx-2 zoom-in ">
+        $productCategory = ProductCategorie::where('store_id',$user)->get();
+        $html = '<div class="mr-2 zoom-in cat-tab-item ">
                     <div class="card rounded-10 card-stats mb-0 cat-active overflow-hidden" data-id="0">
                     <div class="category-select" data-cat-id="0">
                         <button type="button" class="btn tab-btns btn-primary">'.__("All Categories").'</button>
@@ -286,14 +286,14 @@ class ProductCategorieController extends Controller
                 </div>';
         foreach($productCategory as $key => $cat){
             $dcls = 'category-select';
-            $html .= ' <div class="mb-3 mr-2 mx-2 zoom-in cat-list-btn">
+            $html .= ' <div class="mr-2 zoom-in cat-tab-item cat-list-btn">
             <div class="card rounded-10 card-stats mb-0 overflow-hidden " data-id="'.$cat->id.'">
                <div class="'.$dcls.'" data-cat-id="'.$cat->id.'">
                   <button type="button" class="btn tab-btns ">'.$cat->name.'</button>
                </div>
             </div>
          </div>';
-         
+
         }
         return Response($html);
     }

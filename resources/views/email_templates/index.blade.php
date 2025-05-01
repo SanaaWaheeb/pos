@@ -54,7 +54,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="card">
-            <div class="card-body table-border-style">
+            <div class="card-body pb-0 table-border-style">
                 <div class="table-responsive">
                     <table class="table mb-0 dataTable">
                         <thead>
@@ -73,9 +73,9 @@
                                     <td>{{ $EmailTemplate->name }}</td>
                                     <td class="Action">
                                         <span>
-                                            <div class="action-btn bg-warning ms-2">
+                                            <div class="d-flex action-btn-wrapper">
                                                 <a href="{{ route('manage.email.language',[$EmailTemplate->id,\Auth::user()->lang]) }}"
-                                                    class="mx-3 btn btn-sm d-inline-flex align-items-center"
+                                                    class="mx-3 btn bg-warning  btn-sm  align-items-center"
                                                     data-toggle="tooltip" data-original-title="{{ __('View') }}"
                                                     data-bs-toggle="tooltip" data-bs-placement="top"
                                                     title="{{ __('View') }}"><i

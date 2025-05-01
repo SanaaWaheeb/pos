@@ -102,7 +102,7 @@
                     @can('Manage Email Template')
                         <li
                             class="dash-item dash-hasmenu {{ Request::route()->getName() == 'manage.email.language' || Request::route()->getName() == 'manage.email.language' ? ' active dash-trigger' : 'collapsed' }}">
-                            <a href="{{ route('manage.email.language', \Auth::user()->lang) }}"
+                            <a href="{{ route('email_templates.index') }}"
                                 class="dash-link {{ request()->is('email_template') ? 'active' : '' }}">
                                 <span class="dash-micon">
                                     <i class="ti ti-mail"></i>
@@ -115,7 +115,7 @@
                     @can('Manage Settings')
                         <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'settings' || Request::route()->getName() == 'store.editproducts' ? ' active dash-trigger' : 'collapsed' }}">
                             <a href="{{ route('settings') }}" class="dash-link {{ request()->is('settings') ? 'active' : '' }}">
-                                <span class="dash-micon"> 
+                                <span class="dash-micon">
                                     <i class="ti ti-settings"></i>
                                 </span>
                                 <span class="dash-mtext">
@@ -206,11 +206,7 @@
                             </a>
                         </li>
                     @endcan
-                    <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'product' || Request::segment(1) == 'product_categorie' || Request::segment(1) == 'product_tax' || Request::segment(1) == 'product-coupon' || Request::segment(1) == 'shipping' || Request::segment(1) == 'subscriptions' || Request::segment(1) == 'custom-page' || Request::segment(1) == 'blog' || Request::segment(1) == '
-Create New Store
-The Treasure
-English
-testimonial' || Request::segment(1) == 'products' ? ' active dash-trigger' : 'collapsed' }}">
+                    <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'product' || Request::segment(1) == 'product_categorie' || Request::segment(1) == 'product_tax' || Request::segment(1) == 'product-coupon' || Request::segment(1) == 'shipping' || Request::segment(1) == 'subscriptions' || Request::segment(1) == 'custom-page' || Request::segment(1) == 'blog' || Request::segment(1) == 'products' ? ' active dash-trigger' : 'collapsed' }}">
                         <a href="#!" class="dash-link">
                             <span class="dash-micon">
                                 <i class="ti ti-license"></i>
@@ -325,7 +321,7 @@ testimonial' || Request::segment(1) == 'products' ? ' active dash-trigger' : 'co
                     @can('Manage Settings')
                     <li class="dash-item dash-hasmenu {{ Request::segment(1) == 'settings' || Request::route()->getName() == 'store.editproducts' ? ' active dash-trigger' : 'collapsed' }}">
                             <a href="{{ route('settings') }}" class="dash-link {{ request()->is('settings') ? 'active' : '' }}">
-                                <span class="dash-micon"> 
+                                <span class="dash-micon">
                                     <i class="ti ti-settings"></i>
                                 </span>
                                 <span class="dash-mtext">

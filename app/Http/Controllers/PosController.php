@@ -25,7 +25,7 @@ class PosController extends Controller
     public function index()
     {
         if(\Auth::user()->can('Manage Pos')){
-            $customers      = Customer::where('store_id', \Auth::user()->current_store)->get()->pluck('name', 'name');
+            $customers      = Customer::where('store_id', \Auth::user()->current_store)->orderBy('name', 'ASC')->get()->pluck('name', 'name');
             $customers->prepend('Walk-in-customer', '');
             $user = \Auth::user();
             $store = Store::where('id','=',$user->current_store)->where('created_by',$user->creatorId())->first();

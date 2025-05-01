@@ -39,6 +39,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
+
         if (!file_exists(storage_path() . "/installed")) {
             header('location:install');
             die;
@@ -46,16 +47,16 @@ class DashboardController extends Controller
         $uri = url()->full();
         $segments = explode('/', str_replace(''.url('').'', '', $uri));
         $segments = $segments[1] ?? null;
-        
+
         if($segments == null) {
             $local = parse_url(config('app.url'))['host'];
             // Get the request host
             $remote = request()->getHost();
             // Get the remote domain
-            
+
             // remove WWW
             $remote = str_replace('www.', '', $remote);
-            
+
             if ($local != $remote){
                 $domain = CustomDomainRequest::where('status','1')->where('custom_domain',$remote)->first();
                 // If the domain exists
@@ -87,10 +88,10 @@ class DashboardController extends Controller
             // if($store && $store->enable_domain == 'on') {
             //     return app('App\Http\Controllers\StoreController')->storeSlug($store->slug);
             // }
-            
+
             // $sub_store = Store::where('subdomain', '=', $remote)->where('enable_subdomain', 'on')->first();
             // if ($sub_store && $sub_store->enable_subdomain == 'on') {
-            
+
             //     return app('App\Http\Controllers\StoreController')->storeSlug($sub_store->slug);
             // }
 
@@ -98,7 +99,7 @@ class DashboardController extends Controller
         if (\Auth::check()) {
             if(\Auth::user()->can('Manage Dashboard')){
                 if (\Auth::user()->type == 'super admin') {
-                    
+
                     $user = \Auth::user();
                     $user['total_user'] = $user->countCompany();
                     $user['total_paid_user'] = $user->countPaidCompany();
@@ -114,7 +115,7 @@ class DashboardController extends Controller
                     $userstore = UserStore::where('store_id', $store->current_store)->first();
                     $newproduct = Product::where('store_id', $store->current_store)->count();
                     $products = Product::where('store_id', $store->current_store)->limit(5)->get();
-                    $new_orders = Order::where('user_id', $store->current_store)->where('payment_status', '!=', 'pending')->limit(8)->orderBy('id', 'DESC')->get();
+                    $new_orders = Order::where('user_id', $store->current_store)->where('payment_status', '!=', 'pending')->limit(5)->orderBy('id', 'DESC')->get();
                     $chartData = $this->getOrderChart(['duration' => 'week'],$userstore);
                     $saleData = $this->getSaleChart(['duration' => 'week'],$userstore);
                     $store_id = Store::where('id', $store->current_store)->first();
@@ -158,7 +159,7 @@ class DashboardController extends Controller
                     if($plan->storage_limit > 0)
                     {
                         $storage_limit = ($users->storage_limit / $plan->storage_limit) * 100;
-                    }   
+                    }
                     else{
                         $storage_limit = 0;
                     }
@@ -174,13 +175,22 @@ class DashboardController extends Controller
             } else {
                 $settings = Utility::settings();
                 if ($settings['display_landing_page'] == 'on' && \Schema::hasTable('landing_page_settings')) {
-                    return view('landingpage::layouts.landingpage');  
+                    $lang = Utility::getValByName('default_language');
+                    $langList = Utility::langList();
+                    $lang = array_key_exists($lang, $langList) ? $lang : 'en';
+                    if (empty($lang))
+                    {
+                    $lang = Utility::getValByName('default_language');
+                    }
+
+                    \App::setLocale($lang);
+                    return view('landingpage::layouts.landingpage');
                 } else {
                     return redirect('login');
                 }
             }
         }
-       
+
     }
 
     public function getOrderChart($arrParam,$userstore = null)
@@ -200,7 +210,7 @@ class DashboardController extends Controller
         $arrTask['label'] = [];
         $arrTask['data'] = [];
         foreach ($arrDuration as $date => $label) {
-        
+
             if (Auth::user()->type == 'Owner') {
                 $data = Order::select(\DB::raw('count(*) as total'))->where('user_id', $userstore->store_id)->whereDate('created_at', '=', $date)->first();
             } else {
@@ -369,7 +379,7 @@ class DashboardController extends Controller
 
         return redirect()->back();
     }
-   
-      
-   
+
+
+
 }

@@ -26,17 +26,17 @@ class EmailTemplateController extends Controller
      */
     public function index()
     {
-        if(\Auth::user()->can('Manage Email Template')){
+        if(\Auth::user() && \Auth::user()->can('Manage Email Template')){
             $usr = \Auth::user();
 
             $EmailTemplates = EmailTemplate::all();
-    
+
             return view('email_templates.index', compact('EmailTemplates'));
         }
         else{
             return redirect()->back()->with('error', __('Permission denied.'));
         }
-        
+
 
     }
 
