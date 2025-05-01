@@ -530,7 +530,6 @@ Route::get('/fetch-order', [OrderController::class, 'fetchOrder'])->name('order.
 // Route::get('testing', [PaymentController::class, 'statusTesting'])->name('testing')->middleware('SetLocale');
 
 
-Route::get('checkoutPermission/{store?}', [StoreController::class, 'CheckoutPermit'])->name('checkout.permission');
 Route::get('user-address/{slug?}/useraddress', [StoreController::class, 'userAddress'])->name('user-address.useraddress');
 Route::get('store-payment/{slug?}/userpayment', [StoreController::class, 'userPayment'])->name('store-payment.payment');
 Route::get('store/{slug?}/product/{id}', [StoreController::class, 'productView'])->name('store.product.product_view');

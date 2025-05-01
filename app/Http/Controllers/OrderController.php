@@ -399,7 +399,12 @@ class OrderController extends Controller
     public function bank_transfer_order_show($order_id){
         $store = Store::where('id',\Auth::user()->current_store)->first();
         $order = Order::find($order_id);
-        return view('orders.banktransfer_view', compact('order','store'));
+        if (!empty($order->shipping_data)) {
+            $shipping_data = json_decode($order->shipping_data);
+        } else {
+            $shipping_data = '';
+        }
+        return view('orders.banktransfer_view', compact('order','store','shipping_data'));
     }
     public function StatusEdit(Request $request, $order_id)
     {
@@ -571,22 +576,6 @@ class OrderController extends Controller
         }
     }
 
-    // public function storeConfirmOrder($order) {
-    //     $order_obj = Order::find($order);
-    //     // Check if the order exists
-    //     if (!$order_obj) {
-    //         return redirect()->back()->with('error', __('Order not found'));
-    //     }
-    //     // Check if the order is already confirmed
-    //     if ($order_obj->is_confirmed) {
-    //         return redirect()->back()->with('error', __('Order is already confirmed'));
-    //     }
-
-    //     // Mark the order as confirmed
-    //     $order_obj['is_confirmed'] = true;
-    //     $order_obj->update();
-    //     return redirect()->back()->with('success', __('Your Order is Confirmed'));
-    // }
 
     public function fetchOrder(Request $request) {
         $order = Order::find($request->order_id);

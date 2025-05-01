@@ -12,7 +12,7 @@
         <li class="breadcrumb-item active" aria-current="page">{{ __('Orders') }}</li>
     @endsection
     @section('action-btn')
-        <a class="btn btn-sm btn-icon  bg-light-secondary me-2" href="{{ route('order.export') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Export') }}"> 
+        <a class="btn btn-sm btn-icon  bg-primary text-white " href="{{ route('order.export') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Export') }}">
             <i  data-feather="download"></i>
         </a>
     @endsection
@@ -27,9 +27,9 @@
             <div class="col-md-12">
                 <div class="card">
                     @if ($plan->storage_limit <= $user->storage_limit && $plan->storage_limit != -1)
-                        <small class="text-danger mt-3 ms-3">{{ __('Your plan storage limit is over , so you can not see customer uploaded payment receipt.') }}</small>
+                        <small class="text-danger d-block mb-3">{{ __('Your plan storage limit is over , so you can not see customer uploaded payment receipt.') }}</small>
                     @endif
-                    <div class="card-body table-border-style">
+                    <div class="card-body pb-0 table-border-style order-table-wrp">
                         <div class="table-responsive">
                             <table class="table mb-0 dataTable">
                                 <thead>
@@ -38,8 +38,8 @@
                                         <th scope="col" class="sort">{{ __('Date') }}</th>
                                         <th scope="col" class="sort">{{ __('Name') }}</th>
                                         <th scope="col" class="sort">{{ __('Value') }}</th>
-                                        <th scope="col" class="sort text-end">{{ __('Payment Type') }}</th>
-                                        <th scope="col" class="sort text-end">{{ __('Reciept') }}</th>
+                                        <th scope="col" class="sort text-center">{{ __('Payment Type') }}</th>
+                                        <th scope="col" class="sort text-center">{{ __('Reciept') }}</th>
                                         <th scope="col" class="sort text-center">{{ __('Status') }}</th>
                                         <th scope="col" class="sort text-center">{{ __('Payment Status') }}</th>
                                         <th scope="col" class="text-center">{{ __('Action') }}</th>
@@ -63,11 +63,21 @@
                                             <td>
                                                 <span class="client">{{ $order->name }}</span>
                                             </td>
+                                            @php
+                                                if (!empty($order->shipping_data)) {
+                                                    $shipping_data = json_decode($order->shipping_data);
+                                                } else {
+                                                    $shipping_data = '';
+                                                }
+                                            @endphp
                                             <td>
-                                                <span
-                                                    class="value text-sm mb-0">{{ \App\Models\Utility::priceFormat($order->price) }}</span>
+                                                @if(!empty($shipping_data))
+                                                    <span class="value text-sm mb-0">{{ \App\Models\Utility::priceFormat($order->price + $shipping_data->shipping_price) }}</span>
+                                                @else
+                                                    <span class="value text-sm mb-0">{{ \App\Models\Utility::priceFormat($order->price) }}</span>
+                                                @endif
                                             </td>
-                                            <td class="text-end">
+                                            <td class="text-center">
                                                 <span class="taxes text-sm mb-0">{{ $order->payment_type }}</span>
                                             </td>
                                             <td class="text-center">
@@ -134,14 +144,14 @@
                                                 <span class="text-sm mb-0">{{ $order->payment_status }}</span>
                                             </td>
                                             <td class="text-center">
-                                                <div class="d-flex">
+                                                <div class="d-flex action-btn-wrapper">
                                                     @can('Show Orders')
-                                                        <a href="{{ route('orders.show', \Illuminate\Support\Facades\Crypt::encrypt($order->id)) }}" class="btn btn-sm btn-icon  bg-light-secondary me-2" data-toggle="tooltip" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View') }}" data-tooltip="View">
+                                                        <a href="{{ route('orders.show', \Illuminate\Support\Facades\Crypt::encrypt($order->id)) }}" class="btn btn-sm btn-icon  bg-warning text-white me-2" data-toggle="tooltip" data-original-title="{{ __('View') }}" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('View') }}" data-tooltip="View">
                                                             <i  class="ti ti-eye f-20"></i>
                                                         </a>
                                                     @endcan
                                                     @can('Delete Orders')
-                                                        <a class="bs-pass-para btn btn-sm btn-icon bg-light-secondary" href="#"
+                                                        <a class="bs-pass-para btn btn-sm btn-icon bg-danger text-white" href="#"
                                                             data-title="{{ __('Delete Lead') }}"
                                                             data-confirm="{{ __('Are You Sure?') }}"
                                                             data-text="{{ __('This action can not be undone. Do you want to continue?') }}"
@@ -154,15 +164,15 @@
                                                         {!! Form::close() !!}
                                                     @endcan
                                                     @if($order->payment_status == 'pending' && $order->payment_type == 'Bank Transfer')
-                                                       
-                                                        <a href="#"  class="btn btn-sm btn-icon bg-light-secondary ms-2"
+
+                                                        <a href="#"  class="btn btn-sm btn-icon bg-secondary text-white ms-2"
                                                             data-url="{{ route('bank_transfer.order.show',$order->id) }}"
                                                             data-ajax-popup="true" data-size="lg" data-bs-toggle="tooltip" title=""
                                                             data-title="{{ __('Payment Status') }}"
                                                             data-bs-original-title="{{ __('Payment Status') }}">
                                                             <i class="ti ti-caret-right f-20"></i>
                                                         </a>
-                                                        
+
                                                     @endif
                                                 </div>
                                             </td>

@@ -64,7 +64,7 @@ class ProductController extends Controller
         else{
             return redirect()->back()->with('error', 'Permission denied.');
         }
-       
+
     }
 
     /**
@@ -333,8 +333,6 @@ class ProductController extends Controller
                     return $msg;
                 }
             }
-
-            
             if (!empty($request->product_categorie)) {
                 if (count($request->product_categorie) > 1 && in_array(0, $request->product_categorie)) {
                     $msg['flag'] = 'error';
@@ -436,13 +434,16 @@ class ProductController extends Controller
 
 
                     foreach ($possibilities as $key => $possibility) {
-                        $VariantOption = new ProductVariantOption();
-                        $VariantOption->name = $possibility;
-                        $VariantOption->product_id = $product->id;
-                        $VariantOption->price = $request->verians[$key]['price'];
-                        $VariantOption->quantity = !empty($request->verians[$key]['qty']) ? $request->verians[$key]['qty'] : 0;
-                        $VariantOption->created_by = \Auth::user()->creatorId();
-                        $VariantOption->save();
+                        if(isset($request->verians[$key]) && !empty($request->verians[$key]))
+                        {
+                            $VariantOption = new ProductVariantOption();
+                            $VariantOption->name = $possibility;
+                            $VariantOption->product_id = $product->id;
+                            $VariantOption->price = $request->verians[$key]['price'];
+                            $VariantOption->quantity = !empty($request->verians[$key]['qty']) ? $request->verians[$key]['qty'] : 0;
+                            $VariantOption->created_by = \Auth::user()->creatorId();
+                            $VariantOption->save();
+                        }
                     }
                 }
                 if (!empty($product)) {
@@ -543,13 +544,13 @@ class ProductController extends Controller
         if(\Auth::user()->can('Show Products')){
             $user = \Auth::user();
             $store = Store::where('id', $user->current_store)->first();
-            
+
             if($user->current_store == $product->store_id){
                 $product_image = Product_images::where('product_id', $product->id)->get();
-        
+
                 $product_tax = ProductTax::where('store_id', $store->id)->where('created_by', \Auth::user()->creatorId())->get()->pluck('name', 'id');
                 $product_ratings = Ratting::where('product_id', $product->id)->get();
-        
+
                 $ratting = Ratting::where('product_id', $product->id)->where('rating_view', 'on')->sum('ratting');
                 $user_count = Ratting::where('product_id', $product->id)->where('rating_view', 'on')->count();
                 if ($user_count > 0) {
@@ -557,12 +558,12 @@ class ProductController extends Controller
                 } else {
                     $avg_rating = number_format($ratting / 1, 1);
                 }
-        
+
                 $variant_name = json_decode($product->variants_json);
                 $product_variant_names = $variant_name;
 
                 $expresscheckout = Expresscheckout::where('store_id',$store->id)->where('product_id',$product->id)->with('product')->get();
-        
+
                 return view('product.view', compact('product', 'product_image', 'product_tax', 'product_ratings', 'store', 'avg_rating', 'user_count', 'product_variant_names','expresscheckout'));
             }else{
                 return redirect()->back()->with('error', 'Permission denied.');
@@ -571,7 +572,7 @@ class ProductController extends Controller
         else{
             return redirect()->back()->with('error', 'Permission denied.');
         }
-        
+
     }
 
     /**
@@ -931,7 +932,7 @@ class ProductController extends Controller
                 $product['attachment'] =  $fileAttachment;
             }
             if(!empty($filedownloadable)){
-                
+
                 $product['downloadable_prodcut'] =  $filedownloadable;
             }
             $product['product_display'] = isset($request->product_display) ? 'on' : 'off';
@@ -1089,7 +1090,7 @@ class ProductController extends Controller
 
             if (!empty($product)) {
                 $msg['flag'] = 'success';
-                $msg['msg'] = __('Product Successfully Updated') . ((isset($result) && $result!=1) ? '<br> <span class="text-danger">' . $result . '</span>' : ''); 
+                $msg['msg'] = __('Product Successfully Updated') . ((isset($result) && $result!=1) ? '<br> <span class="text-danger">' . $result . '</span>' : '');
             } else {
                 $msg['flag'] = 'error';
                 $msg['msg'] = __('Product Created Failed');
@@ -1175,33 +1176,33 @@ class ProductController extends Controller
             Ratting::where('product_id', $product->id)->delete();
             $Product_images = Product_images::where('product_id', $product->id)->get();
             $pro_img = new ProductController();
-           
+
             // $dir = storage_path('uploads/is_cover_image/');
             // if (!empty($product->is_cover)) {
             //     unlink($dir . $product->is_cover);
             // }
-            if(isset($product->is_cover)){
+            if(isset($product->is_cover) && !empty($product->is_cover)){
                 $fileName = $product->is_cover !== 'default.jpg' ? $product->is_cover : '' ;
                 $filePath ='uploads/is_cover_image/'. $fileName;
-                
+
                 Utility::changeStorageLimit(\Auth::user()->creatorId(),$filePath);
             }
-            if(isset($product->attachment)){
+            if(isset($product->attachment) && !empty($product->attachment)){
                 $fileName = $product->attachment !== 'default.jpg' ? $product->attachment : '' ;
                 $filePath ='uploads/is_cover_image/'. $fileName;
-                
+
                 Utility::changeStorageLimit(\Auth::user()->creatorId(),$filePath);
             }
-            if(isset($product->downloadable_prodcut)){
+            if(isset($product->downloadable_prodcut) && !empty($product->downloadable_prodcut)){
                 $fileName = $product->downloadable_prodcut !== 'default.jpg' ? $product->downloadable_prodcut : '' ;
-                $filePath ='uploads/downloadable_prodcut/'. $fileName;   
+                $filePath ='uploads/downloadable_prodcut/'. $fileName;
                 Utility::changeStorageLimit(\Auth::user()->creatorId(),$filePath);
             }
             foreach ($Product_images as $pro) {
                 if(isset($pro->product_images)){
                     $fileName = $pro->product_images !== 'default.jpg' ? $pro->product_images : '' ;
                     $filePath ='uploads/product_image/'. $fileName;
-                    
+
                     Utility::changeStorageLimit(\Auth::user()->creatorId(),$filePath);
                 }
             }
@@ -1211,7 +1212,7 @@ class ProductController extends Controller
             }
             ProductVariantOption::where('product_id', $product->id)->forceDelete();
             $product->delete();
-    
+
             return redirect()->back()->with('success', __('Product successfully deleted.'));
         }
         else{
@@ -1356,7 +1357,7 @@ class ProductController extends Controller
 
     public function getProductsVariantQuantity(Request $request)
     {
-        
+
         $status = false;
         $quantity = $variant_id = 0;
         $quantityHTML = '<strong>' . __('Please select variants to get available quantity.') . '</strong>';
@@ -1385,7 +1386,7 @@ class ProductController extends Controller
                 'variant_id' => $variant_id
             ]
         );
-       
+
     }
 
     public function VariantDelete(Request $request, $id, $product_id)
@@ -1394,7 +1395,7 @@ class ProductController extends Controller
             $product = Product::find($product_id);
             if (!empty($product->variants_json) && ProductVariantOption::find($id)->exists()) {
                 $var_json = json_decode($product->variants_json, true);
-            
+
                 $i = 0;
                 foreach ($var_json[0] as $key => $value) {
                     $var_ops = explode(' : ', ProductVariantOption::find($id)->name);
@@ -1413,7 +1414,7 @@ class ProductController extends Controller
                     $product->variants_json = json_encode($var_json);
                     $product->update();
                 }
-                
+
             }
             ProductVariantOption::where('id',$id)->forceDelete();
             return redirect()->back()->with('success', __('Variant successfully deleted.'));
@@ -1482,9 +1483,9 @@ class ProductController extends Controller
                 $productData->store_id = $store_id->id;
                 $productData->created_by = \Auth::user()->creatorId();
 
-                if (empty($productData->name) || 
-                    empty($productData->price) || 
-                    empty($productData->quantity)) 
+                if (empty($productData->name) ||
+                    empty($productData->price) ||
+                    empty($productData->quantity))
                 {
                     $errorArray[] = [
                         'name'       => $productData->name,
@@ -1511,7 +1512,7 @@ class ProductController extends Controller
 
                 \Session::put('errorArray', $errorRecord);
             }
-            return redirect()->back()->with($data['status'], $data['msg']); 
+            return redirect()->back()->with($data['status'], $data['msg']);
         }
         else{
             return redirect()->back()->with('error', 'Permission denied.');
@@ -1634,7 +1635,7 @@ class ProductController extends Controller
     }
     public function addToCartVariant(Request $request, $id,$session_key,$variant_id = 0)
     {
-// dd($request->all(), $id,$session_key,$variant_id);
+
         $variant = ProductVariantOption::find($variant_id);
         $product = Product::find($id);
         if ($product) {
@@ -1664,7 +1665,7 @@ class ProductController extends Controller
         }
 
         $originalquantity = (int)$productquantity;
-        
+
         $taxes=Utility::tax($product->product_tax);
         $totalTaxRate=Utility::totalTaxRate($product->product_tax);
         $product_tax='';
@@ -1674,7 +1675,7 @@ class ProductController extends Controller
         $product_tax_id=[];
         if (!empty($taxes)) {
             foreach ($taxes as $tax) {
-               
+
                 if (!empty($tax)) {
                     $producttax = Utility::taxRate($tax->rate, $product->price, 1);
                     $product_tax.= !empty($tax)?"<span class='badge bg-primary'>". $tax->name.' ('.$tax->rate.'%)'."</span><br>":'';
@@ -1688,10 +1689,10 @@ class ProductController extends Controller
                     $subtotal = $productprice;
                     $product_tax = '-';
                 }
-                
-            }           
+
+            }
         }
-      
+
         $cart            = session()->get($session_key);
         if(!empty($product->is_cover)){
             // $image_url =('uploads/is_cover_image').'/'.$product->is_cover;
@@ -1801,7 +1802,7 @@ class ProductController extends Controller
             }
 
             session()->put($session_key, $cart);
-          
+
             return response()->json(
                 [
                     'code' => 200,
@@ -1812,7 +1813,7 @@ class ProductController extends Controller
                 ]
             );
         }
-        
+
         // if cart not empty then check if this product exist then increment quantity
         if ($variant_id > 0) {
         $key = false;
@@ -1854,7 +1855,7 @@ class ProductController extends Controller
                     [
                         'code' => 200,
                         'status' => 'Success',
-                        'success' => $productname . __('   added to cart successfully!'),
+                        'success' => $productname . __('added to cart successfully!'),
                         'product' => $cart[$key],
                         'carttotal' => $cart,
                     ]
@@ -1910,7 +1911,7 @@ class ProductController extends Controller
     public function addToCart(Request $request, $id,$session_key)
     {
 
-    
+
         $product = Product::find($id);
         if ($product) {
             $productquantity = $product->quantity;
@@ -1934,7 +1935,7 @@ class ProductController extends Controller
         }
 
         $originalquantity = (int)$productquantity;
-        
+
         $taxes=Utility::tax($product->product_tax);
         $totalTaxRate=Utility::totalTaxRate($product->product_tax);
         $product_tax='';
@@ -1944,7 +1945,7 @@ class ProductController extends Controller
         $product_tax_id=[];
         if (!empty($taxes)) {
             foreach ($taxes as $tax) {
-               
+
                 if (!empty($tax)) {
                     $producttax = Utility::taxRate($tax->rate, $product->price, 1);
                     $product_tax.= !empty($tax)?"<span class='badge bg-primary'>". $tax->name.' ('.$tax->rate.'%)'."</span><br>":'';
@@ -1958,10 +1959,10 @@ class ProductController extends Controller
                     $subtotal = $productprice;
                     $product_tax = '-';
                 }
-                
-            }           
+
+            }
         }
-      
+
         $cart            = session()->get($session_key);
         if(!empty($product->is_cover)){
             // $image_url =('uploads/is_cover_image').'/'.$product->is_cover;
@@ -2012,7 +2013,7 @@ class ProductController extends Controller
 
                         </td>
                     </td>';
-        
+
         // if cart is empty then this the first product
         if (!$cart) {
             $cart = [
@@ -2044,7 +2045,7 @@ class ProductController extends Controller
             }
 
             session()->put($session_key, $cart);
-          
+
             return response()->json(
                 [
                     'code' => 200,
@@ -2071,7 +2072,7 @@ class ProductController extends Controller
                 $tax = 0;
                 if(!empty($cart[$key]["tax"])){
                     foreach($cart[$key]["tax"] as $t){
-                        $beforeTax = Utility::taxRate($t['tax'], $cart[$key]['price'], $cart[$key]["quantity"]); 
+                        $beforeTax = Utility::taxRate($t['tax'], $cart[$key]['price'], $cart[$key]["quantity"]);
                         $tax += $beforeTax;
                     }
                 }
@@ -2095,7 +2096,7 @@ class ProductController extends Controller
                     [
                         'code' => 200,
                         'status' => 'Success',
-                        'success' => $productname . __('   added to cart successfully!'),
+                        'success' => $productname . __('added to cart successfully!'),
                         'product' => $cart[$key],
                         'carttotal' => $cart,
                     ]
@@ -2149,12 +2150,12 @@ class ProductController extends Controller
         $session_key = $request->session_key;
 
         if ($request->ajax() && isset($id) && !empty($id) && isset($session_key) && !empty($session_key)) {
-            $cart = session()->get($session_key);   
+            $cart = session()->get($session_key);
 
             if (isset($cart[$id]) && $quantity == 0) {
                 unset($cart[$id]);
             }
-            
+
             if($cart[$id]['variant_id'] == 0){
                 if ($quantity) {
 
@@ -2175,11 +2176,11 @@ class ProductController extends Controller
                         $subtotal = $productprice +  $producttax;
                     }
                     else{
-                    
+
                         $productprice          = $cart[$id]["price"];
                         $subtotal = $productprice  *  (float)$quantity ;
                     }
-                
+
 
                     $cart[$id]["subtotal"] = $subtotal ;
                 }
@@ -2214,11 +2215,11 @@ class ProductController extends Controller
                         $subtotal = $productprice +  $producttax;
                     }
                     else{
-                    
+
                         $productprice          = $cart[$id]["variant_price"];
                         $subtotal = $productprice  *  (float)$quantity ;
                     }
-                
+
 
                     $cart[$id]["variant_subtotal"] = $subtotal ;
                 }
@@ -2288,7 +2289,6 @@ class ProductController extends Controller
     public function emptyCart(Request $request)
     {
         $session_key = $request->session_key;
-
         if (isset($session_key) && !empty($session_key))
         {
             $cart = session()->get($session_key);

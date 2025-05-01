@@ -280,16 +280,16 @@ class ProductCouponController extends Controller
                         $aa             = $store->currency;
                         $shipping_price = str_replace($aa, '', $request->shipping_price);
 
-                        $price            = self::formatPrice($requestprice - $discount_value + $shipping_price, $request->store_id);
-                        $data_value_price = $requestprice - $discount_value + $shipping_price; // it was floor($discount_value)
+                        $price            = self::formatPrice($requestprice - $discount_value + $shipping_price, $store);
+                        $data_value_price = $requestprice - floor($discount_value) + $shipping_price;
                     }
                     else
                     {
-                        $price            = self::formatPrice($requestprice - $discount_value, $request->store_id);
+                        $price            = self::formatPrice($requestprice - $discount_value, $store);
                         $data_value_price = $requestprice - $discount_value;
 
                     }
-                    $discount_value = '-' . self::formatPrice($discount_value, $request->store_id);
+                    $discount_value = '-' . self::formatPrice($discount_value, $store);
 
                     $cart['coupon'] = [
                         'coupon' => $coupons,
@@ -335,10 +335,8 @@ class ProductCouponController extends Controller
         }
     }
 
-    public function formatPrice($price, $store_id)
+    public function formatPrice($price, $store)
     {
-        $store = Store::where('id', $store_id)->first();
-
         return $store->currency . number_format((float)$price, 2, '.', '');
     }
 
