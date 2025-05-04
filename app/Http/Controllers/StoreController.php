@@ -93,7 +93,7 @@ class StoreController extends Controller
                 )->join('stores', 'stores.id', '=', 'users.current_store')->where('users.created_by', \Auth::user()->creatorId())->where('users.type', '=', 'Owner')->with('currentPlan')->groupBy('users.id')->get();
                 $stores = Store::get();
                 return view('admin_store.index', compact('stores', 'users'));
-
+                
             }
         }
         else{
@@ -149,7 +149,7 @@ class StoreController extends Controller
                     $checkCode = User::where('type','Owner')->where('referral_code', $refferal_code)->get();
                 }
                 while ($checkCode->count());
-
+                
                 $settings = Utility::settings();
                 $objUser = User::create(
                     [
@@ -227,7 +227,7 @@ class StoreController extends Controller
                     ];
                     $resp = Utility::sendEmailTemplate('Owner And Store Created', $objUser->email, $dArr, $objStore);
                 } catch (\Exception $e) {
-
+    
                     // $smtp_error = "<br><span class='text-danger'>" . __('E-Mail has been not sent due to SMTP configuration') . '</span>';
                 }
 
@@ -237,7 +237,7 @@ class StoreController extends Controller
             else{
                 return redirect()->back()->with('error', 'Permission denied.');
             }
-
+    
         } else {
             $user = \Auth::user();
             $total_store = $user->countStore();
@@ -298,7 +298,7 @@ class StoreController extends Controller
                 return redirect()->back()->with('error', __('Your Store limit is over, Please upgrade plan'));
             }
         }
-
+      
     }
 
     /**
@@ -378,7 +378,7 @@ class StoreController extends Controller
             }
         }
         else{
-            return redirect()->back()->with('error', 'Permission denied.');
+            return redirect()->back()->with('error', 'Permission denied.');  
         }
     }
 
@@ -427,12 +427,11 @@ class StoreController extends Controller
                         DB::table('settings')->where('store_id', $store->id)->delete();
                         Role::where('store_id', $store->id)->delete();
                         ReferralTransaction::where('company_id' , $id)->delete();
-                        CustomDomainRequest::where('store_id', $store->id)->delete();
 
                         $store->delete();
                     }
                     User::where('created_by', $user->id)->delete();
-
+                    
                     $user->delete();
                     // $user_store->delete();
 
@@ -533,14 +532,13 @@ class StoreController extends Controller
             Customer::where('store_id', $store->id)->delete();
             DB::table('settings')->where('store_id', $store->id)->delete();
             Role::where('store_id', $store->id)->delete();
-            CustomDomainRequest::where('store_id', $store->id)->delete();
-
+            
             User::where('current_store', $store->id)->where('created_by', $user->id)->delete();
 
             $store->delete();
             $userstore = UserStore::where('user_id', $user->id)->first();
 
-            $user->current_store = $userstore->store_id;
+            $user->current_store = $userstore->id;
             $user->save();
 
             return redirect()->route('dashboard');
@@ -639,7 +637,7 @@ class StoreController extends Controller
 
             $fileName = $store->metaimage !== 'default.jpg' ? $store->metaimage : '' ;
             $filePath ='uploads/metaImage/'. $fileName;
-
+            
             $image_size = $request->file('metaimage')->getSize();
             $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
 
@@ -882,6 +880,9 @@ class StoreController extends Controller
 
         return redirect()->back()->with('success', __('Store successfully Update.'));
     }
+
+
+    
     public function pwasetting(Request $request, $id){
         $company_favicon = Utility::getValByName('company_favicon');
         $store = Store::find($id);
@@ -1021,7 +1022,7 @@ class StoreController extends Controller
             $page_slug_urls = PageOption::where('store_id', $store->id)->get();
             $blog = Blog::where('store_id', $store->id)->count();
 
-            $storethemesetting = Utility::demoStoreThemeSetting($store->id, $store->theme_dir);
+            $storethemesetting = \App\Models\Utility::demoStoreThemeSetting($store->id, $store->theme_dir);
             $topRatedProducts = Ratting::select(DB::raw('*,(SUM(ratting) / COUNT(product_id)) as avg_ratting'))->groupBy('product_id')->orderBy('avg_ratting', 'DESC')->where('slug', $slug);
 
 
@@ -1047,7 +1048,7 @@ class StoreController extends Controller
             $product_count = [];
 
             foreach ($categories as $id => $category) {
-                $product = Product::with('product_img')->where('store_id', $store->id)->where('product_display', 'on');
+                $product = Product::where('store_id', $store->id)->where('product_display', 'on');
                 if ($id != 0) {
                     $product->whereRaw('FIND_IN_SET("' . $id . '", product_categorie)');
                 }
@@ -1093,7 +1094,7 @@ class StoreController extends Controller
 
             // json data
             $getStoreThemeSetting = Utility::getStoreThemeSetting($store->id, $store->theme_dir);
-
+            
             $getStoreThemeSetting1 = [];
 
             if (!empty($getStoreThemeSetting['dashboard'])) {
@@ -1119,7 +1120,7 @@ class StoreController extends Controller
                 $mostPurchasedDetail='';
 
             }
-
+            
             $latest2category = DB::table('product_categories')->where('store_id', $userstore->store_id)->orderBy('id', 'desc')->limit(2)->get();
 
             // theme8 latest
@@ -1179,7 +1180,7 @@ class StoreController extends Controller
         $cart = session()->get($slug);
 
         $pro_categories = ProductCategorie::where('store_id', $userstore->store_id)->get();
-        $categories = $pro_categories->pluck('name', 'id');
+        $categories = ProductCategorie::where('store_id', $userstore->store_id)->get()->pluck('name', 'id');
         $categories->prepend('Start shopping', 0);
         $products = [];
         $product_count = [];
@@ -1188,7 +1189,7 @@ class StoreController extends Controller
             if ($id != 0) {
                 $product->whereRaw('FIND_IN_SET("' . $id . '", product_categorie)');
             }
-            $product = $product->with('product_img')->get();
+            $product = $product->get();
             $product_count = count($product);
 
             $products[$category] = $product;
@@ -1231,9 +1232,9 @@ class StoreController extends Controller
             session(['slug' => $store->slug]);
             $cart = session()->get($store->slug);
             if (isset($store->lang)) {
-
+    
                 $lang = session()->get('lang');
-
+    
                 if (!isset($lang)) {
                     session(['lang' => $store->lang]);
                     $storelang = session()->get('lang');
@@ -1243,7 +1244,7 @@ class StoreController extends Controller
                     $storelang = session()->get('lang');
                     \App::setLocale(isset($storelang) ? $storelang : 'en');
                 }
-
+    
             }
             $total_item = 0;
             if (isset($cart['products'])) {
@@ -1263,7 +1264,7 @@ class StoreController extends Controller
             }
             $page_slug_urls = PageOption::where('store_id', $store->id)->get();
             $blog = Blog::where('store_id', $store->id)->first();
-
+    
             $getStoreThemeSetting = Utility::getStoreThemeSetting($store->id, $store->theme_dir);
             $getStoreThemeSetting1 = [];
             if (!empty($getStoreThemeSetting['dashboard'])) {
@@ -1272,7 +1273,7 @@ class StoreController extends Controller
             }
             if (empty($getStoreThemeSetting)) {
                 $path = storage_path() . "/uploads/" . $store->theme_dir . "/" . $store->theme_dir . ".json";
-
+    
                 $getStoreThemeSetting = json_decode(file_get_contents($path), true);
             }
             return view('storefront.' . $store->theme_dir . '.pageslug', compact('pageoption', 'store', 'page_slug_urls', 'blog', 'total_item','wishlist'));
@@ -1280,7 +1281,7 @@ class StoreController extends Controller
         else{
             return redirect()->back()->with('error','page not found');
         }
-
+       
     }
 
     public function StoreBlog($slug)
@@ -1409,9 +1410,6 @@ class StoreController extends Controller
         $product_ratings = Ratting::where('slug', $slug)->where('product_id', $id)->get();
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         $store_setting = Store::where('slug', $slug)->first();
-        if (empty($store_setting)) {
-            return redirect()->route('store.slug', $slug);
-        }
         $cart = session()->get($slug);
         $page_slug_urls = PageOption::where('store_id', $store_setting->id)->get();
         $blog = Blog::where('store_id', $store_setting->id)->count();
@@ -1488,7 +1486,7 @@ class StoreController extends Controller
 
     public function StoreCart($slug ,$product_id = null, $quantity = null,$variant_name = null)
     {
-
+       
         if(isset($product_id) && isset($quantity)){
             $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->get();
             if (empty($store)) {
@@ -1591,7 +1589,7 @@ class StoreController extends Controller
                     'variant_id' => 0,
                 ];
             }
-
+          
             session()->put($slug, $cart);
             return redirect()->route('store.cart',$slug);
 
@@ -1818,6 +1816,11 @@ class StoreController extends Controller
      
         // Render the scanner view if not an AJAX request 
         return view('storefront.' . $store->theme_dir . '.scanner', compact('cart', 'store')); 
+    }
+
+    public function CheckoutPermit(Store $store)
+    {
+        return view('storefront.checkout_method');
     }
 
     public function userAddress(Request $request,$slug)
@@ -2299,8 +2302,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             $result = file_get_contents($url, false, $context);
             $url = $url;
         } else {
-            $url = 'https://wa.me/' . $store->whatsapp_number . '?text=' . urlencode($resp);
-            // $url = 'https://api.whatsapp.com/send?phone=' . $store->whatsapp_number . '&text=' . urlencode($resp);
+            $url = 'https://api.whatsapp.com/send?phone=' . $store->whatsapp_number . '&text=' . urlencode($resp);
         }
 
         $new_order_id = str_replace('#', '', $request->order_id);
@@ -2313,7 +2315,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             ]
         );
     }
-
     public function addToCart(Request $request, $product_id, $slug, $variant_id = 0)
     {
         if ($request->ajax()) {
@@ -2478,7 +2479,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     ]
                 );
             }
-
+            
             // if cart not empty then check if this product exist then increment quantity
             if ($variant_id > 0) {
                 $key = false;
@@ -2512,7 +2513,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                             [
                                 'code' => 200,
                                 'status' => 'Success',
-                                'success' => $productname . __('added to cart successfully!'),
+                                'success' => $productname . __('   added to cart successfully!'),
                                 'cart' => $cart['products'],
                                 'price' => $productprice,
                                 'item_count' => $cart_items, // count($cart['products'])
@@ -2605,7 +2606,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 [
                     'code' => 200,
                     'status' => 'Success',
-                    'success' => $productname . __('added to cart successfully!'),
+                    'success' => $productname . __('   added to cart successfully!'),
                     'cart' => $cart['products'],
                     'price' => $productprice,
                     'item_count' => $cart_items, // count($cart['products'])
@@ -2711,7 +2712,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 $product_count = $cart['products'][$key]['quantity'];
                 unset($cart['products'][$key]);
             }
-
         }
 
         // Update cart items count
@@ -2722,7 +2722,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
         return redirect()->back()->with('success', __('Item successfully Deleted.'));
     }
-
+  
     public function customer(Request $request, $slug)
     {
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
@@ -2939,16 +2939,8 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
     public function customerorder($slug, $order_id)
     {
-        if(isset($order_id)){
-            try {
-                $id = Crypt::decrypt($order_id);
-            } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-                $id = 0;
-            }
-        }
-        if (empty($id)) {
-            return redirect()->back()->with('error', __('order not available'));
-        }
+
+        $id = Crypt::decrypt($order_id);
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         if (empty($store)) {
             return redirect()->back()->with('error', __('Store not available'));
@@ -3072,16 +3064,8 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
     public function userorder($slug, $order_id)
     {
-        if(isset($order_id)){
-            try {
-                $id = Crypt::decrypt($order_id);
-            } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
-                $id = 0;
-            }
-        }
-        if (empty($id)) {
-            return redirect()->back()->with('error', __('order not available'));
-        }
+
+        $id = Crypt::decrypt($order_id);
         $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
         if (empty($store)) {
             return redirect()->back()->with('error', __('Store not available'));
@@ -3198,7 +3182,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 );
             }
         }
-
+       
         if (empty($store)) {
             return response()->json(
                 [
@@ -3207,7 +3191,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 ]
             );
         }
-
+        
         $validator = \Validator::make(
             $request->all(), [
                 'wts_number' => 'required',
@@ -3221,7 +3205,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 ]
             );
         }
-
+       
         $order_id = $request['order_id'];
         $cart = session()->get($slug);
         $cust_details = $cart['customer'];
@@ -3308,7 +3292,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         } else {
             $shipping_data = '';
         }
-
+       
         if ($product) {
             if (Utility::CustomerAuthCheck($store->slug)) {
                 $customer = Auth::guard('customers')->user()->id;
@@ -3576,8 +3560,8 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             $wishlist = isset(session()->get($slug)['wishlist']) ? session()->get($slug)['wishlist'] : '';
             $session_wishlist['wishlist'] = $wishlist;
             session()->put($slug, $session_wishlist);
-
-
+           
+            
             $order_email = $order->email;
             $order_id = Crypt::encrypt($order->id);
 
@@ -3599,7 +3583,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 Utility::order_create_owner($order, $owner, $store);
                 Utility::order_create_customer($order, $customer, $store);
             }
-
+         
             return $msg;
         } else {
             return response()->json(
@@ -3820,7 +3804,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
         $extension = $request->file('bank_transfer_invoice')->getClientOriginalExtension();
         $fileNameToStores = $filename . '_' . time() . '.' . $extension;
-
+       
         // $image_size = $request->file('bank_transfer_invoice')->getSize();
         // $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
 
@@ -3843,7 +3827,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 ]
             );
         }
-
+        
         // $dir = storage_path('uploads/bank_invoice/');
         // if (!file_exists($dir)) {
         //     mkdir($dir, 0777, true);
@@ -3969,7 +3953,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             $webhook =  Utility::webhook($module, $store->id);
             if ($webhook) {
                 $parameter = json_encode($order);
-
+                
                 // 1 parameter is  URL , 2 parameter is data , 3 parameter is method
                 $status = Utility::WebhookCall($webhook['url'], $parameter, $webhook['method']);
                 if ($status != true) {
@@ -4222,7 +4206,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 $objUser = Auth::user();
                 $objUser->current_store = $storeID;
                 $objUser->update();
-
+    
                 return redirect()->route('dashboard')->with('success', __('Store Change Successfully!'));
             } else {
                 return redirect()->back()->with('error', __('Store is locked'));
@@ -4231,7 +4215,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         else{
             return redirect()->back()->with('error', __('permission Denied'));
         }
-
+       
     }
 
     public function customMassage(Request $request, $slug)
@@ -4287,7 +4271,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
     public function StoreEditProduct(Request $request, $slug, $theme)
     {
-
+        
         $store = Store::where('slug', $slug)->first();
         $getStoreThemeSetting = Utility::getStoreThemeSetting($store->id, $theme);
         if(!empty($getStoreThemeSetting['dashboard'])) {
@@ -4298,9 +4282,9 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         foreach ($json as $key => $jsn) {
             foreach ($jsn['inner-list'] as $IN_key => $js) {
                 if ($js['field_type'] == 'multi file upload') {
-
+                    
                     if (!empty($js['multi_image'])) {
-
+                        
                         foreach ($js['multi_image'] as $file) {
                             $filenameWithExt = $file->getClientOriginalName();
                             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME) . '_brand';
@@ -4320,9 +4304,9 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                 else{
                                     $dir = 'uploads/'. $store->theme_dir . '/header';
                                 }
-
+    
                                 $path = Utility::multi_json_upload_file($file,'field_default_text',$fileNameToStore,$dir,[]);
-
+    
                                 if($path['flag'] == 1){
                                     $url = $path['url'];
                                 }else{
@@ -4331,14 +4315,14 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                             }
                             $new_path = $store->theme_dir . '/header/' . $fileNameToStore;
                             $json[$key]['inner-list'][$IN_key]['image_path'][] = $new_path;
-                        }
+                        } 
                         if (!empty($jsn['prev_image'])) {
                             foreach ($jsn['prev_image'] as $p_key => $p_value) {
                                 $json[$key]['inner-list'][$IN_key]['image_path'][] = $p_value;
-                            }
-
+                            }          
+                          
                         }
-
+                                                
                     }else {
 
                         if(!empty($jsn['prev_image'])) {
@@ -4370,11 +4354,11 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                 $filePath = 'uploads/'. $store->theme_dir . '/header';
                                 if(!empty($getStoreThemeSetting)){
                                     $oldFile = $getStoreThemeSetting[$key][$js['field_slug']][$i];
-
+                                  
                                     if(array_key_exists("image",$oldFile)){
                                         $filename = $getStoreThemeSetting[$key][$js['field_slug']][$i]['image'];
                                         $filePath = 'uploads/'.$filename;
-
+                                    
                                     }
                                     else{
                                         $filePath = 'uploads/'. $store->theme_dir . '/header';
@@ -4393,7 +4377,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                     else{
                                         $dir = 'uploads/'. $store->theme_dir . '/header';
                                     }
-
+                              
                                     // $path = $file->storeAs('uploads/' . $store->theme_dir . '/header', $fileNameToStore);
                                     $path = Utility::multi_json_upload_file($file,'field_default_text',$fileNameToStore,$dir,[]);
 
@@ -4407,8 +4391,8 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                         $json[$key][$js['field_slug']][$i]['field_prev_text'] = $store->theme_dir . '/header/' . $fileNameToStore;
                                     }
                                 }
-
-
+                                   
+                               
                             }
                         }
 
@@ -4430,9 +4414,9 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                     $oldFile = $getStoreThemeSetting[$key]['inner-list'][$IN_key]['field_default_text'];
                                     $filePath = 'uploads/'. $oldFile ;
                                 }
-
+                               
                             }
-
+                           
                             $image_size = $file->getSize();
                             $result = Utility::updateStorageLimit(\Auth::user()->creatorId(), $image_size);
 
@@ -4446,7 +4430,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                 else{
                                     $dir = 'uploads/'. $store->theme_dir . '/header';
                                 }
-
+    
                                 $path = Utility::json_upload_file($js,'field_default_text',$fileNameToStore,$dir,[]);
                                 if($path['flag'] == 1){
                                     $url = $path['url'];
@@ -4454,7 +4438,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                                     return redirect()->back()->with('error', __($path['msg']));
                                 }
                             }
-
+                            
 
                             if (!empty($file_name) && count($file_name) > 0) {
                                 $post['Bckground Image'] = implode(',', $file_name);
@@ -4467,7 +4451,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 }
             }
         }
-
+       
         $json = json_encode($json);
         $store = Store::where('slug', $slug)->where('created_by', Auth::user()->creatorId())->first();
         $arr = [
@@ -4506,7 +4490,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     ]
                 );
             }
-
+           
             if ($validator->fails()) {
                 $messages = $validator->getMessageBag();
 
@@ -4623,7 +4607,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 );
             }
 
-            $product = Product::with('product_img')->where('store_id', $store->id)->where('product_display', 'on')->where('id', $id)->first();
+            $product = Product::where('store_id', $store->id)->where('product_display', 'on')->where('id', $id)->first();
 
             $cart = session()->get($store->slug);
 
@@ -4659,7 +4643,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                             "product_name" => $product->name,
                             "product_categorie" => $product->product_categorie,
                             "price" => $product->price,
-                            "last_price" => $product->last_price ?? '0',
                             "quantity" => $product->quantity,
                             "SKU" => $product->SKU,
                             "product_tax" => $product->product_tax,
@@ -4668,7 +4651,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                             "variants_json" => $product->variants_json,
                             // "image" => ($img == true) ? Storage::url('uploads/is_cover_image/' . $product->is_cover) : '',
                             "image" =>  ($img == true) ? $product->is_cover:'',
-                            "product_image" =>  isset($product->product_img) && isset($product->product_img->product_images) ? $product->product_img->product_images : '',
                             "is_active" => $product->is_active,
                             "description" => $product->description,
                             "created_by" => $product->created_by,
@@ -4688,7 +4670,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                         "product_name" => $product->name,
                         "product_categorie" => $product->product_categorie,
                         "price" => $product->price,
-                        "last_price" => $product->last_price ?? '0',
                         "quantity" => $product->quantity,
                         "SKU" => $product->SKU,
                         "product_tax" => $product->product_tax,
@@ -4696,7 +4677,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                         "enable_product_variant" => $product->enable_product_variant,
                         "variants_json" => $product->variants_json,
                         "image" => ($img == true) ? $product->is_cover:'',
-                        "product_image" =>  isset($product->product_img) && isset($product->product_img->product_images) ? $product->product_img->product_images : '',
                         "is_active" => $product->is_active,
                         "description" => $product->description,
                         "created_by" => $product->created_by,
@@ -4715,7 +4695,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     "product_name" => $product->name,
                     "product_categorie" => $product->product_categorie,
                     "price" => $product->price,
-                    "last_price" => $product->last_price ?? '0',
                     "quantity" => $product->quantity,
                     "SKU" => $product->SKU,
                     "product_tax" => $product->product_tax,
@@ -4723,7 +4702,6 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                     "enable_product_variant" => $product->enable_product_variant,
                     "variants_json" => $product->variants_json,
                     "image" => ($img == true) ? $product->is_cover : '',
-                    "product_image" =>  isset($product->product_img) && isset($product->product_img->product_images) ? $product->product_img->product_images : '',
                     "is_active" => $product->is_active,
                     "description" => $product->description,
                     "created_by" => $product->created_by,
@@ -4863,59 +4841,69 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             );
         }
         if ($order->status == 'delivered') {
-            try
-            {
-                if (isset($store->mail_driver) && !empty($store->mail_driver)) {
-                    config(
+            // if (isset($store->mail_driver) && !empty($store->mail_driver)) {
+                try
+                {
+                    if (isset($store->mail_driver) && !empty($store->mail_driver)) {
+                        config(
+                            [
+                                'mail.driver' => $store->mail_driver,
+                                'mail.host' => $store->mail_host,
+                                'mail.port' => $store->mail_port,
+                                'mail.encryption' => $store->mail_encryption,
+                                'mail.username' => $store->mail_username,
+                                'mail.password' => $store->mail_password,
+                                'mail.from.address' => $store->mail_from_address,
+                                'mail.from.name' => $store->mail_from_name,
+                            ]
+                        );
+                    }else{
+                        $settings = Utility::settingsById(1);
+                        config(
+                            [
+                                'mail.driver' => isset($settings['mail_driver']) ? $settings['mail_driver'] : '',
+                                'mail.host' => isset($settings['mail_host']) ? $settings['mail_host'] : '',
+                                'mail.port' => isset($settings['mail_port']) ? $settings['mail_port'] : '',
+                                'mail.encryption' => isset($settings['mail_encryption']) ? $settings['mail_encryption'] : '',
+                                'mail.username' => isset($settings['mail_username']) ? $settings['mail_username'] : '',
+                                'mail.password' => isset($settings['mail_password']) ? $settings['mail_password'] : '',
+                                'mail.from.address' => isset($settings['mail_from_address']) ? $settings['mail_from_address'] : '',
+                                'mail.from.name' => isset($settings['mail_from_name']) ? $settings['mail_from_name'] : '',
+                            ]
+                        );
+                    }
+
+                    Mail::to(
                         [
-                            'mail.driver' => $store->mail_driver,
-                            'mail.host' => $store->mail_host,
-                            'mail.port' => $store->mail_port,
-                            'mail.encryption' => $store->mail_encryption,
-                            'mail.username' => $store->mail_username,
-                            'mail.password' => $store->mail_password,
-                            'mail.from.address' => $store->mail_from_address,
-                            'mail.from.name' => $store->mail_from_name,
+                            $order['email'],
+                        ]
+                    )->send(new ProdcutMail($order, $request['download_product'], $store));
+
+                    return response()->json(
+                        [
+                            'status' => __('success'),
+                            'msg' => __('Please check your email'),
+                            'message' => __('successfully send'),
                         ]
                     );
-                }else{
-                    $settings = Utility::settingsById(1);
-                    config(
+                } catch (\Exception $e) {
+                    return response()->json(
                         [
-                            'mail.driver' => isset($settings['mail_driver']) ? $settings['mail_driver'] : '',
-                            'mail.host' => isset($settings['mail_host']) ? $settings['mail_host'] : '',
-                            'mail.port' => isset($settings['mail_port']) ? $settings['mail_port'] : '',
-                            'mail.encryption' => isset($settings['mail_encryption']) ? $settings['mail_encryption'] : '',
-                            'mail.username' => isset($settings['mail_username']) ? $settings['mail_username'] : '',
-                            'mail.password' => isset($settings['mail_password']) ? $settings['mail_password'] : '',
-                            'mail.from.address' => isset($settings['mail_from_address']) ? $settings['mail_from_address'] : '',
-                            'mail.from.name' => isset($settings['mail_from_name']) ? $settings['mail_from_name'] : '',
+                            'status' => __('error'),
+                            'msg' => __('Please contact your shop owner'),
+                            'message' => __('E-Mail has been not sent due to SMTP configuration'),
                         ]
                     );
                 }
-
-                Mail::to(
-                    [
-                        $order['email'],
-                    ]
-                )->send(new ProdcutMail($order, $request['download_product'], $store));
-
-                return response()->json(
-                    [
-                        'status' => __('success'),
-                        'msg' => __('Please check your email'),
-                        'message' => __('successfully send'),
-                    ]
-                );
-            } catch (\Exception $e) {
-                return response()->json(
-                    [
-                        'status' => __('error'),
-                        'msg' => __('Please contact your shop owner'),
-                        'message' => __('E-Mail has been not sent due to SMTP configuration'),
-                    ]
-                );
-            }
+            // } else {
+            //     return response()->json(
+            //         [
+            //             'status' => __('error'),
+            //             'msg' => __('Please contact your shop owner'),
+            //             'message' => __('E-Mail has been not sent due to SMTP configuration'),
+            //         ]
+            //     );
+            // }
         }
     }
 
@@ -5036,7 +5024,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         $orders = Order::where('customer_id', Auth::guard('customers')->user()->id)->orderBy('id', 'DESC')->get();
         // $blog                  = Blog::where('store_id', $store->id)->get();
         $blog                  = Blog::where('store_id', $store->id)->count();
-
+        
         $page_slug_urls        = PageOption::where('store_id', $store->id)->get();
         $storethemesetting = \App\Models\Utility::demoStoreThemeSetting($store->id, $store->theme_dir);
         if (isset($store->lang)) {
@@ -5054,7 +5042,26 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
             }
 
         }
+        //  $total_item = 0;
+        //   $cart = session()->get($slug);
+        // if(isset($cart['products']))
+        // {
 
+        //     if(isset($cart) && !empty($cart['products']))
+        //     {
+        //         $total_item = count($cart['products']);
+        //     }
+        //     else
+        //     {
+        //         $total_item = 0;
+        //     }
+        // }
+
+        // if(empty($store))
+        // {
+        //     return redirect()->back()->with('error', __('Store not available'));
+        // }
+        // $purchased_products = Product::where('store_id', $store->id)->where('product_display','on')->get();
         $cart = session()->get($slug);
         $total_item = 0;
         if (isset($cart['products'])) {
@@ -5100,7 +5107,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         else{
             return redirect()->back()->with('error', __('Permission Denied'));
         }
-
+       
     }
 
     public function employeePasswordReset(Request $request, $id)
@@ -5212,7 +5219,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
                 $price          = $price - $discount_value;
             }
         }
-
+        
         if(isset($cart['shipping']) && isset($cart['shipping']['shipping_id']) && !empty($cart['shipping']))
         {
             $shipping = Shipping::find($cart['shipping']['shipping_id']);
@@ -5295,17 +5302,17 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         else {
             return redirect()->back()->with('error', __('Permission denied.'));
         }
-
+       
     }
     public function customershow($id)
-    {
+    { 
         if(\Auth::user()->can('Show Customers')){
             if (\Auth::user()->type !== 'super admin') {
                 $customer = Customer::where('id',$id)->first();
                 $user = \Auth::user();
                 if (isset($customer) && isset($user) && $customer->store_id == $user->current_store) {
                     $orders = Order::where('customer_id', $id)->get();
-
+                
                     return view('orders.index', compact('orders'));
                 } else {
                     return redirect()->back()->with('error', __('Permission denied.'));
@@ -5332,10 +5339,8 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
 
     public function storelinks($id){
         $users       = User::find($id);
-        // $stores   = Store::where('email', $users->email)->get();
-        // $storesNames   = Store::where('email', $users->email)->get()->pluck('name','id');
-        $stores   = $users->stores;
-        $storesNames   = $users->stores->pluck('name','id');
+        $stores   = Store::where('email', $users->email)->get();
+        $storesNames   = Store::where('email', $users->email)->get()->pluck('name','id');
         if ($stores) {
             foreach ($stores as $store) {
                 // $app_url = trim(env('APP_URL'), '/');
