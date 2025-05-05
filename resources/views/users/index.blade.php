@@ -16,11 +16,9 @@ $profile=\App\Models\Utility::get_file('uploads/profile/');
 @endsection
 @section('action-btn')
 @can('Create User')
-<div class="action-btn-wrapper">
-    <a class="btn btn-sm btn-icon text-light btn-primary" data-url="{{ route('users.create') }}" data-title="{{ __('Create User') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
-        <i  data-feather="plus"></i>
-    </a>
-</div>
+<a class="btn btn-sm btn-icon text-light btn-primary" data-url="{{ route('users.create') }}" data-title="{{ __('Create User') }}" data-ajax-popup="true" data-bs-toggle="tooltip" data-bs-placement="top" title="{{ __('Create') }}">
+    <i  data-feather="plus"></i>
+</a>
 @endcan
 @endsection
 @section('filter')
