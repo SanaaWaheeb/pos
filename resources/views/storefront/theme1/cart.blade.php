@@ -349,37 +349,37 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                             }
                         });
                         // If a coupon is already applied, re-apply it with updated cart total
-let appliedCoupon = $('input.hidden_coupon').val().trim();
+                        let appliedCoupon = $('input.hidden_coupon').val().trim();
 
-if (appliedCoupon) {
-    $.ajax({
-        url: '{{ route("apply.productcoupon") }}',
-        dataType: 'json',
-        data: {
-            price: sum,
-            store_id: {{ $store->id }},
-            coupon: appliedCoupon
-        },
-        success: function(data) {
-            if (data.is_success) {
-                $('#coupon-value').html(data.discount_price);
-$('#displaytotal')
-    .html(data.final_price)
-    .attr('data-original', data.final_price); // update the stored formatted value too
-            } else {
-                $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
-                $('#displaytotal').text(addCommas(sum));
-            }
-        },
-        error: function() {
-            $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
-            $('#displaytotal').text(addCommas(sum));
-        }
-    });
-} else {
-    $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
-    $('#displaytotal').text(addCommas(sum));
-}
+                        if (appliedCoupon) {
+                            $.ajax({
+                                url: '{{ route("apply.productcoupon") }}',
+                                dataType: 'json',
+                                data: {
+                                    price: sum,
+                                    store_id: {{ $store->id }},
+                                    coupon: appliedCoupon
+                                },
+                                success: function(data) {
+                                    if (data.is_success) {
+                                        $('#coupon-value').html(data.discount_price);
+                                        $('#displaytotal')
+                                            .html(data.final_price)
+                                            .attr('data-original', data.final_price); // update the stored formatted value too
+                                    } else {
+                                        $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+                                        $('#displaytotal').text(addCommas(sum));
+                                    }
+                                },
+                                error: function() {
+                                    $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+                                    $('#displaytotal').text(addCommas(sum));
+                                }
+                            });
+                        } else {
+                            $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+                            $('#displaytotal').text(addCommas(sum));
+                        }
 
                         const checkoutBtn = document.querySelector('.checkout-btn');
                         if (checkoutBtn) {
@@ -387,7 +387,6 @@ $('#displaytotal')
                             let segments = url.pathname.split('/'); 
                             segments[segments.length - 1] = sum; // Replace the last segment with the updated total
                             url.pathname = segments.join('/');
-                            console.log("url: ", url);
                             checkoutBtn.href = url.toString(); 
                         }
                     }
@@ -485,84 +484,71 @@ $('#displaytotal')
         if ($(this).next().val() > 1) $(this).next().val(+$(this).next().val() );
     });
 
+    // ------------- Handle Apply/Remove coupon -------------
     $(document).on('click', '.apply-coupon', function(e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    const $form = $(this).closest('.coupon-form');
-    const coupon = $form.find('input.coupon').val().trim();
-    const lastCode = $form.find('input.hidden_coupon').val().trim();
+        const $form = $(this).closest('.coupon-form');
+        const coupon = $form.find('input.coupon').val().trim();
+        const lastCode = $form.find('input.hidden_coupon').val().trim();
 
-    // Grab raw cart-summary price (data-value must be numeric)
-    const rawPrice = parseFloat($('#card-summary .product_total').data('value')) || 0;
+        // Grab raw cart-summary price (data-value must be numeric)
+        const rawPrice = parseFloat($('.product_total').data('value')) || 0;
 
-    // Grab original total from your price-bar span (already formatted)
-    const originalDisplay = $('#displaytotal').data('original');
-    
-    // Extract numeric value from original display
-    const originalValue = parseFloat(
-        originalDisplay.toString()
-        .replace(/[^0-9.-]+/g, '')
-    ) || 0;
+        // Grab original total from your price-bar span (already formatted)
+        const originalDisplay = $('#displaytotal').data('original');
+        
+        // Extract numeric value from original display
+        const originalValue = parseFloat(
+            originalDisplay.toString()
+            .replace(/[^0-9.-]+/g, '')
+        ) || 0;
 
-    // Decide which to apply—never apply on zero!
-    const priceToApply = rawPrice > 0 ? rawPrice : originalValue;
+        // Decide which to apply—never apply on zero!
+        const priceToApply = rawPrice > 0 ? rawPrice : originalValue;
 
-    // Prevent re-using same coupon
-    if (coupon && coupon === lastCode) {
-        return show_toastr('Error', '{{ __("Coupon Already Used") }}', 'error');
-    }
+        // Prevent re-using same coupon
+        if (coupon && coupon === lastCode) {
+            return show_toastr('Error', '{{ __("Coupon Already Used") }}', 'error');
+        }
 
-    // APPLY
-    if (coupon) {
-        $.ajax({
-            url: '{{ route("apply.productcoupon") }}',
-            dataType: 'json',
-            data: {
-                price: priceToApply,
-                store_id: {{ $store->id }},
-                coupon: coupon
-            },
-            success: function(data) {
-                if (data.is_success) {
-                    $form.find('input.hidden_coupon').val(coupon);
-                    
-                    // Format prices consistently with original display
-                    const currencySymbol = originalDisplay.match(/[^0-9.,\s]+/)?.[0] || '';
-                    const currencyPosition = originalDisplay.indexOf(currencySymbol) === 0 ? 'prefix' : 'suffix';
-                    
-                    // Format discount price
-                    const discountValue = parseFloat(data.discount_price.replace(/[^0-9.-]+/g, ''));
-                    const formattedDiscount = currencyPosition === 'prefix' 
-                        ? `${currencySymbol}${discountValue.toFixed(2)}` 
-                        : `${discountValue.toFixed(2)}${currencySymbol}`;
-                    
-                    // Format final price
-                    const finalValue = parseFloat(data.final_price.replace(/[^0-9.-]+/g, ''));
-                    const formattedFinal = currencyPosition === 'prefix' 
-                        ? `${currencySymbol}${finalValue.toFixed(2)}` 
-                        : `${finalValue.toFixed(2)}${currencySymbol}`;
-                    
-                    $('#coupon-value').text('-' + formattedDiscount);
-                    $('#displaytotal').text(formattedFinal);
-                    
-                    show_toastr('Success', data.message, 'success');
-                } else {
-                    show_toastr('Error', data.message, 'error');
+        if (coupon) {
+            $.ajax({
+                url: '{{ route("apply.productcoupon") }}',
+                dataType: 'json',
+                data: {
+                    price: priceToApply,
+                    store_id: {{ $store->id }},
+                    coupon: coupon
+                },
+                success: function(data) {
+                    console.log("DD: ", data);
+                    if (data.is_success) {
+                        $('.hidden_coupon').val(coupon);
+                        $('.hidden_coupon').attr(data);
+
+                        // update coupon price in summary
+                        $('#coupon-value').text(data.discount_price);
+                        $('#displaytotal').text(data.final_price);
+
+                        show_toastr('Success', data.message, 'success');
+                    } else {
+                        show_toastr('Error', data.message, 'error');
+                    }
+                },
+                error: function() {
+                    show_toastr('Error', 'Server error applying coupon', 'error');
                 }
-            },
-            error: function() {
-                show_toastr('Error', 'Server error applying coupon', 'error');
-            }
-        });
-    }
-    // CLEAR / INVALID
-    else {
-        $form.find('input.hidden_coupon').val('');
-        $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
-        $('#displaytotal').text(originalDisplay); // Use the original formatted display
-        show_toastr('Error', '{{ __("Invalid Coupon Code.") }}', 'error');
-    }
-});
+            });
+        }
+        // CLEAR / INVALID
+        else {
+            $form.find('input.hidden_coupon').val('');
+            $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+            $('#displaytotal').text(originalDisplay); // Use the original formatted display
+            show_toastr('Error', '{{ __("Invalid Coupon Code.") }}', 'error');
+        }
+    });
 
     
 </script>

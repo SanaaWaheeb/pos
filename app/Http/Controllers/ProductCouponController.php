@@ -292,16 +292,16 @@ class ProductCouponController extends Controller
                         $aa             = $store->currency;
                         $shipping_price = str_replace($aa, '', $request->shipping_price);
 
-                        $price            = self::formatPrice($requestprice - $discount_value + $shipping_price, $store);
+                        $price            =\App\Models\Utility::priceFormat($requestprice - $discount_value + $shipping_price);
                         $data_value_price = $requestprice - floor($discount_value) + $shipping_price;
                     }
                     else
                     {
-                        $price            = self::formatPrice($requestprice - $discount_value, $store);
+                        $price            = \App\Models\Utility::priceFormat($requestprice - $discount_value);
                         $data_value_price = $requestprice - $discount_value;
 
                     }
-                    $discount_value = '-' . self::formatPrice($discount_value, $store);
+                    $discount_value = '-' . \App\Models\Utility::priceFormat($discount_value);
 
                     $cart['coupon'] = [
                         'coupon' => $coupons,

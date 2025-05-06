@@ -280,7 +280,6 @@
 
         // ------------- Handle Apply/Remove coupon -------------
         $(document).on('click', '.apply-coupon', function(e) {
-            console.log("cool you clicked me!")
             e.preventDefault();
 
             var ele = $(this);
