@@ -227,7 +227,8 @@
     "Countinue to sign in": "Countinue to sign in",
     "Country": "Country",
     "Coupan": "Coupan",
-    "Coupon": "Coupon",
+    "Coupon": "Coupon:",
+    "Coupon Already Used":"Coupon Already Used",
     "Coupon code has applied successfully.": "Coupon code has applied successfully.",
     "Coupon Detail": "Coupon Detail",
     "Coupon Discount": "Coupon Discount",
@@ -1612,5 +1613,6 @@
     "Please enter a valid price": "Please enter a valid price",
     "Enter here...": "Enter here...",
     "Enter Number of Available Rooms": "Enter Number of Available Rooms",
-    "Customize Prices": "Customize Prices"
+    "Customize Prices": "Customize Prices",
+    "Please choose dates first": "Please choose dates first"
 }

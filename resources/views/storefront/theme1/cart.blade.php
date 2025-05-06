@@ -30,7 +30,7 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                         </div> --}}
                         
                     </div>
-                    <div class="row" id="cart-items-list">
+                    <div class="row justify-content-center" id="cart-items-list">
                         <table class="cart-tble"> 
                             {{-- <thead>
                             <tr>
@@ -183,16 +183,37 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                     @endforeach
                                 @endif
                             </div>
+                            <div class="coupon-form">
+                            <div class="coupon-body">
+                                <form action="">
+                                    <div class="input-wrapper">
+                                        <input type="text" id="stripe_coupon" name="coupon" class="coupon hidd_val" placeholder="{{ __('Enter Coupon Code') }}">
+                                        <input type="hidden" name="coupon" class="hidden_coupon" value="">
+                                    </div>
+                                    <div class="btn-wrapper apply-stripe-btn-coupon">
+                                        <button type="submit" class="btn apply-coupon">{{ __('Apply') }}</button>
+                                    </div>
+                                </form>
+                            </div>
+                            </div>
 
                         </table>
                     </div>
                     <div class="checkout-box">
                         <div class="align-items-center justify-content-center">
                             <div class="col-md-4 col-12">
+
                                 <div class="price-bar">
+                                    <span>{{ __('Coupon') }}</span>
+                                    <span id="coupon-value">{{ \App\Models\Utility::priceFormat(0) }}</span>
+                                  </div>
+                                  <div class="price-bar">
                                     <span>{{ __('Total value:') }}</span>
-                                    <span id="displaytotal">{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}</span>
-                                </div>
+                                    <span id="displaytotal" data-original="{{ \App\Models\Utility::priceFormat($total ?? 0) }}">
+                                      {{ \App\Models\Utility::priceFormat($total ?? 0) }}
+                                    </span>
+                                  </div>
+                                  
                             </div>
                                 @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
                                     <a href="#" class="checkout-btn modal-target checkout_btn" data-modal="Checkout" id="checkout-btn">
@@ -262,7 +283,9 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
 
 @push('script-page')
 <script>
-    $(document).on('click', '.product_qty', function (e) {
+
+
+     $(document).on('click', '.product_qty', function (e) {
         e.preventDefault();
         var currEle = $(this);
         var product_id = $(this).siblings(".bx-cart-qty").attr('data-id');
@@ -325,7 +348,39 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 $('#product-id-' + value.id + ' .subtotal').text(addCommas(value.subtotal));
                             }
                         });
-                        $('#displaytotal').text(addCommas(sum));
+                        // If a coupon is already applied, re-apply it with updated cart total
+let appliedCoupon = $('input.hidden_coupon').val().trim();
+
+if (appliedCoupon) {
+    $.ajax({
+        url: '{{ route("apply.productcoupon") }}',
+        dataType: 'json',
+        data: {
+            price: sum,
+            store_id: {{ $store->id }},
+            coupon: appliedCoupon
+        },
+        success: function(data) {
+            if (data.is_success) {
+                $('#coupon-value').html(data.discount_price);
+$('#displaytotal')
+    .html(data.final_price)
+    .attr('data-original', data.final_price); // update the stored formatted value too
+            } else {
+                $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+                $('#displaytotal').text(addCommas(sum));
+            }
+        },
+        error: function() {
+            $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+            $('#displaytotal').text(addCommas(sum));
+        }
+    });
+} else {
+    $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+    $('#displaytotal').text(addCommas(sum));
+}
+
                         const checkoutBtn = document.querySelector('.checkout-btn');
                         if (checkoutBtn) {
                             let url = new URL(checkoutBtn.href, window.location.origin);
@@ -429,6 +484,87 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
     $(document).on('click', '.qty-minus', function () {
         if ($(this).next().val() > 1) $(this).next().val(+$(this).next().val() );
     });
+
+    $(document).on('click', '.apply-coupon', function(e) {
+    e.preventDefault();
+
+    const $form = $(this).closest('.coupon-form');
+    const coupon = $form.find('input.coupon').val().trim();
+    const lastCode = $form.find('input.hidden_coupon').val().trim();
+
+    // Grab raw cart-summary price (data-value must be numeric)
+    const rawPrice = parseFloat($('#card-summary .product_total').data('value')) || 0;
+
+    // Grab original total from your price-bar span (already formatted)
+    const originalDisplay = $('#displaytotal').data('original');
+    
+    // Extract numeric value from original display
+    const originalValue = parseFloat(
+        originalDisplay.toString()
+        .replace(/[^0-9.-]+/g, '')
+    ) || 0;
+
+    // Decide which to apply—never apply on zero!
+    const priceToApply = rawPrice > 0 ? rawPrice : originalValue;
+
+    // Prevent re-using same coupon
+    if (coupon && coupon === lastCode) {
+        return show_toastr('Error', '{{ __("Coupon Already Used") }}', 'error');
+    }
+
+    // APPLY
+    if (coupon) {
+        $.ajax({
+            url: '{{ route("apply.productcoupon") }}',
+            dataType: 'json',
+            data: {
+                price: priceToApply,
+                store_id: {{ $store->id }},
+                coupon: coupon
+            },
+            success: function(data) {
+                if (data.is_success) {
+                    $form.find('input.hidden_coupon').val(coupon);
+                    
+                    // Format prices consistently with original display
+                    const currencySymbol = originalDisplay.match(/[^0-9.,\s]+/)?.[0] || '';
+                    const currencyPosition = originalDisplay.indexOf(currencySymbol) === 0 ? 'prefix' : 'suffix';
+                    
+                    // Format discount price
+                    const discountValue = parseFloat(data.discount_price.replace(/[^0-9.-]+/g, ''));
+                    const formattedDiscount = currencyPosition === 'prefix' 
+                        ? `${currencySymbol}${discountValue.toFixed(2)}` 
+                        : `${discountValue.toFixed(2)}${currencySymbol}`;
+                    
+                    // Format final price
+                    const finalValue = parseFloat(data.final_price.replace(/[^0-9.-]+/g, ''));
+                    const formattedFinal = currencyPosition === 'prefix' 
+                        ? `${currencySymbol}${finalValue.toFixed(2)}` 
+                        : `${finalValue.toFixed(2)}${currencySymbol}`;
+                    
+                    $('#coupon-value').text('-' + formattedDiscount);
+                    $('#displaytotal').text(formattedFinal);
+                    
+                    show_toastr('Success', data.message, 'success');
+                } else {
+                    show_toastr('Error', data.message, 'error');
+                }
+            },
+            error: function() {
+                show_toastr('Error', 'Server error applying coupon', 'error');
+            }
+        });
+    }
+    // CLEAR / INVALID
+    else {
+        $form.find('input.hidden_coupon').val('');
+        $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+        $('#displaytotal').text(originalDisplay); // Use the original formatted display
+        show_toastr('Error', '{{ __("Invalid Coupon Code.") }}', 'error');
+    }
+});
+
+    
 </script>
 <script>
     var site_currency_symbol_position = '{{ $store->currency_symbol_position }}';

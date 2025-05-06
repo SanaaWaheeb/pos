@@ -814,7 +814,8 @@ p:not(:last-of-type) {
 
     .col-md-4 {
         flex: 0 0 auto;
-        width: 33.33333333%;
+        /* width: 33.33333333%; */
+   
     }
 
     .col-md-5 {
@@ -4048,7 +4049,8 @@ table tr td img {
 .price-bar{
     display: flex;
     align-items: center;
-    /* justify-content: center; */
+    margin-top: 10px;
+    justify-content: center;
     
 }
 .price-bar * {
@@ -4196,21 +4198,44 @@ button.close span{
 .shiping-type .radio-group:not(:last-of-type){
     margin-bottom: 15px;
 }
-.coupon-form {
-    margin: 30px 0;
-}
-.coupon-form .coupon-header {
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px;
-    color: var(--third-color);
-}
-.coupon-body {
-    padding: 15px 0;
-}
-.coupon-body  .btn-wrapper {
-    margin-top: 15px;
-    text-align: right;
-}
+
+/* 1) Force the form into one un-wrappable flex row */
+.coupon-form .coupon-body form {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    justify-content: center !important;
+
+
+   
+  }
+  .coupon-form {
+    display: grid !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+  
+  
+  
+  /* 2) Kill any leftover wrapper margins/paddings */
+  .coupon-form .input-wrapper,
+  .coupon-form .btn-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  
+  /* 3) Make sure the button isn’t full-width */
+  .coupon-form .apply-coupon {
+    width: auto !important;
+    margin: 0 !important;
+  }
+  
 .mini-cart{
     color: var(--third-color);
 }
@@ -5056,8 +5081,9 @@ table tr th {
     bottom: 3rem;
     left: 0; /* Start from the left edge */
     width: 100%; /* Full width of the page */
-    padding: 20px;
+    /* padding: 20px; */
     display: flex;
+  
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -5096,7 +5122,7 @@ table tr th {
 }
 
 .checkout-box span:last-child {
-    font-size: 30px;
+    font-size: 18px;
     margin-left: 15px;
 }
 

@@ -227,7 +227,9 @@
   "Countinue to sign in": "الاستمرار في تسجيل الدخول",
   "Country": "الدولة",
   "Coupan": "كوبان",
-  "Coupon": "كوبون الخصم",
+  "Coupon": "كوبون الخصم:",
+  "Coupon Already Used":"تم تطبيق الكوبون",
+
   "Coupon code has applied successfully.": "تم تطبيق رمز القسيمة بنجاح.",
   "Coupon Detail": "تفاصيل القسيمة",
   "Coupon Discount": "خصم القسيمة",
@@ -1615,5 +1617,6 @@
   "Enter here...": "أدخل هنا...",
   "Availability": "عدد الغرف المتاحة",
   "Enter Number of Available Rooms": "أدخل عدد الغرف المتاحة",
-  "Customize Prices": "تخصيص الأسعار"
+  "Customize Prices": "تخصيص الأسعار",
+  "Please choose dates first": "فضلًا اختر المواعيد أولًا"
 }

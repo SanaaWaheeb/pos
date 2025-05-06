@@ -212,9 +212,16 @@
                             @endif
                         </ul>
                     </div> --}}
+                  
 
                     <div class="main-menu-right" style="display: flex; align-items: center; gap: 0.5rem">
-                      
+                        <li class="cart-btn-header">
+                            <a href="{{ route('store.cart', $store->slug) }}">
+                                <i class="fas fa-shopping-basket"></i>
+                                <span class="cart-count shoping_counts" id="shoping_counts">
+                                    {{ !empty($total_item) ? $total_item : '0' }}</span>
+                            </a>
+                        </li>
                         <!----------------- Select Language ------------------->
                         <li class="language-header-2 set has-children has-item" style="border: none; margin: 0">
                             <a href="javascript:void(0)" class="acnav-label" style="padding: 0">
@@ -231,13 +238,13 @@
                                 </ul>
                             </div>
                         </li>
-                        {{-- <ul class="menu-right d-flex  justify-content-end align-items-center">
-                            <li class="search-header">
+                        <ul class="menu-right d-flex  justify-content-end align-items-center">
+                            {{-- <li class="search-header">
                                 <a href="#">
                                     <i class="fas fa-search"></i>
                                 </a>
-                            </li>
-                            @if (Utility::CustomerAuthCheck($store->slug) == true)
+                            </li> --}}
+                            {{-- @if (Utility::CustomerAuthCheck($store->slug) == true)
                                 <li class="wishlist-btn">
                                     <a href="{{ route('store.wishlist', $store->slug) }}" class="acnav-label">
                                         <i class="fas fa-heart"></i>
@@ -260,8 +267,8 @@
                                         @endforeach
                                     </ul>
                                 </div>
-                            </li>
-                            @if (Utility::CustomerAuthCheck($store->slug) == true)
+                            </li> --}}
+                            {{-- @if (Utility::CustomerAuthCheck($store->slug) == true)
                                 <li class="login-btn-header set has-children">
                                     <a href="javascript:void(0)" class="acnav-label">
                                         <span class="login-text"
@@ -305,15 +312,9 @@
                                 <li class="login-btn-header set has-children">
                                     <a href="{{ route('customer.login', $store->slug) }}">{{ __('Log in') }}</a>
                                 </li>
-                            @endif
-                            <li class="cart-btn-header">
-                                <a href="{{ route('store.cart', $store->slug) }}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="cart-count shoping_counts" id="shoping_counts">
-                                        {{ !empty($total_item) ? $total_item : '0' }}</span>
-                                </a>
-                            </li>
-                        </ul> --}}
+                            @endif --}}
+                            
+                        </ul>
                     </div>
                 </div>
                 {{-- <div class="mobile-menu mobile-only">
@@ -695,8 +696,8 @@
             }
         </style>
         
-        <div id="tab-container">
-            {{-- Cart Button --}}
+        {{-- <div id="tab-container">
+         
             <div 
                 class="tab {{ Request::is("user-cart-item/{$store->slug}/cart") ? 'active-tab' : '' }}" 
                 data-tab="cart"
@@ -711,7 +712,7 @@
                 </div>
             </div>
         
-            {{-- Store Button --}}
+         
             <div 
                 class="tab {{ Request::is("store/{$store->slug}") ? 'active-tab' : '' }}" 
                 data-tab="store"
@@ -722,7 +723,7 @@
                     {{ __('Store') }}
                 </div>
             </div>
-        </div> 
+        </div>  --}}
     </footer>
     @endif
 
@@ -987,6 +988,8 @@
                 }
             });
         });
+
+        
     </script>
     <!--scripts end here-->
 

@@ -624,7 +624,7 @@ p:not(:last-of-type) {
     }
     .col-md-4 {
         flex: 0 0 auto;
-        width: 33.33333333%;
+        /* width: 33.33333333%; */
     }
     .col-md-5 {
         flex: 0 0 auto;
@@ -3410,7 +3410,7 @@ table tr th {
     bottom: 3rem;
     left: 0; /* Start from the left edge */
     width: 100%; /* Full width of the page */
-    padding: 20px;
+    /* padding: 20px; */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -3463,7 +3463,7 @@ table tr th {
 .price-bar{
     display: flex;
     align-items: center;
-    /* justify-content: center; */
+    justify-content: center;
 }
 .price-bar * {
     color: black !important; /* Force black color on all child elements */
@@ -3544,21 +3544,42 @@ table tr th {
 .shiping-type .radio-group:not(:last-of-type){
     margin-bottom: 15px;
 }
-.coupon-form {
-    margin: 30px 0;
-}
-.coupon-form .coupon-header {
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px 0;
-    color: var(--third-color);
-}
-.coupon-body {
-    padding: 15px 0 0 0;
-}
-.coupon-body form .btn-wrapper {
-    margin-top: 15px;
-    text-align: left;
-}
+/* 1) Force the form into one un-wrappable flex row */
+.coupon-form .coupon-body form {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    justify-content: center !important;
+
+
+   
+  }
+  .coupon-form {
+    display: grid !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+  
+  
+  
+  /* 2) Kill any leftover wrapper margins/paddings */
+  .coupon-form .input-wrapper,
+  .coupon-form .btn-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  
+  /* 3) Make sure the button isn’t full-width */
+  .coupon-form .apply-coupon {
+    width: auto !important;
+    margin: 0 !important;
+  }
 
 .internal-box{
     background: var(--white);
@@ -4294,10 +4315,10 @@ table tr th {
     font-size: 24px;
     /* margin-left: 15px; */
 }
-.checkout-box{
-    background-color:none; /*changed*/
+/* .checkout-box{
+    background-color:none; 
     padding: 20px;
-}
+} */
 .checkout-btn{
     padding: 12px 30px;
     background-color: var(--theme-color);
@@ -4324,7 +4345,7 @@ table tr th {
     font-weight: bold;
 }
 .checkout-box span:last-child{
-    font-size: 30px;
+    font-size: 18px;
     margin-left: 15px;
 }
 
