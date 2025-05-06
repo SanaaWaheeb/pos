@@ -2221,13 +2221,13 @@ li.search-header a i{
     padding: 0px;
     position: relative;
     box-shadow: none;
-    background-color: var(--theme-color);
+    /* background-color: var(--theme-color); */
     height: 45px;
     width: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--white);
+    color: var(--theme-color);
 }
 .cart-btn-header a:hover, .login-btn-header a:hover{
     transform: translateY(-3px);
@@ -2241,7 +2241,7 @@ li.search-header a i{
     font-size: 12px;
     top: -6px;
     right: -8px;
-    background-color: var(--third-color);
+    /* background-color: var(--third-color); */
     color: var(--theme-color);
     width: 20px;
     line-height: 20px;
@@ -3252,10 +3252,11 @@ table tr td img {
     width: 100%;
     max-height: 50vh;
     overflow-y: auto;
+    justify-content: center;
 }
 
 .checkout-box{
-    background-color: var(--white);
+    /* background-color: var(--white); */
     padding: 20px;
     position: fixed; /****** Added ******/
     bottom: 3rem; /****** Added ******/
@@ -3272,7 +3273,7 @@ table tr td img {
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
+    /* background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%); */
     pointer-events: none;
 }
 
@@ -3304,13 +3305,14 @@ table tr td img {
     font-weight: bold;
 }
 .checkout-box span:last-child{
-    font-size: 30px;
+    font-size: 18px;
     margin-left: 15px;
 }
 .price-bar{
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 10px;
     
 }
 .price-bar * {
@@ -4305,3 +4307,40 @@ form .row {
 .mini-cart-details-cart .mini-cart-image{
     margin-right: 0.5rem;
 }
+/* 1) Force the form into one un-wrappable flex row */
+.coupon-form .coupon-body form {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    justify-content: center !important;
+
+
+   
+  }
+  .coupon-form {
+    display: grid !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+  
+  
+  
+  /* 2) Kill any leftover wrapper margins/paddings */
+  .coupon-form .input-wrapper,
+  .coupon-form .btn-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  
+  /* 3) Make sure the button isn’t full-width */
+  .coupon-form .apply-coupon {
+    width: auto !important;
+    margin: 0 !important;
+  }
+  

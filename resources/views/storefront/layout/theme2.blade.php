@@ -227,7 +227,13 @@
                             @endif
                         </ul>
                     </div> --}}
-
+                    <li class="cart-btn-header">
+                        <a href="{{ route('store.cart', $store->slug) }}">
+                            <i class="fas fa-shopping-basket"></i>
+                            <span class="cart-count shoping_counts" id="shoping_counts">
+                                {{ !empty($total_item) ? $total_item : '0' }}</span>
+                        </a>
+                    </li>
                     <div class="main-menu-right" style="display: flex; align-items: center; gap: 0.5rem">
                         <button class="help-btn" data-bs-toggle="modal" data-bs-target="#helpModal">
                             <i class="far fa-circle-question"></i>
@@ -248,6 +254,7 @@
                                 </ul>
                             </div>
                         </li>
+                        
                         {{-- <ul class="menu-right d-flex  justify-content-end align-items-center">
                             <li class="search-header">
                                 <a href="#">
@@ -322,15 +329,9 @@
                                 <li class="login-btn-header set has-children">
                                     <a href="{{ route('customer.login', $store->slug) }}">{{ __('Log in') }}</a>
                                 </li>
-                            @endif
-                            <li class="cart-btn-header">
-                                <a href="{{ route('store.cart', $store->slug) }}">
-                                    <i class="fas fa-shopping-basket"></i>
-                                    <span class="cart-count shoping_counts" id="shoping_counts">
-                                        {{ !empty($total_item) ? $total_item : '0' }}</span>
-                                </a>
-                            </li>
-                        </ul> --}}
+                            @endif --}}
+                            
+                        {{-- </ul>  --}}
                     </div>
                 </div>
                 {{-- <div class="mobile-menu mobile-only">
@@ -451,7 +452,7 @@
         </style>
         
         <div id="tab-container">
-            {{-- Cart Button --}}
+          
             <div 
                 class="tab {{ Request::is("user-cart-item/{$store->slug}/cart") ? 'active-tab' : '' }}" 
                 data-tab="cart"
@@ -466,7 +467,7 @@
                 </div>
             </div>
         
-            {{-- Scan Button --}}
+        
             <div 
                 class="tab {{ Request::is("user-cart-item/{$store->slug}/scanner") ? 'active-tab' : '' }}" 
                 data-tab="scan"

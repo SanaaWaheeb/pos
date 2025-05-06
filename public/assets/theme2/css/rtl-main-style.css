@@ -2204,13 +2204,13 @@ body.no-scroll {
     padding: 0px;
     position: relative;
     box-shadow: none;
-    background-color: var(--theme-color);
+    /* background-color: var(--theme-color); */
     height: 45px;
     width: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--white);
+    color:  var(--theme-color);
 }
 .cart-btn-header a:hover, .login-btn-header a:hover{
     transform: translateY(-3px);
@@ -2224,7 +2224,7 @@ body.no-scroll {
     font-size: 12px;
     top: -12px;
     left: -12px;
-    background-color: var(--third-color);
+    /* background-color: var(--third-color); */
     color: var(--theme-color);
     width: 20px;
     line-height: 20px;
@@ -3176,11 +3176,12 @@ table tr th {
     width: 100%;
     max-height: 50vh;
     overflow-y: auto;
+    justify-content: center;
 }
 
 .checkout-box{
     background-color: var(--white);
-    padding: 20px;
+    /* padding: 20px; */
     position: fixed; /****** Added ******/
     bottom: 3rem; /****** Added ******/
 }
@@ -3221,13 +3222,13 @@ table tr th {
     font-weight: bold;
 }
 .checkout-box span:last-child{
-    font-size: 30px;
+    font-size: 18px;
     margin-right: 15px;
 }
 .price-bar{
     display: flex;
     align-items: center;
-    justify-content: end;
+    justify-content: center;
 }
 .fade:not(.show) {
     opacity: 0;
@@ -4041,3 +4042,40 @@ del {
 .mini-cart-details-cart .mini-cart-image{
     margin-left: 0.5rem;
 }
+/* 1) Force the form into one un-wrappable flex row */
+.coupon-form .coupon-body form {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 8px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    justify-content: center !important;
+
+
+   
+  }
+  .coupon-form {
+    display: grid !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+  }
+  
+  
+  
+  /* 2) Kill any leftover wrapper margins/paddings */
+  .coupon-form .input-wrapper,
+  .coupon-form .btn-wrapper {
+    margin: 0 !important;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+  }
+  
+  /* 3) Make sure the button isn’t full-width */
+  .coupon-form .apply-coupon {
+    width: auto !important;
+    margin: 0 !important;
+  }
+  

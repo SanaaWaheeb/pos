@@ -182,18 +182,37 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                         @endif
                                     @endforeach
                                 @endif
-                            </div>
-
+                                <div class="coupon-form">
+                                    <div class="coupon-body">
+                                        <form action="">
+                                            <div class="input-wrapper">
+                                                <input type="text" id="stripe_coupon" name="coupon" class="coupon hidd_val" placeholder="{{ __('Enter Coupon Code') }}">
+                                                <input type="hidden" name="coupon" class="hidden_coupon" value="">
+                                            </div>
+                                            <div class="btn-wrapper apply-stripe-btn-coupon">
+                                                <button type="submit" class="btn apply-coupon">{{ __('Apply') }}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    </div>
+                            
                         </table>
+                        
                     </div>
+                 
                     <div class="checkout-box">
                         <div class=" align-items-center justify-content-center">
-                           <div class="col-md-4 col-12">
-                                <div class="price-bar">
-                                    <span>{{ __('Total value:') }}</span>
-                                    <span id="displaytotal">{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}</span>
-                                </div>
-                            </div> 
+                           <div class="col-md-4 col-12 ">
+                            <div class="price-bar">
+                                <span>{{ __('Coupon') }}</span>
+                                <span id="coupon-value">{{ \App\Models\Utility::priceFormat(0) }}</span>
+                              </div>
+                              <div class="price-bar">
+                                <span>{{ __('Total value:') }}</span>
+                                <span id="displaytotal" data-original="{{ \App\Models\Utility::priceFormat($total ?? 0) }}">
+                                  {{ \App\Models\Utility::priceFormat($total ?? 0) }}
+                                </span>
+                              </div>
                         
                                 @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
                                     <a href="#" class="checkout-btn modal-target checkout_btn" data-modal="Checkout" id="checkout-btn">
@@ -265,7 +284,8 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
 
 @push('script-page')
 <script>
-    $(document).on('click', '.product_qty', function (e) {
+
+$(document).on('click', '.product_qty', function (e) {
         e.preventDefault();
         var currEle = $(this);
         var product_id = $(this).siblings(".bx-cart-qty").attr('data-id');
@@ -328,14 +348,45 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 $('#product-id-' + value.id + ' .subtotal').text(addCommas(value.subtotal));
                             }
                         });
-                        $('#displaytotal').text(addCommas(sum));
+                        // If a coupon is already applied, re-apply it with updated cart total
+                        let appliedCoupon = $('input.hidden_coupon').val().trim();
+
+                        if (appliedCoupon) {
+                            $.ajax({
+                                url: '{{ route("apply.productcoupon") }}',
+                                dataType: 'json',
+                                data: {
+                                    price: sum,
+                                    store_id: {{ $store->id }},
+                                    coupon: appliedCoupon
+                                },
+                                success: function(data) {
+                                    if (data.is_success) {
+                                        $('#coupon-value').html(data.discount_price);
+                                        $('#displaytotal')
+                                            .html(data.final_price)
+                                            .attr('data-original', data.final_price); // update the stored formatted value too
+                                    } else {
+                                        $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+                                        $('#displaytotal').text(addCommas(sum));
+                                    }
+                                },
+                                error: function() {
+                                    $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+                                    $('#displaytotal').text(addCommas(sum));
+                                }
+                            });
+                        } else {
+                            $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+                            $('#displaytotal').text(addCommas(sum));
+                        }
+
                         const checkoutBtn = document.querySelector('.checkout-btn');
                         if (checkoutBtn) {
                             let url = new URL(checkoutBtn.href, window.location.origin);
                             let segments = url.pathname.split('/'); 
                             segments[segments.length - 1] = sum; // Replace the last segment with the updated total
                             url.pathname = segments.join('/');
-                            // console.log("url: ", url);
                             checkoutBtn.href = url.toString(); 
                         }
                     }
@@ -346,6 +397,39 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
             });
         }, 100);
     })
+
+    $(document).on('click', '.checkout-btn', function (e) {
+        e.preventDefault();
+
+        let totalAmount = $('#displaytotal').text().trim().replace(/[^\d.-]/g, '');
+        let checkoutUrl = '{{ route('payment.checkout', ['slug' => $store->slug, 'order_amount' => '__total__']) }}';
+        checkoutUrl = checkoutUrl.replace('__total__', totalAmount);
+        // console.log("url: ", checkoutUrl);
+
+        $.ajax({
+            url: checkoutUrl,
+            type: 'GET',
+            headers: {
+                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (response) {
+                if (response.redirect_url) {
+                    // Redirect to the payment gateway
+                    window.location.href = response.redirect_url;
+                } else if (response.error) {
+                    show_toastr('Error', response.error, 'error');
+                }
+            },
+            error: function (xhr) {
+                let errorMessage = 'Something went wrong. Please try again.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errorMessage = xhr.responseJSON.error;
+                }
+                show_toastr('Error', errorMessage, 'error');
+            }
+        });
+    });
+
 
     $(".product_qty_input").on('blur', function (e) {
         e.preventDefault();
@@ -387,6 +471,10 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
         }, 500);
     });
 
+    function qtyChange(product_id, arrkey, qty_id) {
+
+    }
+
     $(document).on('click', '.qty-plus', function () {
           $(this).prev().val(+$(this).prev().val() );
         
@@ -396,44 +484,79 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
         if ($(this).next().val() > 1) $(this).next().val(+$(this).next().val() );
     });
 
-    $(document).on('click', '.checkout-btn', function (e) {
+    // ------------- Handle Apply/Remove coupon -------------
+    $(document).on('click', '.apply-coupon', function(e) {
         e.preventDefault();
 
-        let totalAmount = $('#displaytotal').text().trim().replace(/[^\d.-]/g, '');
-        let checkoutUrl = '{{ route('payment.checkout', ['slug' => $store->slug, 'order_amount' => '__total__']) }}';
-        checkoutUrl = checkoutUrl.replace('__total__', totalAmount);
-        // console.log("url: ", checkoutUrl);
+        const $form = $(this).closest('.coupon-form');
+        const coupon = $form.find('input.coupon').val().trim();
+        const lastCode = $form.find('input.hidden_coupon').val().trim();
 
-        $.ajax({
-            url: checkoutUrl,
-            type: 'GET',
-            headers: {
-                'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function (response) {
-                if (response.redirect_url) {
-                    // Redirect to the payment gateway
-                    window.location.href = response.redirect_url;
-                } else if (response.error) {
-                    show_toastr('Error', response.error, 'error');
+        // Grab raw cart-summary price (data-value must be numeric)
+        const rawPrice = parseFloat($('.product_total').data('value')) || 0;
+
+        // Grab original total from your price-bar span (already formatted)
+        const originalDisplay = $('#displaytotal').data('original');
+        
+        // Extract numeric value from original display
+        const originalValue = parseFloat(
+            originalDisplay.toString()
+            .replace(/[^0-9.-]+/g, '')
+        ) || 0;
+
+        // Decide which to apply—never apply on zero!
+        const priceToApply = rawPrice > 0 ? rawPrice : originalValue;
+
+        // Prevent re-using same coupon
+        if (coupon && coupon === lastCode) {
+            return show_toastr('Error', '{{ __("Coupon Already Used") }}', 'error');
+        }
+
+        if (coupon) {
+            $.ajax({
+                url: '{{ route("apply.productcoupon") }}',
+                dataType: 'json',
+                data: {
+                    price: priceToApply,
+                    store_id: {{ $store->id }},
+                    coupon: coupon
+                },
+                success: function(data) {
+                    console.log("DD: ", data);
+                    if (data.is_success) {
+                        $('.hidden_coupon').val(coupon);
+                        $('.hidden_coupon').attr(data);
+
+                        // update coupon price in summary
+                        $('#coupon-value').text(data.discount_price);
+                        $('#displaytotal').text(data.final_price);
+
+                        show_toastr('Success', data.message, 'success');
+                    } else {
+                        show_toastr('Error', data.message, 'error');
+                    }
+                },
+                error: function() {
+                    show_toastr('Error', 'Server error applying coupon', 'error');
                 }
-            },
-            error: function (xhr) {
-                let errorMessage = 'Something went wrong. Please try again.';
-                if (xhr.responseJSON && xhr.responseJSON.error) {
-                    errorMessage = xhr.responseJSON.error;
-                }
-                show_toastr('Error', errorMessage, 'error');
-            }
-        });
+            });
+        }
+        // CLEAR / INVALID
+        else {
+            $form.find('input.hidden_coupon').val('');
+            $('#coupon-value').text('{{ \App\Models\Utility::priceFormat(0) }}');
+            $('#displaytotal').text(originalDisplay); // Use the original formatted display
+            show_toastr('Error', '{{ __("Invalid Coupon Code.") }}', 'error');
+        }
     });
 
+    
 </script>
 <script>
     var site_currency_symbol_position = '{{ $store->currency_symbol_position }}';
     var site_currency_symbol_space = '{{ $store->currency_symbol_space }}'
     var site_currency_symbol = '{{ $store->currency }}';
-    window.translations = {
+     window.translations = {
         yes: "{{ __('Yes') }}",
         cancel: "{{ __('CANCEL') }}"
     };
