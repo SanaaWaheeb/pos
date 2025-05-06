@@ -3181,11 +3181,11 @@ table tr th {
 
 .checkout-box{
     background-color: var(--white);
-    /* padding: 20px; */
+    padding: 20px;
     position: fixed; /****** Added ******/
     bottom: 3rem; /****** Added ******/
 }
-.checkout-box::before { /****** Added blur effect ******/
+/* .checkout-box::before { 
     content: '';
     position: absolute;
     bottom: 100%;
@@ -3194,7 +3194,7 @@ table tr th {
     height: 50%;
     background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 100%);
     pointer-events: none;
-}
+} */
 
 .checkout-btn{
     padding: 12px 30px;
