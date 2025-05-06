@@ -490,10 +490,15 @@ class ProductController extends Controller
             return response()->json(['error' => 'Invalid or empty cart'], 400);
         }
 
-        // Step 1: Get all product IDs and default prices from cart
+        // Step 1: Get all product IDs, default prices from cart, and quantities from cart
         $products = collect($cart['products']);
         $productIds = collect($products)->pluck('product_id')->unique()->values()->toArray();
-        $defaultPrices = $products->pluck('price', 'product_id');
+        $productData = $products->keyBy('product_id')->map(function($item) {
+            return [
+                'price' => floatval($item['price']),
+                'quantity' => intval($item['quantity'])
+            ];
+        });
 
         // Step 2: Fetch all custom product prices grouped by date and product_id
         $customPrices = ProductPrice::whereIn('product_id', $productIds)
@@ -508,14 +513,16 @@ class ProductController extends Controller
             $customProductIds = [];
 
             forEach($priceEntries as $entry) {
-                $sum += floatval($entry->price);
+                $quantity = $productData[$entry->product_id]['quantity'] ?? 1;
+                $sum += floatval($entry->price) * $quantity;
                 $customProductIds[] = $entry->product_id;
             }
 
             // Add default prices for products that don't have custom price on this date
             forEach($productIds as $productId) {
                 if (!in_array($productId, $customProductIds)) {
-                    $sum += floatval($defaultPrices[$productId ?? 0]);
+                    $default = $productData[$productId] ?? ['price' => 0, 'quantity' => 1];
+                    $sum += floatval($default['price'] * $default['quantity']);
                 }
             }
 
@@ -523,7 +530,9 @@ class ProductController extends Controller
         }
 
         // Step 4: Compute total default price (for days with no custom prices at all)
-        $defaultTotal = $defaultPrices->map(fn($p) => floatval($p))->sum();
+        $defaultTotal = $productData->reduce(function ($carry, $item) {
+            return $carry + ($item['price'] * $item['quantity']);
+        }, 0);
 
         return response()->json([
             'calendar_prices' => $calendarPrices,

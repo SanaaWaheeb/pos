@@ -252,7 +252,19 @@ class ProductCouponController extends Controller
                 }
                 else
                 {
-                    $requestprice = str_replace('$', '', $request->price);
+                    // Make sure the user will select dates first to avoid case where price=0 in hotel booking theme
+                    $requestprice = str_replace($store->currency, '', $request->price);
+                    if ($store->theme_dir=='theme4' && $requestprice==0) {
+                        return response()->json(
+                            [
+                                'is_success' => false,
+                                'final_price' => $original_price,
+                                'price' => number_format($request->price, \Utility::getValByName('decimal_number')),
+                                'message' => __('Please choose dates first'),
+                            ]
+                        );
+                    }
+
                     if($coupons->enable_flat == 'on')
                     {
                         $discount_value = $coupons->flat_discount;

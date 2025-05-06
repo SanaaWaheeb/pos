@@ -34,22 +34,6 @@
                         </div>
 
                         <div class="row">
-                            <!-- <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{Form::label('number_of_nights',__('Number of Nights'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    {{Form::text('number_of_nights',old('Number of Nights'),array('class'=>'form-control','placeholder'=>__('Enter Number of Nights'),'required'=>'required'))}}
-                                </div>
-                            </div> -->
-                            <!-- <div class="col-12">
-                                <div class="form-group">
-                                    {{ Form::label('date_range', __('Choose Dates'), ['class' => 'form-label']) }} <span style="color:red">*</span>
-                                    <input type="text" id="date-range" name="date_range" class="form-control" placeholder="{{__('Check-in - Check-out')}}" required>
-                                    <input type="hidden" id="check-in-date" name="check_in_date">
-                                    <input type="hidden" id="check-out-date" name="check_out_date">
-                                    <input type="hidden" id="number_of_nights" name="number_of_nights">
-                                </div>
-                            </div> -->
-
                             <div class="col-12">
                                 <div class="form-group">
                                     {{ Form::label('date_range', __('Choose Dates'), ['class' => 'form-label']) }} <span style="color:red">*</span>
@@ -63,115 +47,27 @@
                         </div>
                     </div>
 
-                    <!-- Booking Summary -->
+                    <!-- Coupon Logic -->
                     <div class="col-lg-4 col-12">
-                        <div class="mini-cart" id="card-summary" style="margin: 40px 0px">
-                            <div class="mini-cart-header">
-                                <h4>{{ __('Summary') }}</h4>
+                        <div class="coupon-form">
+                            <div class="coupon-header">
+                                <h4>{{__('Coupon')}}</h4>
                             </div>
-                            <div id="cart-body" class="mini-cart-has-item">
-                                <div class="mini-cart-body">
-                                    @if (!empty($products))
-                                        @php
-                                            $total = 0;
-                                            $sub_tax = 0;
-                                            $sub_total = 0;
-                                        @endphp
-                                        @foreach ($products as $product)
-                                            @if (isset($product['variant_id']) && !empty($product['variant_id']))
-                                                <div class="mini-cart-item" style="margin: 0; width: 100%">
-                                                    <div class="mini-cart-details-status">
-                                                        <span>{{$product['quantity']}} X </span>
-                                                        <div data-label="Product" class="mini-cart-image">
-                                                            <a href="">
-                                                                <img src="{{$productImg .$product['image']}}" alt="img">
-                                                            </a>
-                                                        </div>
-                                                        <div data-label="Name">
-                                                            <a href="#">{{$product['product_name'].' - ( ' . $product['variant_name'] .' ) '}}</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                @php
-                                                    $total += $totalprice;
-                                                @endphp
-                                            @else
-                                                <div class="mini-cart-item" style="margin: 0; width: 100%">
-                                                    <div class="mini-cart-details-status">
-                                                        <span>{{$product['quantity']}} X </span>
-                                                        <div data-label="Product" class="mini-cart-image">
-                                                            <a href="">
-                                                                <img src="{{$productImg .$product['image']}}" alt="img">
-                                                            </a>
-                                                        </div>
-                                                        <div data-label="Name">
-                                                            <a href="#">{{$product['product_name']}}</a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    @endif
+                            <div class="coupon-body">
+                                <div class="input-wrapper">
+                                    <input type="text" id="stripe_coupon" name="coupon" class="coupon hidd_val" placeholder="{{ __('Enter Coupon Code') }}">
+                                    <input type="hidden" name="coupon" class="hidden_coupon" value="">
                                 </div>
-                                <div class="mini-cart-footer">
-                                    {{-- <div class="u-save d-flex justify-content-between">
-                                        <div class="cpn-lbl">{{ __('Subtotal') }}</div>
-                                        <div class="cpn-price">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</div>
-                                    </div> --}}
-                                    {{-- <div class="u-save d-flex justify-content-between">
-                                        <div class="cpn-lbl">{{ __('Coupon') }}</div>
-                                        <div class="cpn-price dicount_price">{{\App\Models\Utility::priceFormat(0)}}</div>
-                                    </div> --}}
-                                    {{-- @if($store->enable_shipping == "on")
-                                        <div class="u-save d-flex justify-content-between">
-                                            <div class="cpn-lbl">{{__('Shipping Price')}} </div>
-                                            <div class="cpn-price shipping_price" data-value=""></div>
-                                        </div>
-                                    @endif --}}
-                                    @foreach($taxArr['tax'] as $k=>$tax)
-                                        <div class="u-save d-flex justify-content-between">
-                                            @php
-                                                $rate = $taxArr['rate'][$k];
-                                            @endphp
-                                            <div class="cpn-lbl">{{$tax}}</div>
-                                            <div class="cpn-price">{{\App\Models\Utility::priceFormat($rate)}}</div>
-                                        </div>
-                                    @endforeach
-                                    <!-- Display service per night -->
-                                     <ul class="cart-summery">
-                                        <div class="u-save d-flex justify-content-between">
-                                            <div class="cpn-lbl">{{ __('Check-in Date') }}</div>
-                                            <div id="check-in"></div>
-                                        </div>
-                                        <div class="u-save d-flex justify-content-between">
-                                            <div class="cpn-lbl">{{ __('Check-out Date') }}</div>
-                                            <div id="check-out"></div>
-                                        </div>
-                                        <div class="u-save d-flex justify-content-between">
-                                            <div class="cpn-lbl">{{__('Number of Nights')}}</div>
-                                            <div id="num-nights">{{__('Night')}}</div>
-                                        </div>
-                                     </ul>
-                                    <div
-                                        class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
-                                        <div class="mini-total-lbl">
-                                            {{__('Total')}}
-                                        </div>
-                                        <div class="mini-total-price final_total_price" id="total_value" data-value="666">
-                                            <input type="hidden" class="product_total" value="{{$total}}">
-                                            <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
-                                            <input type="hidden" name="total" id="total-booking-price" value="{{ $total }}">
-                                            <span class="pro_total_price" data-value="{{\App\Models\Utility::priceFormat(!empty($total)?$total:0)}}"> </span>
-                                        </div>
-                                    </div>
+                                <div class="btn-wrapper apply-stripe-btn-coupon">
+                                    <button class="btn apply-coupon">{{ __('Apply') }}</button>
                                 </div>
                             </div>
-                        </div>
+                        </div>                
                     </div>
                 </div>
 
                 <div class="row">
-                    <!-- Billing Information -->
+                    <!-- Customer Information -->
                     <div class="col-lg-8 col-12">
                         <div class="customer-info">
                             <h5>{{ __('Customer Information') }}</h5>
@@ -234,127 +130,117 @@
                                     </div>
                                 </div>
                             @endif
-                            
-                            {{-- <div class="col-md-12 col-12">
-                                <div class="form-group">
-                                    {{Form::label('billingaddress',__('Address'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    {{Form::text('billing_address',old('billing_address'),array('class'=>'form-control','placeholder'=>__('Billing Address'),'required'=>'required'))}}
-                                </div>
-                            </div> --}}
-                            {{-- <div class="col-md-6 col-12">
-                                <div class="form-group focused">
-                                    {{Form::label('billing_country',__('Country'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    <select name="billing_country" id="" class="form-control change_country" required>
-                                        <option value="">{{ __('Select Country') }}</option>
-                                        @foreach($countries as $key => $value)
-                                            <option value="{{ $key }}">{{ $key }}</option>
-                                        @endforeach   
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{Form::label('billing_city',__('City'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    <select name="billing_city" id="city" class="form-control" required>  
-                                        <option value="">{{ __('select city') }}</option>
-                                    </select>  
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{Form::label('billing_postalcode',__('Postal Code'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                    {{Form::text('billing_postalcode',old('billing_postalcode'),array('class'=>'form-control','placeholder'=>__('Billing Postal Code'),'required'=>'required'))}}
-                                </div>
-                            </div> --}}
-                            {{-- @if($store->enable_shipping == "on" && $shippings->count() > 0)
-                                <div class="col-md-6 col-12">
-                                    <div class="form-group">
-                                        {{Form::label('location_id',__('Location'),array("class"=>"form-control-label")) }} <span style="color:red">*</span>
-                                        {{ Form::select('location_id', $locations, null,array('class' => 'form-control change_location','required'=>'required')) }}
-                                    </div>
-                                </div>
-                            @endif --}}
-{{-- 
-                            <div class="col-md-12 col-12">
-                                <div class="row align-items-center">
-                                    <div class="col-md-6 col-12">
-                                        <div class="customer-info">
-                                            <h5>{{__('Shipping informations')}}</h5>
-                                            <p>{{__('Fill the form below so we can send you the orders invoice.')}}</p>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 col-12">
-                                        <div class="addres-btn">
-                                            <a class="cart-btn" onclick="billing_data()" id="billing_data" data-toggle="tooltip" data-placement="top" title="Same As Billing Address">
-                                                {{__('Copy Address')}}
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> --}}
-                            {{-- <div class="col-md-12 col-12">
-                                <div class="form-group">
-                                    {{Form::label('shipping_address',__('Address'),array("class"=>"form-control-label")) }}
-                                    {{Form::text('shipping_address',old('shipping_address'),array('class'=>'form-control','placeholder'=>__('Shipping Address')))}}
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{Form::label('shipping_country',__('Country'),array("class"=>"form-control-label")) }}
-                                    {{Form::text('shipping_country',old('shipping_country'),array('class'=>'form-control','placeholder'=>__('Shipping Country')))}}
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{Form::label('shipping_city',__('City'),array("class"=>"form-control-label")) }}
-                                    {{Form::text('shipping_city',old('shipping_city'),array('class'=>'form-control','placeholder'=>__('Shipping City')))}}
-                                </div>
-                            </div>
-                            <div class="col-md-6 col-12">
-                                <div class="form-group">
-                                    {{Form::label('shipping_postalcode',__('Postal Code'),array("class"=>"form-control-label")) }}
-                                    {{Form::text('shipping_postalcode',old('shipping_postalcode'),array('class'=>'form-control','placeholder'=>__('Shipping Postal Code')))}}
-                                </div>
-                            </div>
-                            <div class="col-md-12 col-12">
-                                <div class="addres-btn">
-                                    <a href="{{route('store.slug',$store->slug)}}" class="cart-btn">{{__('Return to shop')}}</a>
-                                    <button type="submit" class="cart-btn btn">{{__('Next step')}}</button>
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
-                   
-                    
+
+                    <!-- Booking Summary -->
                     <div class="col-lg-4 col-12">
-                        {{-- <div class="shiping-type">
-                            <h5>{{__('Select Shipping')}}</h5>
-                            <div class="radio-group" id="shipping_location_content">
+                        <div class="mini-cart" id="card-summary" style="margin: 40px 0px">
+                            <div class="mini-cart-header">
+                                <h4>{{ __('Summary') }}</h4>
                             </div>
-                        </div> --}}
-                        {{-- <div class="coupon-form">
-                            <div class="coupon-header">
-                                <h4>{{__('Coupon')}}</h4>
-                            </div>
-                            <div class="coupon-body">
-                                <form action="">
-                                    <div class="input-wrapper">
-                                        <input type="text" id="stripe_coupon" name="coupon" class="coupon hidd_val" placeholder="{{ __('Enter Coupon Code') }}">
-                                        <input type="hidden" name="coupon" class="hidden_coupon" value="">
+                            <div id="cart-body" class="mini-cart-has-item">
+                                <div class="mini-cart-body">
+                                    @if (!empty($products))
+                                        @php
+                                            $total = 0;
+                                            $sub_tax = 0;
+                                            $sub_total = 0;
+                                        @endphp
+                                        @foreach ($products as $product)
+                                            @if (isset($product['variant_id']) && !empty($product['variant_id']))
+                                                <div class="mini-cart-item" style="margin: 0; width: 100%">
+                                                    <div class="mini-cart-details-status">
+                                                        <span>{{$product['quantity']}} X </span>
+                                                        <div data-label="Product" class="mini-cart-image">
+                                                            <a href="">
+                                                                <img src="{{$productImg .$product['image']}}" alt="img">
+                                                            </a>
+                                                        </div>
+                                                        <div data-label="Name">
+                                                            <a href="#">{{$product['product_name'].' - ( ' . $product['variant_name'] .' ) '}}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                @php
+                                                    $total += $totalprice;
+                                                @endphp
+                                            @else
+                                                <div class="mini-cart-item" style="margin: 0; width: 100%">
+                                                    <div class="mini-cart-details-status">
+                                                        <span>{{$product['quantity']}} X </span>
+                                                        <div data-label="Product" class="mini-cart-image">
+                                                            <a href="">
+                                                                <img src="{{$productImg .$product['image']}}" alt="img">
+                                                            </a>
+                                                        </div>
+                                                        <div data-label="Name">
+                                                            <a href="#">{{$product['product_name']}}</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </div>
+                                <div class="mini-cart-footer">
+                                    {{-- <div class="u-save d-flex justify-content-between">
+                                        <div class="cpn-lbl">{{ __('Subtotal') }}</div>
+                                        <div class="cpn-price">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</div>
+                                    </div> --}}
+                                    {{-- @if($store->enable_shipping == "on")
+                                        <div class="u-save d-flex justify-content-between">
+                                            <div class="cpn-lbl">{{__('Shipping Price')}} </div>
+                                            <div class="cpn-price shipping_price" data-value=""></div>
+                                        </div>
+                                    @endif --}}
+                                    @foreach($taxArr['tax'] as $k=>$tax)
+                                        <div class="u-save d-flex justify-content-between">
+                                            @php
+                                                $rate = $taxArr['rate'][$k];
+                                            @endphp
+                                            <div class="cpn-lbl">{{$tax}}</div>
+                                            <div class="cpn-price">{{\App\Models\Utility::priceFormat($rate)}}</div>
+                                        </div>
+                                    @endforeach
+                                    <!-- Display service per night -->
+                                    <div class="u-save d-flex justify-content-between">
+                                        <div class="cpn-lbl">{{ __('Check-in Date') }}</div>
+                                        <div id="check-in"></div>
                                     </div>
-                                    <div class="btn-wrapper apply-stripe-btn-coupon">
-                                        <button type="submit" class="btn apply-coupon">{{ __('Apply') }}</button>
+                                    <div class="u-save d-flex justify-content-between">
+                                        <div class="cpn-lbl">{{ __('Check-out Date') }}</div>
+                                        <div id="check-out"></div>
                                     </div>
-                                </form>
+                                    <div class="u-save d-flex justify-content-between">
+                                        <div class="cpn-lbl">{{__('Number of Nights')}}</div>
+                                        <div id="num-nights">{{__('Night')}}</div>
+                                    </div>
+                                    <div class="u-save d-flex justify-content-between">
+                                        <div class="cpn-lbl">{{ __('Coupon') }}</div>
+                                        <div class="cpn-price dicount_price">{{\App\Models\Utility::priceFormat(0)}}</div>
+                                    </div>
+                                    <div
+                                        class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
+                                        <div class="mini-total-lbl">
+                                            {{__('Total')}}
+                                        </div>
+                                        <div class="mini-total-price final_total_price" id="total_value" data-value="666">
+                                            <!-- <input type="hidden" class="product_total" value="{{$total}}"> -->
+                                            <!-- <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}"> -->
+                                            <input type="hidden" name="total" id="total-booking-price" value="{{ $total }}">
+                                            <span class="pro_total_price" data-value="{{ $total }}"> </span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div> --}}                     
+                        </div>
                     </div>
+
+                    <!-- Proceed to checkout button -->
                     <div class="col-md-12 col-12"  style="margin-top: 80px">
                         <div class="pagination-btn d-flex align-items-center justify-content-center " style="width:100% ">
-                            
                             <button type="submit" class="next-btn btn">{{__('Proceed to Checkout')}} <i class="fas fa-shopping-basket"></i></button>
-                            
-                            {{-- <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a> --}}
                         </div>
                     </div>
                 </div>
@@ -392,141 +278,81 @@
             });
         });
 
-        // Handle select check-in and check-out dates
-        // $(document).ready(function() {
-        //     $('#date-range').daterangepicker({
-        //         minDate: moment().format('YYYY-MM-DD'),
-        //         locale: {
-        //             format: 'YYYY-MM-DD',
-        //             cancelLabel: 'Clear',
-        //         },
-        //         singleDatePicker: false,
-        //         alwaysShowCalendars: true, 
-        //         opens: 'center',
-        //         showCustomRangeLabel: false, 
-        //         linkedCalendars: false, // Ensures only one month is shown
-        //         autoUpdateInput: false
-        //     });
+        // ------------- Handle Apply/Remove coupon -------------
+        $(document).on('click', '.apply-coupon', function(e) {
+            console.log("cool you clicked me!")
+            e.preventDefault();
 
-        //     $('#date-range').on('apply.daterangepicker', function(ev, picker) {
-        //         let checkInDate = picker.startDate.format('YYYY-MM-DD');
-        //         let checkOutDate = picker.endDate.format('YYYY-MM-DD');
-        //         let nights = picker.endDate.diff(picker.startDate, 'days');
+            var ele = $(this);
+            var coupon = ele.closest('.row').find('.coupon').val();
+            var hidden_field = $('.hidden_coupon').val();
+            var price = $('.pro_total_price').attr('data-value');
+            // var shipping_price = $('#card-summary .shipping_price').attr('data-value');
+            if (coupon == hidden_field && coupon != "" && e.originalEvent) {
+                show_toastr('Error', 'Coupon Already Used', 'error');
+            } else {
+                const x =  {{ $store->id }};
+                if (coupon != '') {
+                    $.ajax({
+                        url: '{{ route('apply.productcoupon') }}',
+                        datType: 'json',
+                        data: {
+                            price: price,
+                            // shipping_price: shipping_price,
+                            store_id: {{ $store->id }},
+                            coupon: coupon
+                        },
+                        success: function(data) {
+                            $('#stripe_coupon, #paypal_coupon').val(coupon);
+                            if (data.is_success) {
+                                $('.hidden_coupon').val(coupon);
+                                $('.hidden_coupon').attr(data);
 
-        //         // Prevent applying if no check-out date is selected
-        //         if (nights < 1) {
-        //             show_toastr('Error', "{{ __('Please select a valid check-out date') }}", 'error');
-        //             return false; // Stop execution
-        //         }
+                                // update coupon price in summary
+                                $('.dicount_price').html(data.discount_price);
+                                const couponTotal = data.discount_price?.replace('-$', '');
+                                $('.dicount_price').attr('data-value', couponTotal);
 
-        //         // Update input values
-        //         $(this).val(checkInDate + ' - ' + checkOutDate);
-        //         $('#check-in-date').val(checkInDate);
-        //         $('#check-out-date').val(checkOutDate);
-        //         $('#number_of_nights').val(nights);
-        //         $('#num-nights').text(nights + ' ' + (nights > 1 ? "{{ __('Nights') }}" : "{{ __('Night') }}"));
+                                var html = '';
+                                html +=
+                                    '<span class="text-sm font-weight-bold s-p-total pro_total_price" data-value="' +
+                                    data.final_price_data_value + '">' + data.final_price + '</span>'
+                                $('.final_total_price').find('.pro_total_price').replaceWith(html);
 
-        //         // Get prices from .remove_item elements
-        //         let removeItems = document.querySelectorAll(".remove_item");
-        //         let prices = [];
-        //         removeItems.forEach(function (item) {
-        //             prices.push(item.dataset.price);
-        //         });
+                                // Update hidden input field
+                                $('#total-booking-price').val(data.final_price);
 
-        //         // Send AJAX request to update total price
-        //         $.ajax({
-        //             url: "{{ route('payment.total_booking') }}",
-        //             data: {
-        //                 "_token": $('meta[name="csrf-token"]').attr('content'),
-        //                 nights,
-        //                 prices
-        //             },
-        //             method: 'POST',
-        //             dataType: 'json',
-        //             success: function (data) {
-        //                 $('.pro_total_price').html(data.total_price);
-        //                 $('#total-booking-price').val(data.total_price); // Update hidden input field
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 console.error("Error:", error);
-        //             }
-        //         });
-        //     });
+                                if (e.originalEvent) show_toastr('Success', data.message, 'success');
+                            } else {
+                                show_toastr('Error', data.message, 'error');
+                            }
+                        }
+                    })
+                } else {
 
-        //     $('#date-range').on('cancel.daterangepicker', function(ev, picker) {
-        //         $(this).val('');
-        //         $('#check-in-date').val('');
-        //         $('#check-out-date').val('');
-        //         $('#number_of_nights').val('');
-        //     });
-        // });
+                    $.ajax({
+                        url: '{{ route('apply.removecoupn') }}',
+                        datType: 'json',
+                        data: {
+                            price: "price",
+                            shipping_price: "shipping_price",
+                            slug: {{ $store->id }},
+                            coupon: "coupon"
+                        },
+                        success: function(data) {}
+                    });
+                    var hidd_cou = $('.hidd_val').val();
 
-        // Triger changes in number of nights input field (old code)
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     const price = "{{ $total }}";
-        //     var nightsInput = document.querySelector('[name="number_of_nights"]');
+                    if (hidd_cou == "") {
+                        var total_pa_val = $(".total_pay_price").val();
+                        $(".final_total_price").html(total_pa_val);
+                        // $(".dicount_price").html(0.00);
 
-        //     nightsInput.addEventListener("input", function() {
-        //         var nights = parseInt(nightsInput.value) || 1;
-        //         var updatedTotal = nights * price;
-                
-        //         // Update displayed number of nights
-        //         const numNightsElement = document.querySelector('.pvarprice .price small');
-        //         if (numNightsElement) {
-        //             const nightText = "{{ __('Night') }}";
-        //             const nightsText = "{{ __('Nights') }}";
-        //             numNightsElement.innerHTML = `${nights > 1 ? `${nights} ${nightsText}` : nightText}`;
-        //             // Update hidden input field
-        //             $('#total-booking-price').val(updatedTotal);
-        //         }
+                    }
+                    show_toastr('Error', '{{ __('Invalid Coupon Code.') }}', 'error');
+                }
+            }
 
-        //         // Update displayed total price
-        //         $.ajax({
-        //             url: "{{ route('payment.total_booking') }}",
-        //             data: {
-        //                 "_token": $('meta[name="csrf-token"]').attr('content'),
-        //                 nights,
-        //                 price
-        //             },
-        //             method: 'POST',
-        //             dataType: 'json',
-
-        //             success: function (data) {
-        //                 $('.pro_total_price').html(data.total_price);
-        //             },
-        //             error: function(xhr, status, error) {
-        //                 console.error("Error:", error);
-        //             }
-        //         });
-        //     });
-        // });
-        
-        // function getTotal(shipping_id) {
-        //     var pro_total_price = $('.pro_total_price').attr('data-value');
-        //     if (shipping_id == undefined) {
-        //         $('.shipping_price_add').hide();
-        //         return false
-        //     } else {
-        //         $('.shipping_price_add').show();
-        //     }
-
-        //     $.ajax({
-        //         url: '{{ route('user.shipping', [$store->slug,'_shipping'])}}'.replace('_shipping', shipping_id),
-        //         data: {
-        //             "pro_total_price": pro_total_price,
-        //             "_token": "{{ csrf_token() }}",
-        //         },
-        //         method: 'POST',
-        //         context: this,
-        //         dataType: 'json',
-
-        //         success: function (data) {
-        //             var price = data.price + pro_total_price;
-        //             $('.shipping_price').html(data.price);
-        //             $('.shipping_price').attr('data-value', data.price);
-        //             $('.pro_total_price').html(data.total_price);
-        //         }
-        //     });
-        // }
+        });
     </script>
 @endpush

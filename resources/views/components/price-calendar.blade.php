@@ -181,6 +181,7 @@
                             document.getElementById("num-nights").textContent = "{{ __('Night') }}";
                             $('#total-booking-price').val(null); // Update hidden input field
                             $('.pro_total_price').html('');
+                            $('.pro_total_price').attr('data-value', 0);
 
                         } else {
                             selectedEndDate = date;
@@ -213,7 +214,14 @@
                                 }
                             });
 
-                            // Step 4: Display or use the total
+                            // Step 4: reduce total price by coupon amount if applied
+                            $('.pro_total_price').attr('data-value', formatPrice(totalPrice));
+                            const coupon = $('.apply-coupon').closest('.row').find('.coupon').val();
+                            if (coupon != "") {
+                                $('.apply-coupon').trigger('click');
+                            }
+
+                            // Step 5: Display or use the total
                             $('#total-booking-price').val(formatPrice(totalPrice)); // Update hidden input field
                             $('.pro_total_price').html(formatPrice(totalPrice));
 
