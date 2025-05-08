@@ -185,12 +185,12 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                                 <div class="coupon-form">
                                     <div class="coupon-body">
                                         <form action="">
-                                            <div class="input-wrapper">
+                                            <div class="input-wrapper" style="gap: 10px">
                                                 <input type="text" id="stripe_coupon" name="coupon" class="coupon hidd_val" placeholder="{{ __('Enter Coupon Code') }}">
                                                 <input type="hidden" name="coupon" class="hidden_coupon" value="">
-                                            </div>
-                                            <div class="btn-wrapper apply-stripe-btn-coupon">
-                                                <button type="submit" class="btn apply-coupon">{{ __('Apply') }}</button>
+                                                <div class="btn-wrapper apply-stripe-btn-coupon">
+                                                    <button type="submit" class="btn apply-coupon">{{ __('Apply') }}</button>
+                                                </div>
                                             </div>
                                         </form>
                                     </div>
