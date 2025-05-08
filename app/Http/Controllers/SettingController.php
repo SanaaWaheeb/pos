@@ -707,6 +707,31 @@ class SettingController extends Controller
                 ]
             );
         }
+        elseif ($request->is_ipay88_enabled == 'on') { // Ipay88 Payment Gateway
+            $request->validate(
+                [
+                    'merchant_key' => 'required|string',
+                    'merchant_code' => 'required|string',
+                ]
+            );
+        }
+        elseif ($request->is_zabeb_enabled == 'on') { // Zabeb Beta
+            $request->validate(
+                [
+                    'client_id' => 'required|string',
+                    'secret_key' => 'required|string',
+                ]
+            );
+        }
+        elseif ($request->is_squareup_enabled == 'on') { // Square up Payment Gateway
+            $request->validate(
+                [
+                    'appliction_id' => 'required|string',
+                    'access_token' => 'required|string',
+                    'location_id' =>'required|string'
+                ]
+            );
+        }
 
         $store['currency'] = $request->currency_symbol;
         $store['currency_code'] = $request->currency;
@@ -734,6 +759,9 @@ class SettingController extends Controller
         if ($request->has(key: 'edfapay_password')) {
             $store['edfapay_password'] = $request->edfapay_password;
         }
+        $store['is_ipay88_enabled']=$request->is_ipay88_enabled??'off';
+        $store['is_zabeb_enabled ']=$request->is_zabeb_enabled ??'off';
+        $store['is_squareup_enabled']=$request->is_squareup_enabled??'off';
 
         $store->update();
 
@@ -1213,7 +1241,67 @@ class SettingController extends Controller
         {
             $post['is_edfapay_enabled'] = 'off';
         }
-        // ---------------------- EdfaPay ------------------------
+       
+
+        // ---------------------- Ipay88 ------------------------
+        if(isset($request->is_ipay88_enabled) && $request->is_ipay88_enabled == 'on')
+        {
+            $request->validate(
+                [
+                    'merchant_key' => 'required|string',
+                    'merchant_code' => 'required|string',
+                ]
+            );
+            $post['is_ipay88_enabled'] = $request->is_ipay88_enabled;
+            $post['merchant_key'] = $request->merchant_key;
+            $post['merchant_code'] = $request->merchant_code;
+        }
+        else
+        {
+            $post['is_ipay88_enabled'] = 'off';
+        }
+
+
+        // ---------------------- Zabeb ------------------------
+        if(isset($request->is_zabeb_enabled) && $request->is_zabeb_enabled == 'on')
+        {
+            $request->validate(
+                [
+                    'client_id'=>'required|string',
+                    'secret_key' => 'required|string',
+                ]
+            );
+            $post['is_zabeb_enabled'] = $request->is_zabeb_enabled;
+            $post['client_id'] = $request->client_id;
+            $post['secret_key'] = $request->secret_key;
+        }
+        else
+        {
+            $post['is_zabeb_enabled'] = 'off';
+        }
+
+
+        // ---------------------- Square up ------------------------
+        if(isset($request->is_squareup_enabled) && $request->is_squareup_enabled == 'on')
+        {
+            $request->validate(
+                [
+                    'appliction_id'=>'required|string',
+                    'access_token' => 'required|string',
+                    'location_id' => 'required|string',
+                ]
+            );
+            $post['is_squareup_enabled'] = $request->is_squareup_enabled;
+            $post['appliction_id'] = $request->appliction_id;
+            $post['access_token'] = $request->access_token;
+            $post['location_id']=$request->location_id;
+        }
+        else
+        {
+            $post['is_squareup_enabled'] = 'off';
+        }
+  
+
 
         if(isset($request->is_iyzipay_enabled) && $request->is_iyzipay_enabled == 'on')
         {
@@ -1784,7 +1872,66 @@ class SettingController extends Controller
         {
             $post['is_edfapay_enabled'] = 'off';
         }
-        // ---------------------- EdfaPay ------------------------
+        
+         // ---------------------- Ipay88 ------------------------
+         if(isset($request->is_ipay88_enabled) && $request->is_ipay88_enabled == 'on')
+         {
+             $request->validate(
+                 [
+                     'merchant_key' => 'required|string',
+                     'merchant_code' => 'required|string',
+                 ]
+             );
+             $post['is_ipay88_enabled'] = $request->is_ipay88_enabled;
+             $post['merchant_key'] = $request->merchant_key;
+             $post['merchant_code'] = $request->merchant_code;
+         }
+         else
+         {
+             $post['is_ipay88_enabled'] = 'off';
+         }
+ 
+ 
+         // ---------------------- Zabeb ------------------------
+         if(isset($request->is_zabeb_enabled) && $request->is_zabeb_enabled == 'on')
+         {
+             $request->validate(
+                 [
+                     'client_id'=>'required|string',
+                     'secret_key' => 'required|string',
+                 ]
+             );
+             $post['is_zabeb_enabled'] = $request->is_zabeb_enabled;
+             $post['client_id'] = $request->client_id;
+             $post['secret_key'] = $request->secret_key;
+         }
+         else
+         {
+             $post['is_zabeb_enabled'] = 'off';
+         }
+ 
+ 
+         // ---------------------- Square up ------------------------
+         if(isset($request->is_squareup_enabled) && $request->is_squareup_enabled == 'on')
+         {
+             $request->validate(
+                 [
+                     'appliction_id'=>'required|string',
+                     'access_token' => 'required|string',
+                     'location_id' => 'required|string',
+                 ]
+             );
+             $post['is_squareup_enabled'] = $request->is_squareup_enabled;
+             $post['appliction_id'] = $request->appliction_id;
+             $post['access_token'] = $request->access_token;
+             $post['location_id']=$request->location_id;
+         }
+         else
+         {
+             $post['is_squareup_enabled'] = 'off';
+         }
+   
+ 
         
         // iyzi pay
         if(isset($request->is_iyzipay_enabled) && $request->is_iyzipay_enabled == 'on')
