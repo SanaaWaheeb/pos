@@ -4622,7 +4622,7 @@
                                                             {{-- IPay88 Merchant Key --}}
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    <label for="merchant_key"
+                                                                    <label for="ipay88_merchant_key"
                                                                         class="col-form-label">{{ __('Merchant Key') }}</label>
                                                                     <input type="text" name="ipay88_merchant_key"
                                                                         id="ipay88_merchant_key" class="form-control"

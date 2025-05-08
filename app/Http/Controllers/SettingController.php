@@ -760,7 +760,7 @@ class SettingController extends Controller
             $store['edfapay_password'] = $request->edfapay_password;
         }
         $store['is_ipay88_enabled']=$request->is_ipay88_enabled??'off';
-        $store['is_zabeb_enabled ']=$request->is_zabeb_enabled ??'off';
+        $store['is_zabeb_enabled']=$request->is_zabeb_enabled ??'off';
         $store['is_squareup_enabled']=$request->is_squareup_enabled??'off';
 
         $store->update();
