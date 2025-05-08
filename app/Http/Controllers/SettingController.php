@@ -710,25 +710,25 @@ class SettingController extends Controller
         elseif ($request->is_ipay88_enabled == 'on') { // Ipay88 Payment Gateway
             $request->validate(
                 [
-                    'merchant_key' => 'required|string',
-                    'merchant_code' => 'required|string',
+                    'ipay88_merchant_key' => 'required|string',
+                    'ipay88_merchant_code' => 'required|string',
                 ]
             );
         }
         elseif ($request->is_zabeb_enabled == 'on') { // Zabeb Beta
             $request->validate(
                 [
-                    'client_id' => 'required|string',
-                    'secret_key' => 'required|string',
+                    'zabeb_client_id' => 'required|string',
+                    'zabeb_secret_key' => 'required|string',
                 ]
             );
         }
         elseif ($request->is_squareup_enabled == 'on') { // Square up Payment Gateway
             $request->validate(
                 [
-                    'appliction_id' => 'required|string',
-                    'access_token' => 'required|string',
-                    'location_id' =>'required|string'
+                    'squareup_appliction_id' => 'required|string',
+                    'squareup_access_token' => 'required|string',
+                    'squareup_location_id' =>'required|string'
                 ]
             );
         }
@@ -1878,13 +1878,13 @@ class SettingController extends Controller
          {
              $request->validate(
                  [
-                     'merchant_key' => 'required|string',
-                     'merchant_code' => 'required|string',
+                     'ipay88_merchant_key' => 'required|string',
+                     'ipay88_merchant_code' => 'required|string',
                  ]
              );
              $post['is_ipay88_enabled'] = $request->is_ipay88_enabled;
-             $post['merchant_key'] = $request->merchant_key;
-             $post['merchant_code'] = $request->merchant_code;
+             $post['ipay88_merchant_key'] = $request->ipay88_merchant_key;
+             $post['ipay88_merchant_code'] = $request->ipay88_merchant_code;
          }
          else
          {
@@ -1897,13 +1897,13 @@ class SettingController extends Controller
          {
              $request->validate(
                  [
-                     'client_id'=>'required|string',
-                     'secret_key' => 'required|string',
+                     'zabeb_client_id'=>'required|string',
+                     'zabeb_secret_key' => 'required|string',
                  ]
              );
              $post['is_zabeb_enabled'] = $request->is_zabeb_enabled;
-             $post['client_id'] = $request->client_id;
-             $post['secret_key'] = $request->secret_key;
+             $post['zabeb_client_id'] = $request->zabeb_client_id;
+             $post['zabeb_secret_key'] = $request->zabeb_secret_key;
          }
          else
          {
@@ -1916,15 +1916,15 @@ class SettingController extends Controller
          {
              $request->validate(
                  [
-                     'appliction_id'=>'required|string',
-                     'access_token' => 'required|string',
-                     'location_id' => 'required|string',
+                     'squareup_appliction_id'=>'required|string',
+                     'squareup_access_token' => 'required|string',
+                     'squareup_location_id' => 'required|string',
                  ]
              );
              $post['is_squareup_enabled'] = $request->is_squareup_enabled;
-             $post['appliction_id'] = $request->appliction_id;
-             $post['access_token'] = $request->access_token;
-             $post['location_id']=$request->location_id;
+             $post['squareup_appliction_id'] = $request->squareup_appliction_id;
+             $post['squareup_access_token'] = $request->squareup_access_token;
+             $post['squareup_location_id']=$request->squareup_location_id;
          }
          else
          {

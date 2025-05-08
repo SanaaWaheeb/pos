@@ -752,6 +752,71 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                   {{-- ------------------------ IPay88 ------------------------- --}}
+                                                   <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingThirtySeven">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseThirtySeven"
+                                                            aria-expanded="true" aria-controls="collapseThirtySeven">
+                                                            <span class="d-flex align-items-center">
+                                                                {{ __('IPay88') }}
+                                                            </span>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="me-2">{{__('On/Off :')}}</span>
+                                                                <div class="form-check form-switch d-inline-block custom-switch-v1">
+                                                                    <input type="hidden" name="is_ipay88_enabled"
+                                                                        value="off">
+                                                                    <input type="checkbox" class="form-check-input"
+                                                                        name="is_ipay88_enabled"
+                                                                        id="is_ipay88_enabled"
+                                                                        {{ isset($store_payment_setting['is_ipay88_enabled']) && $store_payment_setting['is_ipay88_enabled'] == 'on' ? 'checked="checked"' : '' }}>
+                                                                    <label class="custom-control-label form-label"
+                                                                        for="is_ipay88_enabled"></label>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseThirtySeven" class="accordion-collapse collapse"aria-labelledby="headingTThirtySeven"data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                            <div class="row">
+                                                            
+                                                                {{-- IPay88 Merchant Key --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="merchant_key"
+                                                                            class="col-form-label">{{ __('Merchant Key') }}</label>
+                                                                        <input type="text" name="edfapay_merchant_key"
+                                                                            id="edfapay_merchant_key" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['edfapay_merchant_key']) ? $store_payment_setting['edfapay_merchant_key'] : '' }}"
+                                                                            placeholder="{{ __('Merchant Key') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('edfapay_merchant_key'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('edfapay_merchant_key') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                {{-- EdfaPay Password --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="edfapay_password"
+                                                                            class="col-form-label">{{ __('EdfaPay Password') }}</label>
+                                                                        <input type="text" name="edfapay_password"
+                                                                            id="edfapay_password" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['edfapay_password']) ? $store_payment_setting['edfapay_password'] : '' }}"
+                                                                            placeholder="{{ __('EdfaPay Password') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('edfapay_password'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('edfapay_password') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="accordion-item">
                                                     <h2 class=" accordion-header" id="heading-2-16">
                                                         <button class="accordion-button collapsed" type="button"
