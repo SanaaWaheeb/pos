@@ -2919,11 +2919,11 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         }
 
         session()->put($slug, $cart);
-        // return redirect()->route('store-payment.payment', $slug);
-        return redirect()->route('payment.checkout', [
-            'slug' => $slug,
-            'order_amount' => $totalPrice ?? 0,
-        ]);
+        return redirect()->route('store-payment.payment', $slug);
+        // return redirect()->route('payment.checkout', [
+        //     'slug' => $slug,
+        //     'order_amount' => $totalPrice ?? 0,
+        // ]);
     }
 
     public function complete($slug, $order_id)
