@@ -753,15 +753,22 @@ class SettingController extends Controller
         $store['telegrambot'] = str_replace(' ', '', $request->telegrambot);
         $store['telegramchatid'] = str_replace(' ', '', $request->telegramchatid);
         $store['is_edfapay_enabled'] = $request->is_edfapay_enabled?? 'off';
+        $store['is_ipay88_enabled']=$request->is_ipay88_enabled??'off';
+        $store['is_zabeb_enabled']=$request->is_zabeb_enabled ??'off';
+        $store['is_squareup_enabled']=$request->is_squareup_enabled??'off';
+
         if ($request->has('edfapay_merchant_key')) {
             $store['edfapay_merchant_key'] = $request->edfapay_merchant_key;
         }
         if ($request->has(key: 'edfapay_password')) {
             $store['edfapay_password'] = $request->edfapay_password;
         }
-        $store['is_ipay88_enabled']=$request->is_ipay88_enabled??'off';
-        $store['is_zabeb_enabled']=$request->is_zabeb_enabled ??'off';
-        $store['is_squareup_enabled']=$request->is_squareup_enabled??'off';
+        if ($request->has('ipay88_merchant_key')) {
+            $store['ipay88_merchant_key'] = $request->ipay88_merchant_key;
+        }
+        if ($request->has(key: 'ipay88_merchant_code')) {
+            $store['ipay88_merchant_code'] = $request->ipay88_merchant_code;
+        }
 
         $store->update();
 
@@ -1248,13 +1255,13 @@ class SettingController extends Controller
         {
             $request->validate(
                 [
-                    'merchant_key' => 'required|string',
-                    'merchant_code' => 'required|string',
+                    'ipay88_merchant_key' => 'required|string',
+                    'ipay88_merchant_code' => 'required|string',
                 ]
             );
             $post['is_ipay88_enabled'] = $request->is_ipay88_enabled;
-            $post['merchant_key'] = $request->merchant_key;
-            $post['merchant_code'] = $request->merchant_code;
+            $post['ipay88_merchant_key'] = $request->ipay88_merchant_key;
+            $post['ipay88_merchant_code'] = $request->ipay88_merchant_code;
         }
         else
         {
