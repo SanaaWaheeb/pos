@@ -713,12 +713,12 @@ class SettingController extends Controller
                 ]
             );
         }
-        elseif ($request->is_squareup_enabled == 'on') { // Square up Payment Gateway
+        elseif ($request->is_square_enabled == 'on') { // Square up Payment Gateway
             $request->validate(
                 [
-                    'squareup_appliction_id' => 'required|string',
-                    'squareup_access_token' => 'required|string',
-                    'squareup_location_id' =>'required|string'
+                    'square_appliction_id' => 'required|string',
+                    'square_access_token' => 'required|string',
+                    'square_location_id' =>'required|string'
                 ]
             );
         }
@@ -745,7 +745,7 @@ class SettingController extends Controller
         $store['is_edfapay_enabled'] = $request->is_edfapay_enabled?? 'off';
         $store['is_ipay88_enabled'] = $request->is_ipay88_enabled?? 'off';
         $store['is_zabeb_enabled'] = $request->is_zabeb_enabled?? 'off';
-        $store['is_squareup_enabled'] = $request->is_squareup_enabled?? 'off';
+        $store['is_square_enabled'] = $request->is_square_enabled?? 'off';
 
         // Edfapay
         if ($request->has('edfapay_merchant_key')) {
@@ -768,15 +768,15 @@ class SettingController extends Controller
         if ($request->has(key: 'zabeb_secret_key')) {
             $store['zabeb_secret_key'] = $request->zabeb_secret_key;
         }
-        // Squareup
-        if ($request->has('squareup_appliction_id')) {
-            $store['squareup_appliction_id'] = $request->squareup_appliction_id;
+        // square
+        if ($request->has('square_appliction_id')) {
+            $store['square_appliction_id'] = $request->square_appliction_id;
         }
-        if ($request->has(key: 'squareup_access_token')) {
-            $store['squareup_access_token'] = $request->squareup_access_token;
+        if ($request->has(key: 'square_access_token')) {
+            $store['square_access_token'] = $request->square_access_token;
         }
-        if ($request->has(key: 'squareup_location_id')) {
-            $store['squareup_location_id'] = $request->squareup_location_id;
+        if ($request->has(key: 'square_location_id')) {
+            $store['square_location_id'] = $request->square_location_id;
         }
 
         $store->update();
@@ -1298,23 +1298,23 @@ class SettingController extends Controller
 
 
         // ---------------------- Square up ------------------------
-        if(isset($request->is_squareup_enabled) && $request->is_squareup_enabled == 'on')
+        if(isset($request->is_square_enabled) && $request->is_square_enabled == 'on')
         {
             $request->validate(
                 [
-                    'squareup_appliction_id'=>'required|string',
-                    'squareup_access_token' => 'required|string',
-                    'squareup_location_id' => 'required|string',
+                    'square_appliction_id'=>'required|string',
+                    'square_access_token' => 'required|string',
+                    'square_location_id' => 'required|string',
                 ]
             );
-            $post['is_squareup_enabled'] = $request->is_squareup_enabled;
-            $post['squareup_appliction_id'] = $request->squareup_appliction_id;
-            $post['squareup_access_token'] = $request->squareup_access_token;
-            $post['squareup_location_id']=$request->squareup_location_id;
+            $post['is_square_enabled'] = $request->is_square_enabled;
+            $post['square_appliction_id'] = $request->square_appliction_id;
+            $post['square_access_token'] = $request->square_access_token;
+            $post['square_location_id']=$request->square_location_id;
         }
         else
         {
-            $post['is_squareup_enabled'] = 'off';
+            $post['is_square_enabled'] = 'off';
         }
   
 
@@ -1928,23 +1928,23 @@ class SettingController extends Controller
  
  
          // ---------------------- Square up ------------------------
-         if(isset($request->is_squareup_enabled) && $request->is_squareup_enabled == 'on')
+         if(isset($request->is_square_enabled) && $request->is_square_enabled == 'on')
          {
              $request->validate(
                  [
-                     'squareup_appliction_id'=>'required|string',
-                     'squareup_access_token' => 'required|string',
-                     'squareup_location_id' => 'required|string',
+                     'square_appliction_id'=>'required|string',
+                     'square_access_token' => 'required|string',
+                     'square_location_id' => 'required|string',
                  ]
              );
-             $post['is_squareup_enabled'] = $request->is_squareup_enabled;
-             $post['squareup_appliction_id'] = $request->squareup_appliction_id;
-             $post['squareup_access_token'] = $request->squareup_access_token;
-             $post['squareup_location_id']=$request->squareup_location_id;
+             $post['is_square_enabled'] = $request->is_square_enabled;
+             $post['square_appliction_id'] = $request->square_appliction_id;
+             $post['square_access_token'] = $request->square_access_token;
+             $post['square_location_id']=$request->square_location_id;
          }
          else
          {
-             $post['is_squareup_enabled'] = 'off';
+             $post['is_square_enabled'] = 'off';
          }
    
  
