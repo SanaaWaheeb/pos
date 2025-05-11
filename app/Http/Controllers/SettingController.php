@@ -753,21 +753,40 @@ class SettingController extends Controller
         $store['telegrambot'] = str_replace(' ', '', $request->telegrambot);
         $store['telegramchatid'] = str_replace(' ', '', $request->telegramchatid);
         $store['is_edfapay_enabled'] = $request->is_edfapay_enabled?? 'off';
-        $store['is_ipay88_enabled']=$request->is_ipay88_enabled??'off';
-        $store['is_zabeb_enabled']=$request->is_zabeb_enabled ??'off';
-        $store['is_squareup_enabled']=$request->is_squareup_enabled??'off';
+        $store['is_ipay88_enabled'] = $request->is_ipay88_enabled?? 'off';
+        $store['is_zabeb_enabled'] = $request->is_zabeb_enabled?? 'off';
+        $store['is_squareup_enabled'] = $request->is_squareup_enabled?? 'off';
 
+        // Edfapay
         if ($request->has('edfapay_merchant_key')) {
             $store['edfapay_merchant_key'] = $request->edfapay_merchant_key;
         }
         if ($request->has(key: 'edfapay_password')) {
             $store['edfapay_password'] = $request->edfapay_password;
         }
+        // Ipay88
         if ($request->has('ipay88_merchant_key')) {
             $store['ipay88_merchant_key'] = $request->ipay88_merchant_key;
         }
         if ($request->has(key: 'ipay88_merchant_code')) {
             $store['ipay88_merchant_code'] = $request->ipay88_merchant_code;
+        }
+        // Zabeb
+        if ($request->has('zabeb_client_id')) {
+            $store['zabeb_client_id'] = $request->zabeb_client_id;
+        }
+        if ($request->has(key: 'zabeb_secret_key')) {
+            $store['zabeb_secret_key'] = $request->zabeb_secret_key;
+        }
+        // Squareup
+        if ($request->has('squareup_appliction_id')) {
+            $store['squareup_appliction_id'] = $request->squareup_appliction_id;
+        }
+        if ($request->has(key: 'squareup_access_token')) {
+            $store['squareup_access_token'] = $request->squareup_access_token;
+        }
+        if ($request->has(key: 'squareup_location_id')) {
+            $store['squareup_location_id'] = $request->squareup_location_id;
         }
 
         $store->update();
@@ -1274,13 +1293,13 @@ class SettingController extends Controller
         {
             $request->validate(
                 [
-                    'client_id'=>'required|string',
-                    'secret_key' => 'required|string',
+                    'zabeb_client_id'=>'required|string',
+                    'zabeb_secret_key' => 'required|string',
                 ]
             );
             $post['is_zabeb_enabled'] = $request->is_zabeb_enabled;
-            $post['client_id'] = $request->client_id;
-            $post['secret_key'] = $request->secret_key;
+            $post['zabeb_client_id'] = $request->zabeb_client_id;
+            $post['zabeb_secret_key'] = $request->zabeb_secret_key;
         }
         else
         {
@@ -1293,15 +1312,15 @@ class SettingController extends Controller
         {
             $request->validate(
                 [
-                    'appliction_id'=>'required|string',
-                    'access_token' => 'required|string',
-                    'location_id' => 'required|string',
+                    'squareup_appliction_id'=>'required|string',
+                    'squareup_access_token' => 'required|string',
+                    'squareup_location_id' => 'required|string',
                 ]
             );
             $post['is_squareup_enabled'] = $request->is_squareup_enabled;
-            $post['appliction_id'] = $request->appliction_id;
-            $post['access_token'] = $request->access_token;
-            $post['location_id']=$request->location_id;
+            $post['squareup_appliction_id'] = $request->squareup_appliction_id;
+            $post['squareup_access_token'] = $request->squareup_access_token;
+            $post['squareup_location_id']=$request->squareup_location_id;
         }
         else
         {
