@@ -1085,12 +1085,12 @@
                                             <span class="cart-sum-left">{{__('Coupon')}} </span>
                                             <span class="cart-sum-right dicount_price">{{!empty($discount_price)?$discount_price:'0.00'}}</span>
                                         </li>
-                                        @if($store->enable_shipping == "on")
+                                        {{-- @if($store->enable_shipping == "on")
                                         <li class="shipping_price_add">
                                                 <span class="cart-sum-left">{{__('Shipping Price')}} </span>
                                                 <span class="cart-sum-right shipping_price" data-value="{{$shipping_price}}">{{\App\Models\Utility::priceFormat(!empty($shipping_price)?$shipping_price:0)}}</span>
                                         </li>
-                                        @endif
+                                        @endif --}}
                                                                                 
                                         @foreach($taxArr['tax'] as $k=>$tax)
                                         <li>
