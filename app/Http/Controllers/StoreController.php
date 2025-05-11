@@ -2075,20 +2075,20 @@ class StoreController extends Controller
     // $cust_details = $cart['customer'];
 
     // Handle shipping details if enabled
-    // $shipping_price = 0;
-    // if ($store->enable_shipping == 'on') {
-    //     if (!isset($cart['shipping']) || empty($cart['shipping'])) {
-    //         return redirect()->back()->with('error', __('Please select a shipping location.'));
-    //     }
+    $shipping_price = 0;
+    if ($store->enable_shipping == 'on' && $store->theme_dir == 'theme3') {
+        if (!isset($cart['shipping']) || empty($cart['shipping'])) {
+            return redirect()->back()->with('error', __('Please select a shipping location.'));
+        }
 
-    //     $shipping = $cart['shipping'];
-    //     $shipping_details = Shipping::where('store_id', $store->id)->where('id', $shipping['shipping_id'])->first();
-    //     if ($shipping_details) {
-    //         $shipping_price = floor($shipping_details->price);
-    //     } else {
-    //         return redirect()->back()->with('error', __('Invalid shipping location.'));
-    //     }
-    // }
+        $shipping = $cart['shipping'];
+        $shipping_details = Shipping::where('store_id', $store->id)->where('id', $shipping['shipping_id'])->first();
+        if ($shipping_details) {
+            $shipping_price = floor($shipping_details->price);
+        } else {
+            return redirect()->back()->with('error', __('Invalid shipping location.'));
+        }
+    }
 
     // Handle coupon details
     $discount_price = 0;
@@ -2126,6 +2126,7 @@ class StoreController extends Controller
         'coupon_id',
         'discount_price',
         'coupon_price',
+        'shipping_price',
         'products',
        
         'store',
