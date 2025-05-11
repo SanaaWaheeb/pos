@@ -817,6 +817,152 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- ------------------------ Zabeb ------------------------- --}}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingThirtyNine">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseThirtyNine"
+                                                            aria-expanded="true" aria-controls="collapseThirtyNine">
+                                                            <span class="d-flex align-items-center">
+                                                                {{ __('Zabeb') }}
+                                                            </span>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="me-2">{{__('On/Off :')}}</span>
+                                                                <div class="form-check form-switch d-inline-block custom-switch-v1">
+                                                                    <input type="hidden" name="is_zabeb_enabled"
+                                                                        value="off">
+                                                                    <input type="checkbox" class="form-check-input"
+                                                                        name="is_zabeb_enabled"
+                                                                        id="is_zabeb_enabled"
+                                                                        {{ isset($store_payment_setting['is_zabeb_enabled']) && $store_payment_setting['is_zabeb_enabled'] == 'on' ? 'checked="checked"' : '' }}>
+                                                                    <label class="custom-control-label form-label"
+                                                                        for="is_zabeb_enabled"></label>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseThirtyNine" class="accordion-collapse collapse"aria-labelledby="headingThirtyNine"data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                            <div class="row">
+                                                            
+                                                                {{-- Zabeb Client ID--}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="zabeb_client_id"
+                                                                            class="col-form-label">{{ __('Zabeb Client ID') }}</label>
+                                                                        <input type="text" name="zabeb_client_id"
+                                                                            id="zabeb_client_id" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['zabeb_client_id']) ? $store_payment_setting['zabeb_client_id'] : '' }}"
+                                                                            placeholder="{{ __('Zabeb Client ID') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('zabeb_client_id'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('zabeb_client_id') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                {{-- Zabeb Secret Key --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="zabeb_secret_key"
+                                                                            class="col-form-label">{{ __('Zabeb Secret Key') }}</label>
+                                                                        <input type="text" name="zabeb_secret_key"
+                                                                            id="zabeb_secret_key" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['zabeb_secret_key']) ? $store_payment_setting['zabeb_secret_key'] : '' }}"
+                                                                            placeholder="{{ __('Zabeb Secret Key') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('zabeb_secret_key'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('zabeb_secret_key') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{-- ------------------------ Squareup ------------------------- --}}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingForty">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseForty"
+                                                            aria-expanded="true" aria-controls="collapseForty">
+                                                            <span class="d-flex align-items-center">
+                                                                {{ __('Squareup') }}
+                                                            </span>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="me-2">{{__('On/Off :')}}</span>
+                                                                <div class="form-check form-switch d-inline-block custom-switch-v1">
+                                                                    <input type="hidden" name="is_squareup_enabled"
+                                                                        value="off">
+                                                                    <input type="checkbox" class="form-check-input"
+                                                                        name="is_squareup_enabled"
+                                                                        id="is_squareup_enabled"
+                                                                        {{ isset($store_payment_setting['is_squareup_enabled']) && $store_payment_setting['is_squareup_enabled'] == 'on' ? 'checked="checked"' : '' }}>
+                                                                    <label class="custom-control-label form-label"
+                                                                        for="is_squareup_enabled"></label>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseForty" class="accordion-collapse collapse"aria-labelledby="headingForty"data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                            <div class="row">
+                                                            
+                                                                {{-- Squareup Appliction ID --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="squareup_appliction_id"
+                                                                            class="col-form-label">{{ __('Squareup Appliction ID') }}</label>
+                                                                        <input type="text" name="squareup_appliction_id"
+                                                                            id="squareup_appliction_id" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['squareup_appliction_id']) ? $store_payment_setting['squareup_appliction_id'] : '' }}"
+                                                                            placeholder="{{ __('Squareup Appliction ID') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('squareup_appliction_id'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('squareup_appliction_id') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                {{-- Squareup Access Token --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="squareup_access_token"
+                                                                            class="col-form-label">{{ __('Squareup Access Token') }}</label>
+                                                                        <input type="text" name="squareup_access_token"
+                                                                            id="squareup_access_token" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['squareup_access_token']) ? $store_payment_setting['squareup_access_token'] : '' }}"
+                                                                            placeholder="{{ __('Squareup Access Token') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('squareup_access_token'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('squareup_access_token') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                 {{-- Squareup Location ID --}}
+                                                                 <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="squareup_location_id"
+                                                                            class="col-form-label">{{ __('Squareup Location ID') }}</label>
+                                                                        <input type="text" name="squareup_location_id"
+                                                                            id="ssquareup_location_id" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['squareup_location_id']) ? $store_payment_setting['squareup_location_id'] : '' }}"
+                                                                            placeholder="{{ __('Squareup Location ID') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('squareup_location_id'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('squareup_location_id') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="accordion-item">
                                                     <h2 class=" accordion-header" id="heading-2-16">
                                                         <button class="accordion-button collapsed" type="button"
@@ -4648,6 +4794,152 @@
                                                                 @if ($errors->has('ipay88_merchant_code'))
                                                                     <span class="invalid-feedback d-block">
                                                                         {{ $errors->first('ipay88_merchant_code') }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                             {{-- ------------------------ Zabeb ------------------------- --}}
+                                             <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingThirtyNine">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#collapseThirtyNine"
+                                                        aria-expanded="true" aria-controls="collapseThirtyNine">
+                                                        <span class="d-flex align-items-center">
+                                                            {{ __('Zabeb') }}
+                                                        </span>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="me-2">{{__('On/Off :')}}</span>
+                                                            <div class="form-check form-switch d-inline-block custom-switch-v1">
+                                                                <input type="hidden" name="is_zabeb_enabled"
+                                                                    value="off">
+                                                                <input type="checkbox" class="form-check-input"
+                                                                    name="is_zabeb_enabled"
+                                                                    id="is_zabeb_enabled"
+                                                                    {{ isset($store_payment_setting['is_zabeb_enabled']) && $store_payment_setting['is_zabeb_enabled'] == 'on' ? 'checked="checked"' : '' }}>
+                                                                <label class="custom-control-label form-label"
+                                                                    for="is_zabeb_enabled"></label>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseThirtyNine" class="accordion-collapse collapse"aria-labelledby="headingThirtyNine"data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="row">
+                                                        
+                                                            {{-- Zabeb Client ID--}}
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="zabeb_client_id"
+                                                                        class="col-form-label">{{ __('Zabeb Client ID') }}</label>
+                                                                    <input type="text" name="zabeb_client_id"
+                                                                        id="zabeb_client_id" class="form-control"
+                                                                        value="{{ isset($store_payment_setting['zabeb_client_id']) ? $store_payment_setting['zabeb_client_id'] : '' }}"
+                                                                        placeholder="{{ __('Zabeb Client ID') }}">
+                                                                </div>
+                                                                @if ($errors->has('zabeb_client_id'))
+                                                                    <span class="invalid-feedback d-block">
+                                                                        {{ $errors->first('zabeb_client_id') }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                            {{-- Zabeb Secret Key --}}
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="zabeb_secret_key"
+                                                                        class="col-form-label">{{ __('Zabeb Secret Key') }}</label>
+                                                                    <input type="text" name="zabeb_secret_key"
+                                                                        id="zabeb_secret_key" class="form-control"
+                                                                        value="{{ isset($store_payment_setting['zabeb_secret_key']) ? $store_payment_setting['zabeb_secret_key'] : '' }}"
+                                                                        placeholder="{{ __('Zabeb Secret Key') }}">
+                                                                </div>
+                                                                @if ($errors->has('zabeb_secret_key'))
+                                                                    <span class="invalid-feedback d-block">
+                                                                        {{ $errors->first('zabeb_secret_key') }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                               {{-- ------------------------ Squareup ------------------------- --}}
+                                               <div class="accordion-item">
+                                                <h2 class="accordion-header" id="headingForty">
+                                                    <button class="accordion-button collapsed" type="button"
+                                                        data-bs-toggle="collapse" data-bs-target="#collapseForty"
+                                                        aria-expanded="true" aria-controls="collapseForty">
+                                                        <span class="d-flex align-items-center">
+                                                            {{ __('Squareup') }}
+                                                        </span>
+                                                        <div class="d-flex align-items-center">
+                                                            <span class="me-2">{{__('On/Off :')}}</span>
+                                                            <div class="form-check form-switch d-inline-block custom-switch-v1">
+                                                                <input type="hidden" name="is_squareup_enabled"
+                                                                    value="off">
+                                                                <input type="checkbox" class="form-check-input"
+                                                                    name="is_squareup_enabled"
+                                                                    id="is_squareup_enabled"
+                                                                    {{ isset($store_payment_setting['is_squareup_enabled']) && $store_payment_setting['is_squareup_enabled'] == 'on' ? 'checked="checked"' : '' }}>
+                                                                <label class="custom-control-label form-label"
+                                                                    for="is_squareup_enabled"></label>
+                                                            </div>
+                                                        </div>
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseForty" class="accordion-collapse collapse"aria-labelledby="headingForty"data-bs-parent="#accordionExample">
+                                                    <div class="accordion-body">
+                                                        <div class="row">
+                                                        
+                                                            {{-- Squareup Appliction ID --}}
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="squareup_appliction_id"
+                                                                        class="col-form-label">{{ __('Squareup Appliction ID') }}</label>
+                                                                    <input type="text" name="squareup_appliction_id"
+                                                                        id="squareup_appliction_id" class="form-control"
+                                                                        value="{{ isset($store_payment_setting['squareup_appliction_id']) ? $store_payment_setting['squareup_appliction_id'] : '' }}"
+                                                                        placeholder="{{ __('Squareup Appliction ID') }}">
+                                                                </div>
+                                                                @if ($errors->has('squareup_appliction_id'))
+                                                                    <span class="invalid-feedback d-block">
+                                                                        {{ $errors->first('squareup_appliction_id') }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                            {{-- Squareup Access Token --}}
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="squareup_access_token"
+                                                                        class="col-form-label">{{ __('Squareup Access Token') }}</label>
+                                                                    <input type="text" name="squareup_access_token"
+                                                                        id="squareup_access_token" class="form-control"
+                                                                        value="{{ isset($store_payment_setting['squareup_access_token']) ? $store_payment_setting['squareup_access_token'] : '' }}"
+                                                                        placeholder="{{ __('Squareup Access Token') }}">
+                                                                </div>
+                                                                @if ($errors->has('squareup_access_token'))
+                                                                    <span class="invalid-feedback d-block">
+                                                                        {{ $errors->first('squareup_access_token') }}
+                                                                    </span>
+                                                                @endif
+                                                            </div>
+                                                             {{-- Squareup Location ID --}}
+                                                             <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="squareup_location_id"
+                                                                        class="col-form-label">{{ __('Squareup Location ID') }}</label>
+                                                                    <input type="text" name="squareup_location_id"
+                                                                        id="ssquareup_location_id" class="form-control"
+                                                                        value="{{ isset($store_payment_setting['squareup_location_id']) ? $store_payment_setting['squareup_location_id'] : '' }}"
+                                                                        placeholder="{{ __('Squareup Location ID') }}">
+                                                                </div>
+                                                                @if ($errors->has('squareup_location_id'))
+                                                                    <span class="invalid-feedback d-block">
+                                                                        {{ $errors->first('squareup_location_id') }}
                                                                     </span>
                                                                 @endif
                                                             </div>
