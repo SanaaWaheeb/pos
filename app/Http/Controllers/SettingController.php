@@ -670,20 +670,6 @@ class SettingController extends Controller
             return redirect()->back()->with('error', $messages->first());
         }
 
-        // Make sure the admin will enable only one payment method
-        $input = $request->all();
-        $enabled_methods = [];
-        foreach($input as $key => $value) {
-            if (str_starts_with($key, 'is_') && str_ends_with($key, '_enabled') && $value === 'on') {
-                $payment_method = str_replace(['is_', '_enabled'], '', $key);
-                $enabled_methods[] = $payment_method;
-            }
-        }
-        if (count($enabled_methods) > 1) {
-            return redirect()->back()->with('error', __('Only one payment method can be enabled.'));
-        }
-
-
         if (isset($request->enable_stripe) && $request->enable_stripe == 'on') {
             $request->validate(
                 [
