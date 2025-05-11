@@ -217,12 +217,12 @@ $imgpath=\App\Models\Utility::get_file('uploads/is_cover_image/');
                             </div>
                                 @if($store_settings['is_checkout_login_required'] == null || $store_settings['is_checkout_login_required'] == 'off' && !Auth::guard('customers')->user())
                                     <a href="#" class="checkout-btn modal-target checkout_btn" data-modal="Checkout" id="checkout-btn">
-                                        {{__('Proceed to checkout')}}
+                                        {{__('Continue to pay')}}
                                         <i class="fas fa-shopping-basket"></i>
                                     </a>
                                 @else
                                     <a href="{{ route('payment.checkout', ['slug' => $store->slug, 'order_amount' => $total]) }}" class="checkout-btn">
-                                        {{__('Proceed to checkout')}}
+                                        {{__('Continue to pay')}}
                                         <i class="fas fa-shopping-basket"></i>
                                     </a>
                                 @endif
