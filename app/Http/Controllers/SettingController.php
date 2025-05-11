@@ -39,101 +39,105 @@ class SettingController extends Controller
                 $PixelFields = PixelFields::where('store_id', $user->current_store)->orderBy('id')->get();
 
                 if ($store_settings) {
-                    if ($store_settings['domains']) {
-                        $serverIp   = $_SERVER['SERVER_ADDR'];
+                    // Domain pointing check
+                    if (!empty($store_settings['domains'])) {
+                        $serverIp = $_SERVER['SERVER_ADDR'];
                         $domain = $store_settings['domains'];
-                        if (isset($domain) && !empty($domain)) {
-                            $domainip = gethostbyname($domain);
-                        }
-                        if ($serverIp == $domainip) {
-                            $domainPointing = 1;
-                        } else {
-                            $domainPointing = 0;
-                        }
+                        $domainip = gethostbyname($domain);
+                        $domainPointing = ($serverIp === $domainip) ? 1 : 0;
                     } else {
-                        $serverIp   = $_SERVER['SERVER_ADDR'];
+                        $serverIp = $_SERVER['SERVER_ADDR'];
                         $domain = $serverIp;
                         $domainip = gethostbyname($domain);
                         $domainPointing = 0;
                     }
+                
                     $door = $store_settings->door;
-                    $board_id= $store_settings->board_id;
+                    $board_id = $store_settings->board_id;
+                
                     $store_payment_setting = Utility::getPaymentSetting();
-                    $serverName = str_replace(
-                        [
-                            'http://',
-                            'https://',
-                        ],
-                        '',
-                        env('APP_URL')
-                    );
-                    $serverIp   = gethostbyname($serverName);
-
-                    if ($serverIp == $_SERVER['SERVER_ADDR']) {
-                        $serverIp;
-                    } else {
+                
+                    $serverName = str_replace(['http://', 'https://'], '', env('APP_URL'));
+                    $serverIp = gethostbyname($serverName);
+                
+                    if ($serverIp !== $_SERVER['SERVER_ADDR']) {
                         $serverIp = request()->server('SERVER_ADDR');
                     }
-
-                    $plan                        = \Auth::user()->currentPlan;
-                    $app_url                     = trim(env('APP_URL'), '/');
-
+                
+                    $plan = \Auth::user()->currentPlan;
+                    $app_url = trim(env('APP_URL'), '/');
                     $store_settings['store_url'] = $app_url . '/store/' . $store_settings['slug'];
-                    // Remove the http://, www., and slash(/) from the URL
+                
+                    // Prepare and sanitize input URL
                     $input = env('APP_URL');
-
-                    // If URI is like, eg. www.way2tutorial.com/
                     $input = trim($input, '/');
-                    // If not have http:// or https:// then prepend it
                     if (!preg_match('#^http(s)?://#', $input)) {
                         $input = 'http://' . $input;
                     }
-
+                
                     $urlParts = parse_url($input);
-
-                    $serverIp   = $_SERVER['SERVER_ADDR'];
-                    if (!empty($store_settings['subdomain']) || !empty($urlParts['host'])) {
-                        $subdomain_Ip   = gethostbyname($urlParts['host']);
-                        if ($serverIp == $subdomain_Ip) {
-                            $subdomainPointing = 1;
-                        } else {
-                            $subdomainPointing = 0;
-                        }
-                        // Remove www.
-                        $subdomain_name = preg_replace('/^www\./', '', $urlParts['host']);
+                    $serverIp = $_SERVER['SERVER_ADDR'];
+                
+                    // Validate parse_url result before using
+                    if ($urlParts !== false && (isset($store_settings['subdomain']) || isset($urlParts['host']))) {
+                        $host = $urlParts['host'] ?? '';
+                        $subdomain_Ip = gethostbyname($host);
+                        $subdomainPointing = ($serverIp === $subdomain_Ip) ? 1 : 0;
+                        $subdomain_name = preg_replace('/^www\./', '', $host);
                     } else {
-                        $subdomain_Ip = $urlParts['host'];
+                        $subdomain_Ip = null;
                         $subdomainPointing = 0;
-                        $subdomain_name = str_replace(
-                            [
-                                'http://',
-                                'https://',
-                            ],
-                            '',
-                            env('APP_URL')
-                        );
+                        $subdomain_name = str_replace(['http://', 'https://'], '', env('APP_URL'));
                     }
+                
+                    // Try reading the PWA manifest
                     try {
                         $pwa_data = \File::get(storage_path('uploads/customer_app/store_' . $store_settings->id . '/manifest.json'));
                         $pwa_data = json_decode($pwa_data);
                     } catch (\Throwable $th) {
                         $pwa_data = '';
                     }
-                    $custom_domain_request = CustomDomainRequest::where('user_id', \Auth::user()->creatorId())->where('store_id',$user->current_store)->first();
+                
+                    // Handle custom domain request messages
+                    $custom_domain_request = CustomDomainRequest::where('user_id', \Auth::user()->creatorId())
+                        ->where('store_id', $user->current_store)
+                        ->first();
+                
                     $request_msg = '';
-                    if (isset($custom_domain_request->status) && $custom_domain_request->status == 0) {
-                        $request_msg = __('Your custom domain request is pending.');
-                    } elseif (!empty($custom_domain_request->status) && $custom_domain_request->status == 1) {
-                        $request_msg = __('Admin has accepted your custom domain request.');
-                    } elseif (!empty($custom_domain_request->status) && $custom_domain_request->status == 2) {
-                        $request_msg = __('Admin has rejected your custom domain request.');
+                    if (isset($custom_domain_request->status)) {
+                        switch ($custom_domain_request->status) {
+                            case 0:
+                                $request_msg = __('Your custom domain request is pending.');
+                                break;
+                            case 1:
+                                $request_msg = __('Admin has accepted your custom domain request.');
+                                break;
+                            case 2:
+                                $request_msg = __('Admin has rejected your custom domain request.');
+                                break;
+                        }
                     }
-
-                    return view('settings.index', compact('settings', 'store_settings','timezones', 'store_payment_setting', 'plan', 'serverIp', 'subdomain_name', 'subdomain_Ip', 'subdomainPointing', 'domainip', 'domainPointing',	 'pwa_data', 'PixelFields', 'request_msg'));
-                    // return view('settings.index', compact('settings', 'store_settings','timezones', 'store_payment_setting', 'plan', 'serverIp', 'subdomain_name', 'subdomain_Ip', 'subdomainPointing', 'domainip', 'domainPointing',	 'pwa_data', 'PixelFields'));
+                
+                    return view('settings.index', compact(
+                        'settings',
+                        'store_settings',
+                        'timezones',
+                        'store_payment_setting',
+                        'plan',
+                        'serverIp',
+                        'subdomain_name',
+                        'subdomain_Ip',
+                        'subdomainPointing',
+                        'domainip',
+                        'domainPointing',
+                        'pwa_data',
+                        'PixelFields',
+                        'request_msg'
+                    ));
                 } else {
                     return redirect()->back()->with('error', __('Permission denied.'));
                 }
+                
             }
         }
         else{
