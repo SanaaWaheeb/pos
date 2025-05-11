@@ -2096,7 +2096,8 @@ class StoreController extends Controller
     $coupon_id = 0;
     if (isset($cart['coupon'])) {
         $discount_price = $cart['coupon']['discount_price'];
-        $coupon_price = str_replace('-' . $store->currency, '', $cart['coupon']['discount_price']);
+        $coupon_price = str_replace('-' , '', $discount_price);
+        $coupon_price = trim(str_replace($store->currency, '', $coupon_price));
         $coupon_id = $cart['coupon']['data_id'];
     }
 
