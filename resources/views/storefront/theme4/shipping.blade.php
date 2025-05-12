@@ -9,20 +9,19 @@
 <div class="wrapper">
     <section class="cart-section padding-bottom padding-top">
         <div class="container">
-            <div class="row align-items-center cart-head">
-                <div class="col-md-12 col-12">
+            <div class="row align-items-center cart-head" style="margin-bottom: 50px">
+                <div class="col-lg-3 col-md-12 col-12">
                     <div class="cart-title">
                         <h2>{{ __('Hotel Booking') }}</h2>
-                        <p style="margin-top: 10px"> {{ __('Fill the form below so we can send you the orders invoice.') }}</p>
                     </div>
                 </div>
-                {{-- <div class="col-lg-9 col-md-12 col-12 justify-content-end">
-                    <div class="cart-btns">
-                        <a href="{{ route('store.cart', $store->slug) }}">1 - {{ __('My Cart') }}</a>
-                        <a href="{{ route('user-address.useraddress', $store->slug) }}" class="active-btn">2 -{{ __('Customer') }}</a>
-                        <a href="{{ route('store-payment.payment', $store->slug) }}">3 - {{ __('Payment') }}</a>
+                <div class="col-lg-9 col-md-12 col-12 justify-content-end">
+                    <div class="cart-btns" style="pointer-events: none">
+                        <a href="#">1 - {{ __('My Cart') }}</a>
+                        <a href="#" class="active-btn">2 -{{ __('Customer') }}</a>
+                        <a href="#">3 - {{ __('Payment') }}</a>
                     </div>
-                </div> --}}
+                </div>
 
             </div>
             {{ Form::model($cust_details, ['route' => ['store.customer', $store->slug], 'method' => 'POST']) }}
