@@ -50,14 +50,13 @@
                                     <img src="{{ asset('assets/theme1/images/skrill.png') }}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and
-                                Skrill.') }}</p>
+                            <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and Skrill') }}</p>
                             <form action="{{ route('stripe.post',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                 @csrf
                                 <input type="hidden" name="product_id">
                                 <div class="form-group">
                                     <label for="">{{__('Name on card')}}</label>
-                                    <input type="text" name="name" placeholder="Enter Your Name">
+                                    <input type="text" name="name" placeholder={{__("Enter Your Name")}}>
                                 </div>
                                 <div class="form-group">
                                     <div id="card-element"></div>
@@ -77,8 +76,7 @@
                                     <img src="{{asset('assets/img/telegram.svg')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via Telegram. ... QR code. As you know, having to add a phone number to
-                                your contacts in order to start up a Telegram message can take a little while')}}.....</p>
+                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via Telegram. ... QR code. As you know, having to add a phone number to your contacts in order to start up a Telegram message can take a little while')}}.....</p>
                             <form action="{{ route('user.telegram',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                 @csrf
                                 <input type="hidden" name="product_id">
@@ -92,7 +90,7 @@
                     @if($store['enable_bank'] == 'on')
                     <div class="payment-method">
                         <div class="payment-title d-flex align-items-center justify-content-between">
-                            <h4>{{ 'Bank Transfer' }}</h4>
+                            <h4>{{ __('Bank Transfer' )}}</h4>
                             <div class="payment-image d-flex align-items-center">
                                 <img src="{{ asset('assets/img/bank.png') }}" alt="">
                             </div>
@@ -140,14 +138,13 @@
                                     <img src="{{asset('assets/img/whatsapp.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via WhatsApp. ... QR code. As you know, having to add a phone number to
-                                your contacts in order to start up a WhatsApp message can take a little while')}}.....</p>
+                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via WhatsApp. ... QR code. As you know, having to add a phone number to your contacts in order to start up a WhatsApp message can take a little while')}}.....</p>
                             <div class="form-group">
                                 <form method="POST" action="{{ route('user.whatsapp',$store->slug) }}" class="payment-method-form">
                                     @csrf
                                     <div class="form-group">
                                         <label>{{__('Phone Number')}}</label>
-                                        <input name="wts_number" id="wts_number" type="text" placeholder="Enter Your Phone Number">
+                                        <input name="wts_number" id="wts_number" type="text" placeholder={{__("Enter Your Phone Number")}}>
                                     </div>
                                    
                                 </form>
@@ -224,8 +221,7 @@
                                     <img src="{{asset('assets/img/paypal.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to PayPal to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to PayPal to finish complete your purchase.') }}</p>
                             <form method="POST" action="{{ route('pay.with.paypal',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="product_id">
@@ -361,8 +357,7 @@
                                     <img src="{{asset('assets/img/Paytm.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to Paytm to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Paytm to finish complete your purchase.') }}</p>
                             <form method="POST" action="{{ route('paytm.prepare.payments',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ date('Y-m-d') }}-{{ strtotime(date('Y-m-d H:i:s')) }}-payatm">
@@ -426,8 +421,7 @@
                                     <img src="{{asset('assets/img/mercadopago.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to Mercado Pago to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Mercado Pago to finish complete your purchase.') }}</p>
                             <div class="form-group text-right">
                                 <button type="submit" onclick="payMercado()" class="btn">{{__('Pay Now')}}</button>
                             </div>
@@ -441,8 +435,7 @@
                                     <img src="{{asset('assets/img/mollie.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to Mollie to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Mollie to finish complete your purchase.') }}</p>
                             <form action="{{ route('mollie.prepare.payments',$store->slug) }}" method="POST" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ date('Y-m-d') }}-{{ strtotime(date('Y-m-d H:i:s')) }}-payatm">
@@ -461,7 +454,7 @@
                                     <img src="{{asset('assets/img/skrill.png')}}" alt="">
                                 </div>
                             </div>
-                            <p> {{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Skrill to finish complete your purchase')}}.</p>
+                            <p> {{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Skrill to finish complete your purchase')}}</p>
                             <form method="POST" action="{{ route('skrill.prepare.payments',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="transaction_id" value="{{ date('Y-m-d') . strtotime('Y-m-d H:i:s') . 'user_id' }}">
@@ -480,8 +473,7 @@
                                     <img src="{{ asset('assets/theme1/images/coingate.png') }}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to CoinGate to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to CoinGate to finish complete your purchase')}}.</p>
                             <form method="POST" action="{{ route('coingate.prepare',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="transaction_id" value="{{ date('Y-m-d') . strtotime('Y-m-d H:i:s') . 'user_id' }}">
@@ -755,11 +747,11 @@
                                 @csrf
                                 <div class="form-group">
                                     <label>{{__('Mobile Number')}}</label>
-                                    <input name="mobile_number" id="mobile_number" type="number" placeholder="Enter Your Mobile Number">
+                                    <input name="mobile_number" id="mobile_number" type="number" placeholder={{__("Enter Your Mobile Number")}}>
                                 </div>
                                 <div class="form-group">
                                     <label>{{__('Channel')}}</label>
-                                    <input name="channel" id="channel" type="text" placeholder="Enter Your Channel Code" required>
+                                    <input name="channel" id="channel" type="text" placeholder={{__("Enter Your Channel Code")}} required>
                                     <small style="color: red">{{ __('Example : OMCIV2,MOMO,CARD,FLOOZ ,PAYPAL') }}</small>
                                 </div>
                                 <div class="form-group text-right">
@@ -1078,7 +1070,7 @@
                                     <ul class="cart-summery">
                                         
                                         <li>
-                                            <span class="cart-sum-left"> {{ __('item') }}</span>
+                                            <span class="cart-sum-left"> {{ __('Subtotal: ') }}</span>
                                             <span class="cart-sum-right">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</span>
                                         </li> 
                                         <li>
@@ -1107,9 +1099,9 @@
                                             {{__('Total')}}
                                         </div>
                                         <div class="mini-total-price final_total_price" id="total_value">
-                                            <input type="hidden" class="product_total" value="{{$total+$shipping_price-$coupon_price}}">
+                                            <input type="hidden" class="product_total" value="{{$total-$coupon_price}}">
                                             <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
-                                            <span class="pro_total_price" data-value="{{$total+$shipping_price-$coupon_price}}">{{\App\Models\Utility::priceFormat(!empty($total)?$total+$shipping_price-$coupon_price:0)}}</span> 
+                                            <span class="pro_total_price" data-value="{{$total-$coupon_price}}">{{\App\Models\Utility::priceFormat(!empty($total)?$total-$coupon_price:0)}}</span> 
                                         </div>
                                     </div>
                                 </div>   

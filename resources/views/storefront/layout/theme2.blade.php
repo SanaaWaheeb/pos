@@ -411,7 +411,7 @@
     @yield('content')
 
 
-    @if(Route::currentRouteName() !== 'payment.status' && Route::currentRouteName() !== 'testing')
+    @if(Route::currentRouteName() !== 'payment.status' && Route::currentRouteName() !== 'testing' &&Route::currentRouteName() !== 'store-payment.payment')
     <footer class="footer" style="
         width: 100%; 
         position: fixed; 

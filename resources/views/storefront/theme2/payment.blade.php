@@ -63,17 +63,16 @@
                                 <div class="payment-image d-flex align-items-center">
                                     <img src="{{ asset('assets/theme1/images/visa.png') }}" alt="">
                                     <img src="{{ asset('assets/theme1/images/mastercard.png') }}" alt="">
-                                    <img src="{{ asset('assets/theme1/images/skrill.png') }}" alt="">
+                                    <img src="{{ asset('assets/theme1/skrill.png') }}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and
-                                Skrill.') }}</p>
+                            <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and Skrill') }}.</p>
                             <form action="{{ route('stripe.post',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                 @csrf
                                 <input type="hidden" name="product_id">
                                 <div class="form-group">
                                     <label for="">{{__('Name on card')}}</label>
-                                    <input type="text" name="name" placeholder="Enter Your Name">
+                                    <input type="text" name="name" placeholder={{__("Enter Your Name")}}>
                                 </div>
                                 <div class="form-group">
                                     <div id="card-element"></div>
@@ -93,8 +92,7 @@
                                     <img src="{{asset('assets/img/telegram.svg')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via Telegram. ... QR code. As you know, having to add a phone number to
-                                your contacts in order to start up a Telegram message can take a little while')}}.....</p>
+                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via Telegram. ... QR code. As you know, having to add a phone number to your contacts in order to start up a Telegram message can take a little while')}}.....</p>
                             <form action="{{ route('user.telegram',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                 @csrf
                                 <input type="hidden" name="product_id">
@@ -108,7 +106,7 @@
                     @if($store['enable_bank'] == 'on')
                     <div class="payment-method">
                         <div class="payment-title d-flex align-items-center justify-content-between">
-                            <h4>{{ 'Bank Transfer' }}</h4>
+                            <h4>{{__( 'Bank Transfer') }}</h4>
                             <div class="payment-image d-flex align-items-center">
                                 <img src="{{ asset('assets/img/bank.png') }}" alt="">
                             </div>
@@ -156,8 +154,7 @@
                                     <img src="{{asset('assets/img/whatsapp.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via WhatsApp. ... QR code. As you know, having to add a phone number to
-                                your contacts in order to start up a WhatsApp message can take a little while')}}.....</p>
+                            <p>{{ __('Click to chat. The click to chat feature lets customers click an URL in order to directly start a chat with another person or business via WhatsApp. ... QR code. As you know, having to add a phone number to your contacts in order to start up a WhatsApp message can take a little while')}}.....</p>
                             <div class="form-group">
                                 <form method="POST" action="{{ route('user.whatsapp',$store->slug) }}" class="payment-method-form">
                                     @csrf
@@ -240,8 +237,7 @@
                                     <img src="{{asset('assets/img/paypal.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to PayPal to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to PayPal to finish complete your purchase.') }}</p>
                             <form method="POST" action="{{ route('pay.with.paypal',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="product_id">
@@ -377,8 +373,7 @@
                                     <img src="{{asset('assets/img/Paytm.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to Paytm to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Paytm to finish complete your purchase.') }}</p>
                             <form method="POST" action="{{ route('paytm.prepare.payments',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ date('Y-m-d') }}-{{ strtotime(date('Y-m-d H:i:s')) }}-payatm">
@@ -442,8 +437,7 @@
                                     <img src="{{asset('assets/img/mercadopago.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to Mercado Pago to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Mercado Pago to finish complete your purchase.') }}</p>
                             <div class="form-group text-right">
                                 <button type="submit" onclick="payMercado()" class="btn">{{__('Pay Now')}}</button>
                             </div>
@@ -457,8 +451,7 @@
                                     <img src="{{asset('assets/img/mollie.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to Mollie to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Mollie to finish complete your purchase.') }}</p>
                             <form action="{{ route('mollie.prepare.payments',$store->slug) }}" method="POST" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="id" value="{{ date('Y-m-d') }}-{{ strtotime(date('Y-m-d H:i:s')) }}-payatm">
@@ -477,7 +470,7 @@
                                     <img src="{{asset('assets/img/skrill.png')}}" alt="">
                                 </div>
                             </div>
-                            <p> {{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Skrill to finish complete your purchase')}}.</p>
+                            <p> {{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Skrill to finish complete your purchase')}}</p>
                             <form method="POST" action="{{ route('skrill.prepare.payments',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="transaction_id" value="{{ date('Y-m-d') . strtotime('Y-m-d H:i:s') . 'user_id' }}">
@@ -496,8 +489,7 @@
                                     <img src="{{ asset('assets/theme1/images/coingate.png') }}" alt="">
                                 </div>
                             </div>
-                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You
-                                will be redirected to CoinGate to finish complete your purchase.') }}</p>
+                            <p>{{ __('Pay your order using the most known and secure platform for online money transfers. You will be redirected to CoinGate to finish complete your purchase')}}.</p>
                             <form method="POST" action="{{ route('coingate.prepare',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <input type="hidden" name="transaction_id" value="{{ date('Y-m-d') . strtotime('Y-m-d H:i:s') . 'user_id' }}">
@@ -771,11 +763,11 @@
                                 @csrf
                                 <div class="form-group">
                                     <label>{{__('Mobile Number')}}</label>
-                                    <input name="mobile_number" id="mobile_number" type="number" placeholder="Enter Your Mobile Number">
+                                    <input name="mobile_number" id="mobile_number" type="number" placeholder={{__("Enter Your Mobile Number")}}>
                                 </div>
                                 <div class="form-group">
                                     <label>{{__('Channel')}}</label>
-                                    <input name="channel" id="channel" type="text" placeholder="Enter Your Channel Code" required>
+                                    <input name="channel" id="channel" type="text" placeholder={{__("Enter Your Channel Code")}} required>
                                     <small style="color: red">{{ __('Example : OMCIV2,MOMO,CARD,FLOOZ ,PAYPAL') }}</small>
                                 </div>
                                 <div class="form-group text-right">
@@ -853,6 +845,74 @@
                             </form>
                         </div>
                     @endif
+                    @if(isset($store_payments['is_ipay88_enabled']) && $store_payments['is_ipay88_enabled'] == 'on')
+                    <div class="payment-method">
+                        <div class="payment-title d-flex align-items-center justify-content-between">
+                            <h4>{{__('Ipay88')}}</h4>
+                            <div class="payment-image extra-size d-flex align-items-center">
+                                <img src="{{asset('assets/img/ipay88.png')}}" alt="">
+                            </div>
+                        </div>
+                        <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Ipay88 to finish complete your purchase')}}.</p>
+                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                            @csrf
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
+                    @if(isset($store_payments['is_zabeb_enabled']) && $store_payments['is_zabeb_enabled'] == 'on')
+                    <div class="payment-method">
+                        <div class="payment-title d-flex align-items-center justify-content-between">
+                            <h4>{{__('Zabeb')}}</h4>
+                            <div class="payment-image extra-size d-flex align-items-center">
+                                <img src="{{asset('assets/img/zabeb.png')}}" alt="">
+                            </div>
+                        </div>
+                        <p>{{__('Pay your order using one of the most trusted and secure platforms for online money transfers. You will be redirected to Zabeb to complete your purchase using your rewards')}}.</p>
+                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                            @csrf
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
+                    @if(isset($store_payments['is_square_enabled']) && $store_payments['is_square_enabled'] == 'on')
+                    <div class="payment-method">
+                        <div class="payment-title d-flex align-items-center justify-content-between">
+                            <h4>{{__('Square')}}</h4>
+                            <div class="payment-image extra-size d-flex align-items-center">
+                                <img src="{{asset('assets/img/square.png')}}" alt="">
+                            </div>
+                        </div>
+                        <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Square to finish complete your purchase.')}}</p>
+                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                            @csrf
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
+                    @if(isset($store_payments['is_edfapay_enabled']) && $store_payments['is_edfapay_enabled'] == 'on')
+                    <div class="payment-method">
+                        <div class="payment-title d-flex align-items-center justify-content-between">
+                            <h4>{{__('Edfapay')}}</h4>
+                            <div class="payment-image extra-size d-flex align-items-center">
+                                <img src="{{asset('assets/img/edfapay.png')}}" alt="">
+                            </div>
+                        </div>
+                        <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to EdfaPay to finish complete your purchase')}}.</p>
+                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                            @csrf
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                            </div>
+                        </form>
+                    </div>
+                    @endif
                     @if(isset($store_payments['is_authorizenet_enabled']) && $store_payments['is_authorizenet_enabled'] == 'on')
                         <div class="payment-method">
                             <div class="payment-title d-flex align-items-center justify-content-between">
@@ -861,7 +921,7 @@
                                     <img src="{{asset('assets/img/authorizenet.png')}}" alt="">
                                 </div>
                             </div>
-                            <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to AuthorizeNet to finish complete your purchase')}}.</p>
+                            <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to AuthorizeNet to finish complete your purchase')}}</p>
                             <form method="post" action="{{ route('order.with.authorizenet',$store->slug) }}" class="payment-method-form">
                                 @csrf
                                 <div class="form-group text-right">

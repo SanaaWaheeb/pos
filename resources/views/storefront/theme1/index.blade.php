@@ -650,7 +650,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                     <i class="fas fa-shopping-basket"></i>
                 </a>
             @else --}}
-                <a href="{{ route('payment.checkout', ['slug' => $store->slug, 'order_amount' => $total]) }}" class="checkout-btn">
+                <a href="{{ route('store-payment.payment', $store->slug) }}" class="checkout-btn">
                     {{__('Proceed to checkout')}}
                     <i class="fas fa-shopping-basket"></i>
                 </a>
