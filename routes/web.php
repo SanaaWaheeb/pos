@@ -56,6 +56,7 @@ use App\Http\Controllers\ReferralProgramController;
 use App\Http\Controllers\TapPaymentController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\YooKassaController;
+use App\Http\Controllers\EdfapayController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Artisan;
@@ -522,9 +523,7 @@ Route::get('{slug}/self-payment', function ($slug) {
     $store = Store::where('slug', $slug)->firstOrFail();
     return view('storefront.theme5.selfPayment', compact('store'));
 })->name('self.payment')->middleware('SetLocale');
-Route::get('edfapay-payment/callback', [PaymentController::class, 'edfaPayPaymentCallback'])->name('edfapay.callback')->middleware('SetLocale');
 Route::get('confirm-order/{order}', [OrderController::class, 'storeConfirmOrder'])->name('confirm.order');
-Route::get('/check-order-status', [PaymentController::class, 'checkOrderStatus'])->name('edfapay.check')->middleware('SetLocale');
 Route::get('/fetch-order', [OrderController::class, 'fetchOrder'])->name('order.fetch');
 
 // Route::get('testing', [PaymentController::class, 'statusTesting'])->name('testing')->middleware('SetLocale');
@@ -559,6 +558,10 @@ Route::group(
 // product paypal payments
 Route::post('pay-with-paypal/{slug?}', [PaypalController::class, 'PayWithPaypal'])->name('pay.with.paypal')->middleware(['XSS']);
 Route::get('{id}/get-payment-status{slug?}', [PaypalController::class, 'GetPaymentStatus'])->name('get.payment.status')->middleware(['XSS']);
+
+Route::post('pay-with-edfapay/{slug?}', [EdfapayController::class, 'payWithEdfapay'])->name('pay.with.edfapay')->middleware(['XSS']);
+Route::get('edfapay-payment/callback', [EdfapayController::class, 'edfaPayPaymentCallback'])->name('edfapay.callback')->middleware('SetLocale');
+Route::get('/check-order-status', [EdfapayController::class, 'checkOrderStatus'])->name('edfapay.check')->middleware('SetLocale');
 
 Route::get('{slug?}/customerorder/{id}', [StoreController::class, 'customerorder'])->name('customer.order')->middleware('customerauth');
 Route::get('{slug?}/order/{id}', [StoreController::class, 'userorder'])->name('user.order');
