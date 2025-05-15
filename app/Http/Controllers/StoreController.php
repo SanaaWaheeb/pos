@@ -2736,6 +2736,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         if ($request->total) {
             $totalPrice = trim(str_replace($store->currency, '', $request->total));
             $totalPrice = floatval($totalPrice);
+            session()->put('totalPrice', $totalPrice);
         }
 
         if (empty($store)) {
@@ -2924,8 +2925,7 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         }
 
         session()->put($slug, $cart);
-        return redirect()->route('store-payment.payment', $slug)
-                 ->with('totalPrice', $totalPrice);
+        return redirect()->route('store-payment.payment', $slug);        
         // return redirect()->route('payment.checkout', [
         //     'slug' => $slug,
         //     'order_amount' => $totalPrice ?? 0,

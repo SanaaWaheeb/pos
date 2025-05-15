@@ -17,7 +17,7 @@
     @php
         $coupon_price = !empty($coupon_price)?$coupon_price:0;
         $shipping_price = !empty($shipping_price)?$shipping_price:0;
-         $productImg = \App\Models\Utility::get_file('uploads/is_cover_image/');
+        $productImg = \App\Models\Utility::get_file('uploads/is_cover_image/');
     @endphp
     <input type="hidden" id="return_url">
     <input type="hidden" id="return_order_id">
@@ -470,8 +470,9 @@
                                         </div>
                                     </div>
                                     <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Edfapay to finish complete your purchase')}}.</p>
-                                    <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                                    <form method="post" action="{{ route('pay.with.edfapay',$store->slug) }}" class="payment-method-form">
                                         @csrf
+                                        <input type="hidden" name="order_amount" id="total-shipping-price" />
                                         <div class="form-group text-right">
                                             <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                         </div>
@@ -506,8 +507,16 @@
                                         </div>
                                     </div>
                                     <p>{{__('Pay your order using one of the most trusted and secure platforms for online money transfers. You will be redirected to Zabeb to complete your purchase using your rewards')}}.</p>
-                                    <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                                    <form method="post" action="{{ route('pay.with.zabeb',['slug' => $store->slug, 'order_amount' => $totalPrice]) }}" class="payment-method-form">
                                         @csrf
+                                        <div class="form-group">
+                                            <label for="">{{__('Email')}}</label>
+                                            <input type="text" name="email" placeholder="Enter Your Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">{{__('Password')}}</label>
+                                            <input type="password" name="password" placeholder="Enter Your Password">
+                                        </div>
                                         <div class="form-group text-right">
                                             <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                         </div>
@@ -1130,6 +1139,10 @@
 @endsection
 @push('script-page')
     <script src="{{asset('custom/libs/jquery-mask-plugin/dist/jquery.mask.min.js')}}"></script>
+    <script>
+        var total_price = $('.product_total').val();
+        $('#total-shipping-price').val(total_price); // ← set total price before submit
+    </script>
      @if(isset($store_payments['is_stripe_enabled']) && $store_payments['is_stripe_enabled'] == 'on')
         <script src="https://js.stripe.com/v3/"></script>
         <script type="text/javascript">

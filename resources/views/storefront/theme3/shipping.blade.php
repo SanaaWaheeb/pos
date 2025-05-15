@@ -511,7 +511,7 @@
         $('.shipping_price').attr('data-value', '');
 
         // Update total price by removing shipping from it
-        var coupon_price = parseFloat($('.dicount_price').attr('data-value'));
+        var coupon_price = parseFloat($('.dicount_price').attr('data-value').replace('-', ''));
         var product_price = parseFloat($('.product_total').attr('value'));
         var updatedTotal = product_price;
         if (coupon_price) {
