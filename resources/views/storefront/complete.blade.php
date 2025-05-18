@@ -106,10 +106,18 @@ if (!empty(session()->get('lang'))) {
                                     </div>
                                 </div>
 
-                                <a href="{{route('store.slug',$store->slug)}}" class="btn btn-sm btn-primary btn-icon rounded-pill mt-5">
+                               @if($store->theme_dir == 'theme2')
+                                <a href="{{ route('store.scanner', $store->slug) }}" class="btn btn-sm btn-primary btn-icon rounded-pill mt-5">
                                     <span class="btn-inner--icon"><i class="fas fa-angle-left"></i></span>
-                                    <span class="btn-inner--text">{{__('Return to shop')}}</span>
+                                    <span class="btn-inner--text">{{ __('Return to scanner') }}</span>
                                 </a>
+                               @else
+                                    <a href="{{ route('store.slug', $store->slug) }}" class="btn btn-sm btn-primary btn-icon rounded-pill mt-5">
+                                        <span class="btn-inner--icon"><i class="fas fa-angle-left"></i></span>
+                                        <span class="btn-inner--text">{{ __('Return to shop') }}</span>
+                                    </a>
+                                @endif
+
                             </div>
                         </div>
                     </div>

@@ -26,13 +26,13 @@
                         <h2>{{ __('Payment') }}</h2>
                     </div>
                 </div>
-                <div class="col-lg-9 col-md-12 col-12 justify-content-end">
+                {{-- <div class="col-lg-9 col-md-12 col-12 justify-content-end">
                     <div class="cart-btns">
                         <a href="{{ route('store.cart', $store->slug) }}">1 - {{ __('My Cart') }}</a>
                         
                         <a href="{{ route('store-payment.payment', $store->slug) }}" class="active-btn">2 - {{ __('Payment') }}</a>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
             <div class="row">
@@ -887,7 +887,7 @@
                                 <img src="{{asset('assets/img/square.png')}}" alt="">
                             </div>
                         </div>
-                        <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Square to finish complete your purchase.')}}</p>
+                        <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Square to finish complete your purchase')}}</p>
                         <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
                             @csrf
                             <div class="form-group text-right">
@@ -904,9 +904,10 @@
                                 <img src="{{asset('assets/img/edfapay.png')}}" alt="">
                             </div>
                         </div>
-                        <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to EdfaPay to finish complete your purchase')}}.</p>
-                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                        <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Edfapay to finish complete your purchase')}}.</p>
+                        <form method="post" action="{{ route('pay.with.edfapay',$store->slug) }}" class="payment-method-form">
                             @csrf
+                             <input type="hidden" name="order_amount" id="total-shipping-price" />
                             <div class="form-group text-right">
                                 <button type="submit" class="btn">{{__('Pay Now')}}</button>
                             </div>
@@ -1540,6 +1541,8 @@
 
     <script src="https://khalti.s3.ap-south-1.amazonaws.com/KPG/dist/2020.12.17.0.0.0/khalti-checkout.iffe.js"></script>
     <script>
+        var total_price = $('.product_total').val();
+        $('#total-shipping-price').val(total_price); // ← set total price before submit
         var config = {
             "publicKey": "{{ isset($store_payments['khalti_public_key']) ? $store_payments['khalti_public_key'] : '' }}",
             "productIdentity": "1234567890",

@@ -1264,10 +1264,17 @@ class PaymentController extends Controller
 
             if(!Utility::CustomerAuthCheck($slug))
             {
-                $customer_data = $cart['customer'];
-                $pdata['phone']   = $customer_data['phone'];
-                $pdata['email']   = $customer_data['email'];
-                $pdata['user_id'] = $customer_data['id'];
+               if (isset($cart['customer'])) {
+                    $customer_data = $cart['customer'];
+                    $pdata['phone'] = $customer_data['phone'] ?? '9999999999';
+                    $pdata['email'] = $customer_data['email'] ?? 'guest@example.com';
+                    $pdata['user_id'] = $customer_data['id'] ?? time();
+                } else {
+                    $pdata['phone'] = '9999999999';
+                    $pdata['email'] = 'guest@example.com';
+                    $pdata['user_id'] = time();
+                }
+
             }
             else
             {
@@ -1327,7 +1334,11 @@ class PaymentController extends Controller
             $store_payment_setting = Utility::getPaymentSetting($store->id);
         }
 
-        $cust_details = $cart['customer'];
+        $cust_details = isset($cart['customer']) ? $cart['customer'] : [
+                'name' => 'Guest',
+                'email' => 'guest@example.com',
+                'id' => time(), // dummy unique ID
+            ];
 
         if(!empty($cart))
         {

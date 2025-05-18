@@ -454,7 +454,8 @@ function PayWithPaypal(Request $request, $slug)
                 }
                 return redirect()->back()->with('error', 'Something went wrong.');
             } else {
-                return redirect()->back()->with('error', $response['message'] ?? 'Something went wrong.');
+                \Log::error('PayPal createOrder failed response', ['response' => $response]);
+                return redirect()->back()->with('error', $response['message'] ?? 'SR Currency is not currently supported in PayPal.');
             }
 
         } catch (\Exception$e) {

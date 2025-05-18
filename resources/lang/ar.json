@@ -1630,6 +1630,7 @@
   "Pay your order using the most known and secure platform for online money transfers. You will be redirected to CoinGate to finish complete your purchase":"ادفع طلبك باستخدام أشهر وأأمن منصة لتحويل الأموال عبر الإنترنت. سيتم توجيهك إلى CoinGate لإتمام عملية الشراء",
   "Safe money transfer using your bank account. We support Mastercard, Visa and Skrill":"تحويل آمن للأموال باستخدام حسابك البنكي. نحن ندعم بطاقات Mastercard وVisa ومنصة Skrill",
   "Enter Your Mobile Number":"ادخل رقم هاتفك",
-  "Enter Your Channel Code":"ادخل كود القناة"
+  "Enter Your Channel Code":"ادخل كود القناة",
+  "SR Currency is not currently supported in PayPal.":"عملة الريال السعودي حاليا ليست مدعومة في PayPal"
   
 }

@@ -888,8 +888,9 @@
                             </div>
                         </div>
                         <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Edfapay to finish complete your purchase')}}.</p>
-                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                        <form method="post" action="{{ route('pay.with.edfapay',$store->slug) }}" class="payment-method-form">
                             @csrf
+                            <input type="hidden" name="order_amount" id="total-shipping-price" />
                             <div class="form-group text-right">
                                 <button type="submit" class="btn">{{__('Pay Now')}}</button>
                             </div>
@@ -1367,6 +1368,8 @@
     });
     </script>
     <script>
+        var total_price = $('.product_total').val();
+        $('#total-shipping-price').val(total_price); // ← set total price before submit
         // Apply Coupon
         $(document).on('click', '.apply-coupon', function (e) {
             e.preventDefault();

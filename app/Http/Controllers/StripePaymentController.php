@@ -118,7 +118,12 @@ class StripePaymentController extends Controller
     {
         $cart     = session()->get($slug);
         $products = $cart['products'];
-        $cust_details = $cart['customer'];
+       
+        $cust_details = isset($cart['customer']) ? $cart['customer'] : [
+                'name' => 'Guest',
+                'email' => 'guest@example.com',
+                'id' => time(), // dummy unique ID
+            ];
 
 
         if(isset($cart['coupon']))
@@ -134,7 +139,13 @@ class StripePaymentController extends Controller
         }
 
         $store        = Store::where('slug', $slug)->first();
-        $user_details = $cart['customer'];
+      
+
+         $user_details = isset($cart['customer']) ? $cart['customer'] : [
+                'name' => 'Guest',
+                'email' => 'guest@example.com',
+                'id' => time(), // dummy unique ID
+            ];
 
         $store_payment_setting = Utility::getPaymentSetting($store->id);
 

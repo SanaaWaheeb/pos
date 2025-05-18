@@ -3407,7 +3407,7 @@ table tr th {
 .checkout-box {
     background-color: var(--white);
     position: fixed;
-    bottom: 3rem;
+    bottom: 1.6rem;
     left: 0; /* Start from the left edge */
     width: 100%; /* Full width of the page */
     /* padding: 20px; */
