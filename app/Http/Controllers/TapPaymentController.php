@@ -221,7 +221,16 @@ class TapPaymentController extends Controller
             } else{
                 return redirect()->back()->with('error', __('Please add to product into cart'));
             }
-            $customers = $cart['customer'];
+            \Log::info('TAP - Cart Contents:', ['cart' => $cart]);
+
+         $customers = $cart['customer'] ?? [
+    'name' => 'Guest',
+    'email' => 'guest@example.com',
+    'phone' => '0000000000',
+    'id' => time(),
+];
+
+
             $store = Store::where('slug', $slug)->first();
             $currency = $store->currency_code;
             $user = User::find($store->created_by);

@@ -554,7 +554,9 @@ Route::group(
         Route::post('stripe-payment', [StripePaymentController::class, 'addpayment'])->name('stripe.payment');
     }
 );
-
+Route::post('/stripe/{slug}', [StripePaymentController::class, 'stripePost'])->name('stripe.post');
+Route::get('/stripe/success/{slug}', [StripePaymentController::class, 'stripeSuccess'])->name('stripe.success');
+Route::get('/stripe/cancel/{slug}', [StripePaymentController::class, 'stripeCancel'])->name('stripe.cancel');
 // product paypal payments
 Route::post('pay-with-paypal/{slug?}', [PaypalController::class, 'PayWithPaypal'])->name('pay.with.paypal')->middleware(['XSS']);
 Route::get('{id}/get-payment-status{slug?}', [PaypalController::class, 'GetPaymentStatus'])->name('get.payment.status')->middleware(['XSS']);

@@ -5169,7 +5169,12 @@ private function calculateTax(&$tax_name, &$tax_price, $product)
         } else {
             $store_payment_setting = Utility::getPaymentSetting($store->id);
         }
-        $cust_details = $cart['customer'];
+        $cust_details = isset($cart['customer']) ? $cart['customer'] : [
+        'phone' => '',
+        'email' => '',
+        'id' => '',
+    ];
+
 
         if (!empty($cart)) {
             $products = $cart['products'];

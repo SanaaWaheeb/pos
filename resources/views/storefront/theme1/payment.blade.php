@@ -53,7 +53,7 @@
                             <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and Skrill') }}</p>
                             <form action="{{ route('stripe.post',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                 @csrf
-                                <input type="hidden" name="product_id">
+                                {{-- <input type="hidden" name="product_id">
                                 <div class="form-group">
                                     <label for="">{{__('Name on card')}}</label>
                                     <input type="text" name="name" placeholder={{__("Enter Your Name")}}>
@@ -61,7 +61,7 @@
                                 <div class="form-group">
                                     <div id="card-element"></div>
                                     <div id="card-errors" role="alert"></div>
-                                </div>
+                                </div> --}}
                                 <div class="form-group text-right">
                                     <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                 </div>
@@ -1118,7 +1118,7 @@
 
 @push('script-page')
     <script src="{{asset('custom/libs/jquery-mask-plugin/dist/jquery.mask.min.js')}}"></script>
-    @if(isset($store_payments['is_stripe_enabled']) && $store_payments['is_stripe_enabled'] == 'on')
+    {{-- @if(isset($store_payments['is_stripe_enabled']) && $store_payments['is_stripe_enabled'] == 'on')
         <script src="https://js.stripe.com/v3/"></script>
         <script type="text/javascript">
             var stripe = Stripe('{{ isset($store_payments['stripe_key'])?$store_payments['stripe_key']:'' }}');
@@ -1167,7 +1167,7 @@
                 form.submit();
             }
         </script>
-    @endif
+    @endif --}}
     <script>
         $(document).on('click', '#owner-whatsapp', function () {
             $('#owner-whatsapp').prop('disabled',true);

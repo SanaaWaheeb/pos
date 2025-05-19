@@ -722,6 +722,14 @@ class SettingController extends Controller
                 ]
             );
         }
+          elseif ($request->is_free_enabled == 'on') { // Free 
+            $request->validate(
+                [
+                    'number_of_free_sample' => 'required|integer',
+                    'method' => 'required|string',
+                ]
+            );
+        }
 
         $store['currency'] = $request->currency_symbol;
         $store['currency_code'] = $request->currency;
@@ -746,6 +754,7 @@ class SettingController extends Controller
         $store['is_ipay88_enabled'] = $request->is_ipay88_enabled?? 'off';
         $store['is_zabeb_enabled'] = $request->is_zabeb_enabled?? 'off';
         $store['is_square_enabled'] = $request->is_square_enabled?? 'off';
+         $store['is_free_enabled'] = $request->is_free_enabled?? 'off';
 
         // Edfapay
         if ($request->has('edfapay_merchant_key')) {
@@ -777,6 +786,13 @@ class SettingController extends Controller
         }
         if ($request->has(key: 'square_location_id')) {
             $store['square_location_id'] = $request->square_location_id;
+        }
+        // Free
+        if ($request->has('number_of_free_sample')) {
+            $store['number_of_free_sample'] = $request->number_of_free_sample;
+        }
+        if ($request->has(key: 'method')) {
+            $store['method'] = $request->method;
         }
 
         $store->update();
@@ -1317,6 +1333,23 @@ class SettingController extends Controller
             $post['is_square_enabled'] = 'off';
         }
   
+        // ---------------------- Free ------------------------
+        if(isset($request->is_free_enabled) && $request->is_free_enabled == 'on')
+        {
+            $request->validate(
+                [
+                    'number_of_free_sample'=>'required|integer',
+                    'method' => 'required|string',
+                ]
+            );
+            $post['is_free_enabled'] = $request->is_free_enabled;
+            $post['number_of_free_sample'] = $request->number_of_free_sample;
+            $post['method'] = $request->method;
+        }
+        else
+        {
+            $post['is_free_enabled'] = 'off';
+        }
 
 
         if(isset($request->is_iyzipay_enabled) && $request->is_iyzipay_enabled == 'on')
@@ -1947,6 +1980,23 @@ class SettingController extends Controller
              $post['is_square_enabled'] = 'off';
          }
    
+          // ---------------------- Free ------------------------
+        if(isset($request->is_free_enabled) && $request->is_free_enabled == 'on')
+        {
+            $request->validate(
+                [
+                    'number_of_free_sample'=>'required|integer',
+                    'method' => 'required|string',
+                ]
+            );
+            $post['is_free_enabled'] = $request->is_free_enabled;
+            $post['number_of_free_sample'] = $request->number_of_free_sample;
+            $post['method'] = $request->method;
+        }
+        else
+        {
+            $post['is_free_enabled'] = 'off';
+        }
  
         
         // iyzi pay

@@ -2460,11 +2460,12 @@ class PaymentController extends Controller
                     $response = $order['response'];
                     return redirect($response['payment_url']); 
                 }    
-                else
-                {
+               else {
+                    \Log::error('Coingate Payment Failed', ['response' => $order]);
+                    $message = isset($order['response']['message']) ? $order['response']['message'] : __('Oops, something went wrong with Coingate.');
+                    return redirect()->back()->with('error', $message);
+                    }
 
-                    return redirect()->back()->with('error', __('opps something went wrong.'));
-                }
 
 
             }

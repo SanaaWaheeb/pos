@@ -963,6 +963,73 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                                {{-- ------------------------ Free ------------------------- --}}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingFortyOne">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseFortyOne"
+                                                            aria-expanded="true" aria-controls="collapseFortyOne">
+                                                            <span class="d-flex align-items-center">
+                                                                {{ __('Free') }}
+                                                            </span>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="me-2">{{__('On/Off :')}}</span>
+                                                                <div class="form-check form-switch d-inline-block custom-switch-v1">
+                                                                    <input type="hidden" name="is_free_enabled"
+                                                                        value="off">
+                                                                    <input type="checkbox" class="form-check-input"
+                                                                        name="is_free_enabled"
+                                                                        id="is_free_enabled"
+                                                                        {{ isset($store_payment_setting['is_free_enabled']) && $store_payment_setting['is_free_enabled'] == 'on' ? 'checked="checked"' : '' }}>
+                                                                    <label class="custom-control-label form-label"
+                                                                        for="is_free_enabled"></label>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseFortyOne" class="accordion-collapse collapse"aria-labelledby="headingFortyOne"data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                            <div class="row">
+                                                            
+                                                                {{-- Number of free sample --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="number_of_free_sample"
+                                                                            class="col-form-label">{{ __('Number of free sample') }}</label>
+                                                                        <input type="text" name="number_of_free_sample"
+                                                                            id="number_of_free_sample" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['number_of_free_sample']) ? $store_payment_setting['number_of_free_sample'] : '' }}"
+                                                                            placeholder="{{ __('Number of free sample') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('number_of_free_sample'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('number_of_free_sample') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                {{-- Method (Note: SMS cost 0.05) --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="method" class="col-form-label">{{ __('Method (Note: SMS cost 0.05)') }}</label>
+                                                                        <select name="method" id="method" class="form-control">
+                                                                            <option value="email" {{ (isset($store_payment_setting['method']) && $store_payment_setting['method'] == 'email') ? 'selected' : '' }}>
+                                                                                {{ __('Email') }}
+                                                                            </option>
+                                                                            <option value="sms" {{ (isset($store_payment_setting['method']) && $store_payment_setting['method'] == 'sms') ? 'selected' : '' }}>
+                                                                                {{ __('SMS') }}
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                    @if ($errors->has('method'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('method') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="accordion-item">
                                                     <h2 class=" accordion-header" id="heading-2-16">
                                                         <button class="accordion-button collapsed" type="button"
@@ -4948,6 +5015,74 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                             {{-- ------------------------ Free ------------------------- --}}
+                                                <div class="accordion-item">
+                                                    <h2 class="accordion-header" id="headingFortyOne">
+                                                        <button class="accordion-button collapsed" type="button"
+                                                            data-bs-toggle="collapse" data-bs-target="#collapseFortyOne"
+                                                            aria-expanded="true" aria-controls="collapseFortyOne">
+                                                            <span class="d-flex align-items-center">
+                                                                {{ __('Free') }}
+                                                            </span>
+                                                            <div class="d-flex align-items-center">
+                                                                <span class="me-2">{{__('On/Off :')}}</span>
+                                                                <div class="form-check form-switch d-inline-block custom-switch-v1">
+                                                                    <input type="hidden" name="is_free_enabled"
+                                                                        value="off">
+                                                                    <input type="checkbox" class="form-check-input"
+                                                                        name="is_free_enabled"
+                                                                        id="is_free_enabled"
+                                                                        {{ isset($store_payment_setting['is_free_enabled']) && $store_payment_setting['is_free_enabled'] == 'on' ? 'checked="checked"' : '' }}>
+                                                                    <label class="custom-control-label form-label"
+                                                                        for="is_free_enabled"></label>
+                                                                </div>
+                                                            </div>
+                                                        </button>
+                                                    </h2>
+                                                    <div id="collapseFortyOne" class="accordion-collapse collapse"aria-labelledby="headingFortyOne"data-bs-parent="#accordionExample">
+                                                        <div class="accordion-body">
+                                                            <div class="row">
+                                                            
+                                                                {{-- Number of free sample --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="number_of_free_sample"
+                                                                            class="col-form-label">{{ __('Number of free sample') }}</label>
+                                                                        <input type="text" name="number_of_free_sample"
+                                                                            id="number_of_free_sample" class="form-control"
+                                                                            value="{{ isset($store_payment_setting['number_of_free_sample']) ? $store_payment_setting['number_of_free_sample'] : '' }}"
+                                                                            placeholder="{{ __('Number of free sample') }}">
+                                                                    </div>
+                                                                    @if ($errors->has('number_of_free_sample'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('number_of_free_sample') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+                                                                {{-- Method (Note: SMS cost 0.05) --}}
+                                                                <div class="col-md-6">
+                                                                    <div class="form-group">
+                                                                        <label for="method" class="col-form-label">{{ __('Method (Note: SMS cost 0.05)') }}</label>
+                                                                        <select name="method" id="method" class="form-control">
+                                                                            <option value="email" {{ (isset($store_payment_setting['method']) && $store_payment_setting['method'] == 'email') ? 'selected' : '' }}>
+                                                                                {{ __('Email') }}
+                                                                            </option>
+                                                                            <option value="sms" {{ (isset($store_payment_setting['method']) && $store_payment_setting['method'] == 'sms') ? 'selected' : '' }}>
+                                                                                {{ __('SMS') }}
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                    @if ($errors->has('method'))
+                                                                        <span class="invalid-feedback d-block">
+                                                                            {{ $errors->first('method') }}
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             <div class="accordion-item">
                                                 <h2 class="accordion-header" id="headingFourteen">
                                                     <button class="accordion-button collapsed"
