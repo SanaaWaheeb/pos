@@ -57,6 +57,7 @@ use App\Http\Controllers\TapPaymentController;
 use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\YooKassaController;
 use App\Http\Controllers\EdfapayController;
+use App\Http\Controllers\ZabebController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Artisan;
@@ -564,6 +565,9 @@ Route::get('{id}/get-payment-status{slug?}', [PaypalController::class, 'GetPayme
 Route::post('pay-with-edfapay/{slug?}', [EdfapayController::class, 'payWithEdfapay'])->name('pay.with.edfapay')->middleware(['XSS']);
 Route::get('edfapay-payment/callback', [EdfapayController::class, 'edfaPayPaymentCallback'])->name('edfapay.callback')->middleware('SetLocale');
 Route::get('/check-order-status', [EdfapayController::class, 'checkOrderStatus'])->name('edfapay.check')->middleware('SetLocale');
+
+Route::post('pay-with-zabeb/{slug?}/{order_amount}', [ZabebController::class, 'PayWithZabeb'])->name('pay.with.zabeb')->middleware(['XSS']);
+Route::get('zabeb-payment/callback{slug?}/{track?}/{order_id?}/{zz?}', [ZabebController::class, 'zabebPaymentCallback'])->name('zabeb.callback');
 
 Route::get('{slug?}/customerorder/{id}', [StoreController::class, 'customerorder'])->name('customer.order')->middleware('customerauth');
 Route::get('{slug?}/order/{id}', [StoreController::class, 'userorder'])->name('user.order');
