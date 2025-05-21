@@ -6,6 +6,7 @@ use App\Mail\ProdcutMail;
 use App\Models\Blog;
 use App\Models\BlogSocial;
 use App\Models\Customer;
+use App\Models\FreeProducts;
 use App\Models\Location;
 use App\Models\Order;
 use App\Models\PageOption;

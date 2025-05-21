@@ -458,22 +458,42 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                             {{-- <p><span class="td-gray">{{ __('Category') }}:</span>{{ $product->product_category() }}</p> --}}
 
                                                 <div class="last-btn">
-                                                    <div class="price">
-                                                        <ins>
-                                                            @if ($product->enable_product_variant == 'on')
-                                                                {{ __('In variant') }}
+                                                <div class="price">
+                                                    <ins>
+                                                        @if ($product->enable_product_variant == 'on')
+                                                            {{ __('In variant') }}
+                                                        @else
+                                                            @if ($product->price == 0)
+                                                                {{ __('Free') }}
                                                             @else
                                                                 {{ \App\Models\Utility::priceFormat($product->price) }}
                                                             @endif
-                                                        </ins>
-                                                    </div>
-                                                    @if ($product->enable_product_variant == 'on')
-                                                        <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn"> <i class="fas fa-shopping-basket"></i></a>
-                                                    @else
-                                                    <a data-id="{{ $product->id }}" class="cart-btn add_to_cart"> <i class="fas fa-shopping-basket"></i></a>
-                                                    @endif
-
+                                                        @endif
+                                                    </ins>
                                                 </div>
+
+                                            @if ($product->enable_product_variant == 'on')
+                                                <a href="{{ route('store.product.product_view', [$store->slug, $product->id]) }}" class="cart-btn">
+                                                    <i class="fas fa-shopping-basket"></i>
+                                                </a>
+                                            @else
+                                                @if ($product->price == 0)
+                                                    {{-- free product: trigger the modal --}}
+                                                    <a href="javascript:;"
+                                                    class="cart-btn open-free-modal"
+                                                    data-chat-type="{{ $store->method }}"> <!-- sms or email -->
+                                                    <i class="fas fa-shopping-basket"></i>
+                                                    </a>
+                                                @else
+                                                    {{-- normal “add to cart” --}}
+                                                    <a data-id="{{ $product->id }}" class="cart-btn add_to_cart">
+                                                        <i class="fas fa-shopping-basket"></i>
+                                                    </a>
+                                                @endif
+                                            @endif
+
+                                            </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -657,6 +677,86 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
             {{-- @endif --}}
     </div>
 </div>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- <style>
+  :root {
+    /* tweak these values as you like */
+    --swal-font-base: 14px;         /* overall base font-size */
+    --swal-title-size: 1rem;        /* the popup title */
+    --swal-content-size: 0.875rem;   /* the subtitle/text */
+    --swal-icon-size: 3.5rem;        /* the big X or checkmark */
+    --swal-input-width: 180px;       /* your input field width */
+    --swal-btn-padding: 0.5em 1.2em; /* button padding */
+    --swal-btn-radius: 0.25em;       /* button corner radius */
+    --swal-btn-font: 0.9rem;         /* button text size */
+  }
+
+  /* apply all the vars to your popup */
+  .my-swal-popup {
+    font-size: var(--swal-font-base);
+    padding: 1.5em;
+  }
+  .my-swal-popup .swal2-title {
+    font-size: var(--swal-title-size);
+    margin-bottom: 0.25em;
+    text-align: center;
+  }
+  .my-swal-popup .swal2-content {
+    font-size: var(--swal-content-size);
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  /* icon centering + size + color overrides via CSS variables */
+  .my-swal-popup .swal2-icon {
+    display: block;
+    margin: 0 auto 1em;
+    /* width: var(--swal-icon-size) !important;
+    height: var(--swal-icon-size) !important;
+    font-size: var(--swal-icon-size) !important; */
+    /* You can override colors like this: */
+    /* color: var(--your-icon-color, #f00); */
+  }
+
+  /* shrink the input field */
+  .my-swal-input {
+    width: var(--swal-input-width) !important;
+    margin: 0 auto 1em;
+    padding: 0.5em;
+    font-size: 1em;
+  }
+
+  /* base button style */
+  .my-swal-btn {
+    padding: var(--swal-btn-padding);
+    border-radius: var(--swal-btn-radius) !important;
+    font-size: var(--swal-btn-font) !important;
+    min-width: 80px;
+    margin: 0 0.25em;
+  }
+
+  /* confirm/cancel variants—you can change these colors at will */
+  .my-swal-confirm {
+    background-color: #556ee6 !important;
+    color: #fff !important;
+  }
+  .my-swal-cancel {
+    background-color: #f46a6a !important;
+    color: #fff !important;
+  }
+
+  /* center the action buttons */
+  .my-swal-popup .swal2-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5em;
+  }
+</style> --}}
+
+
+
+{{-- @include('storefront.free_modal') --}}
 {{-- @foreach ($getStoreThemeSetting as $storethemesetting)
     @if (isset($storethemesetting['section_name']) && $storethemesetting['section_name'] == 'Home-Categories' && $storethemesetting['section_enable'] == 'on' && !empty($pro_categories))
         @php
@@ -944,4 +1044,321 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
     
     
     </script>
+<style>
+  :root {
+    /* Font settings */
+    --swal-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --swal-font-base: 14px;
+    --swal-title-size: 1.2rem;
+    --swal-content-size: 0.875rem;
+    --swal-text-color: #333333;
+    
+    /* Icon settings */
+    --swal-icon-size: 3.5rem;
+    --swal-success-color: #28a745;
+    --swal-error-color: #dc3545;
+    --swal-warning-color: #ffc107;
+    --swal-info-color: #17a2b8;
+    --swal-question-color: #556ee6;
+    
+    /* Input settings */
+    --swal-input-width: 220px;
+    --swal-input-bg: #ffffff;
+    --swal-input-border: #ced4da;
+    --swal-input-radius: 4px;
+    
+    /* Button settings */
+    --swal-btn-font: 0.9rem;
+    --swal-btn-padding: 0.5em 1.5em;
+    --swal-btn-radius: 4px;
+    --swal-btn-font-weight: 500;
+    --swal-btn-letter-spacing: 0.5px;
+    --swal-btn-text-transform: none;
+    
+    /* Confirm button */
+    --swal-confirm-bg: #556ee6;
+    --swal-confirm-text: #ffffff;
+    --swal-confirm-hover-bg: #485ec4;
+    --swal-confirm-active-bg: #3a4fa3;
+    --swal-confirm-border: none;
+    
+    /* Cancel button */
+    --swal-cancel-bg: #f46a6a;
+    --swal-cancel-text: #ffffff;
+    --swal-cancel-hover-bg: #e05d5d;
+    --swal-cancel-active-bg: #cc5151;
+    --swal-cancel-border: none;
+    
+    /* Popup settings */
+    --swal-popup-bg: #ffffff;
+    --swal-popup-radius: 8px;
+    --swal-popup-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Apply base styles to the popup */
+  .my-swal-popup {
+    font-family: var(--swal-font-family);
+    font-size: var(--swal-font-base);
+    color: var(--swal-text-color);
+    background-color: var(--swal-popup-bg);
+    border-radius: var(--swal-popup-radius);
+    box-shadow: var(--swal-popup-shadow);
+    padding: 1.75em;
+    width: auto;
+    max-width: 500px;
+     --swal2-html-container-padding: 20px;
+     
+  }
+  .my-swal-popup .swal2-icon.swal2-error {
+  border: 0.25em solid var(--theme-color)  !important;
+  color: var(--theme-color)  !important;
+}
+.my-swal-popup .swal2-icon.swal2-error .swal2-x-mark-line {
+  background-color: var(--theme-color) !important;
+}
+
+  /* Title styling */
+  .my-swal-popup .swal2-title {
+    font-size: var(--swal-title-size);
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    color: var(--swal-text-color);
+    line-height: 1.4;
+  }
+
+  /* Content text styling */
+  .my-swal-popup .swal2-content {
+    font-size: var(--swal-content-size);
+    text-align: center;
+    margin-bottom: 1.25em;
+    color: var(--swal-text-color);
+    line-height: 1.5;
+  }
+
+  /* Icon styling - with color overrides */
+  .my-swal-popup .swal2-icon {
+    /* width: var(--swal-icon-size) !important;
+    height: var(--swal-icon-size) !important; */
+    margin: 0 auto 1em;
+    border-width: 0.25em;
+  }
+  .my-swal-popup .swal2-success [class^=swal2-success-line] {
+    background-color: var(--swal-success-color);
+  }
+  .my-swal-popup .swal2-success .swal2-success-ring {
+    border-color: rgba(40, 167, 69, 0.3);
+  }
+  .my-swal-popup .swal2-error [class^=swal2-x-mark-line] {
+    background-color: var(--theme-color);
+  }
+  .my-swal-popup .swal2-warning {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+  }
+  .my-swal-popup .swal2-info {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+  }
+  .my-swal-popup .swal2-question {
+    color: var(--theme-color);
+    border-color: var(--theme-color);
+  }
+
+  /* Input field styling */
+  .my-swal-input {
+    width: var(--swal-input-width) !important;
+    margin: 0 auto 1.25em;
+    padding: 0.625em;
+    font-size: 1em;
+    background-color: var(--swal-input-bg);
+    border: 1px solid var(--swal-input-border);
+    border-radius: var(--swal-input-radius);
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  .my-swal-input:focus {
+    border-color: var(--swal-confirm-bg);
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(85, 110, 230, 0.25);
+  }
+
+  /* Base button styles */
+  .my-swal-btn {
+    font-family: var(--swal-font-family);
+    font-size: var(--swal-btn-font) !important;
+    font-weight: var(--swal-btn-font-weight);
+    letter-spacing: var(--swal-btn-letter-spacing);
+    text-transform: var(--swal-btn-text-transform);
+    padding: var(--swal-btn-padding);
+    border-radius: var(--swal-btn-radius) !important;
+    min-width: 100px;
+    margin: 0 0.5em;
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    border: var(--swal-confirm-border);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .my-swal-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(85, 110, 230, 0.5);
+  }
+
+  /* Confirm button styles */
+  .my-swal-confirm {
+    background-color:var(--theme-color); !important;
+    color: var(--swal-confirm-text) !important;
+  }
+  .my-swal-confirm:hover {
+    background-color: var(--theme-color) !important;
+  }
+  .my-swal-confirm:active {
+    background-color: var(--theme-color) !important;
+  }
+
+  /* Cancel button styles */
+  .my-swal-cancel {
+   background-color: transparent !important;
+  border: 2px solid var(--theme-color) !important;
+  color: var(--theme-color) !important;
+  }
+  .my-swal-cancel:hover {
+    background-color: var(--swal-cancel-hover-bg) !important;
+  }
+  .my-swal-cancel:active {
+    background-color: var(--swal-cancel-active-bg) !important;
+  }
+
+  /* Action buttons container */
+  .my-swal-popup .swal2-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+    gap: 0.75em;
+  }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.open-free-modal').forEach(btn => {
+    btn.addEventListener('click', async e => {
+      const chatType = btn.dataset.chatType; // "sms" or "email"
+      const isSms = chatType === 'sms';
+
+      // 1) ASK FOR PHONE or EMAIL
+      const { value: destination, isConfirmed } = await Swal.fire({
+        title: isSms ? 'Enter your mobile number' : 'Enter your email',
+        icon: 'question',
+        input: isSms ? 'tel' : 'email',
+        inputPlaceholder: isSms ? '+1234567890' : 'you@example.com',
+        showCancelButton: true,
+        confirmButtonText: 'Send Code',
+        cancelButtonText: 'Cancel',
+        customClass: {
+          popup: 'my-swal-popup',
+          confirmButton: 'my-swal-btn my-swal-confirm',
+          cancelButton: 'my-swal-btn my-swal-cancel',
+          input: 'my-swal-input'
+        },
+        buttonsStyling: false
+      });
+
+      if (!isConfirmed || !destination) return;
+
+      // Show loading state
+      Swal.fire({
+        title: 'Sending code...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      // Stub: call your real SMS/email API here
+      await sendOtp(destination);
+      Swal.close();
+
+      // 2) ASK FOR OTP
+      const { value: otp, isConfirmed: otpOk } = await Swal.fire({
+        title: 'Enter verification code',
+        html: `We sent a 6-digit code to <strong>${destination}</strong>`,
+        icon: 'info',
+        input: 'text',
+        inputPlaceholder: '123456',
+        showCancelButton: true,
+        confirmButtonText: 'Verify',
+        cancelButtonText: 'Cancel',
+        customClass: {
+          popup: 'my-swal-popup',
+          confirmButton: 'my-swal-btn my-swal-confirm',
+          cancelButton: 'my-swal-btn my-swal-cancel',
+          input: 'my-swal-input'
+        },
+        buttonsStyling: false,
+        preConfirm: code => {
+          if (!/^\d{6}$/.test(code)) {
+            Swal.showValidationMessage('Please enter a 6-digit code');
+          }
+          return code;
+        }
+      });
+
+      if (!otpOk) return;
+
+      // Show verifying state
+      Swal.fire({
+        title: 'Verifying...',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      // Stub: verify it on your side
+      const valid = await verifyOtp(otp);
+      Swal.close();
+
+      if (valid) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'Your code has been verified successfully.',
+          icon: 'success',
+          confirmButtonText: 'Done!',
+          customClass: {
+            popup: 'my-swal-popup',
+            confirmButton: 'my-swal-btn my-swal-confirm'
+          },
+          buttonsStyling: false
+        });
+        // …then add to cart / grant free product…
+      } else {
+        Swal.fire({
+          title: 'Error',
+          text: 'Invalid or expired code. Please try again.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          customClass: {
+            popup: 'my-swal-popup',
+            confirmButton: 'my-swal-btn my-swal-confirm'
+          },
+          buttonsStyling: false
+        });
+      }
+    });
+  });
+});
+
+// === STUB FUNCTIONS ===
+async function sendOtp(destination) {
+  console.log('Sending OTP to', destination);
+  return new Promise(r => setTimeout(r, 1500)); // simulate delay
+}
+
+async function verifyOtp(code) {
+  console.log('Verifying code', code);
+  await new Promise(r => setTimeout(r, 1000));
+  return code === '123456'; // simulate a "correct" code for demo
+}
+</script>
+
+
+
 @endpush
