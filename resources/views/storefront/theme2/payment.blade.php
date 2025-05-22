@@ -69,7 +69,7 @@
                             <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and Skrill') }}.</p>
                             <form action="{{ route('stripe.post',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                 @csrf
-                                <input type="hidden" name="product_id">
+                                {{-- <input type="hidden" name="product_id">
                                 <div class="form-group">
                                     <label for="">{{__('Name on card')}}</label>
                                     <input type="text" name="name" placeholder={{__("Enter Your Name")}}>
@@ -77,7 +77,7 @@
                                 <div class="form-group">
                                     <div id="card-element"></div>
                                     <div id="card-errors" role="alert"></div>
-                                </div>
+                                </div> --}}
                                 <div class="form-group text-right">
                                     <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                 </div>
@@ -862,22 +862,30 @@
                         </form>
                     </div>
                     @endif
-                    @if(isset($store_payments['is_zabeb_enabled']) && $store_payments['is_zabeb_enabled'] == 'on')
-                    <div class="payment-method">
-                        <div class="payment-title d-flex align-items-center justify-content-between">
-                            <h4>{{__('Zabeb')}}</h4>
-                            <div class="payment-image extra-size d-flex align-items-center">
-                                <img src="{{asset('assets/img/zabeb.png')}}" alt="">
-                            </div>
-                        </div>
-                        <p>{{__('Pay your order using one of the most trusted and secure platforms for online money transfers. You will be redirected to Zabeb to complete your purchase using your rewards')}}.</p>
-                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
-                            @csrf
-                            <div class="form-group text-right">
-                                <button type="submit" class="btn">{{__('Pay Now')}}</button>
-                            </div>
-                        </form>
-                    </div>
+                   @if(isset($store_payments['is_zabeb_enabled']) && $store_payments['is_zabeb_enabled'] == 'on')
+                                <div class="payment-method">
+                                    <div class="payment-title d-flex align-items-center justify-content-between">
+                                        <h4>{{__('Zabeb')}}</h4>
+                                        <div class="payment-image extra-size d-flex align-items-center">
+                                            <img src="{{asset('assets/img/zabeb.png')}}" alt="">
+                                        </div>
+                                    </div>
+                                    <p>{{__('Pay your order using one of the most trusted and secure platforms for online money transfers. You will be redirected to Zabeb to complete your purchase using your rewards')}}.</p>
+                                    <form method="post" action="{{ route('pay.with.zabeb',['slug' => $store->slug, 'order_amount' => $totalPrice]) }}" class="payment-method-form">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="">{{__('Email')}}</label>
+                                            <input type="text" name="email" placeholder="Enter Your Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">{{__('Password')}}</label>
+                                            <input type="password" name="password" placeholder="Enter Your Password">
+                                        </div>
+                                        <div class="form-group text-right">
+                                            <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                                        </div>
+                                    </form>
+                                </div>
                     @endif
                     @if(isset($store_payments['is_square_enabled']) && $store_payments['is_square_enabled'] == 'on')
                     <div class="payment-method">
@@ -1130,7 +1138,7 @@
 @endsection
 @push('script-page')
     <script src="{{ asset('custom/libs/jquery-mask-plugin/dist/jquery.mask.min.js') }}"></script>
-    @if (isset($store_payments['is_stripe_enabled']) && $store_payments['is_stripe_enabled'] == 'on')
+    {{-- @if (isset($store_payments['is_stripe_enabled']) && $store_payments['is_stripe_enabled'] == 'on')
         <script src="https://js.stripe.com/v3/"></script>
         <script type="text/javascript">
             var stripe = Stripe('{{ isset($store_payments['stripe_key']) ? $store_payments['stripe_key'] : '' }}');
@@ -1181,7 +1189,7 @@
                 form.submit();
             }
         </script>
-    @endif
+    @endif --}}
     <script>
         $(document).on('click', '#owner-whatsapp', function() {
             $('#owner-whatsapp').prop('disabled',true);

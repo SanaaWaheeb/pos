@@ -846,22 +846,30 @@
                     </div>
                     @endif
                     @if(isset($store_payments['is_zabeb_enabled']) && $store_payments['is_zabeb_enabled'] == 'on')
-                    <div class="payment-method">
-                        <div class="payment-title d-flex align-items-center justify-content-between">
-                            <h4>{{__('Zabeb')}}</h4>
-                            <div class="payment-image extra-size d-flex align-items-center">
-                                <img src="{{asset('assets/img/zabeb.png')}}" alt="">
-                            </div>
-                        </div>
-                        <p>{{__('Pay your order using one of the most trusted and secure platforms for online money transfers. You will be redirected to Zabeb to complete your purchase using your rewards')}}.</p>
-                        <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
-                            @csrf
-                            <div class="form-group text-right">
-                                <button type="submit" class="btn">{{__('Pay Now')}}</button>
-                            </div>
-                        </form>
-                    </div>
-                    @endif
+                                <div class="payment-method">
+                                    <div class="payment-title d-flex align-items-center justify-content-between">
+                                        <h4>{{__('Zabeb')}}</h4>
+                                        <div class="payment-image extra-size d-flex align-items-center">
+                                            <img src="{{asset('assets/img/zabeb.png')}}" alt="">
+                                        </div>
+                                    </div>
+                                    <p>{{__('Pay your order using one of the most trusted and secure platforms for online money transfers. You will be redirected to Zabeb to complete your purchase using your rewards')}}.</p>
+                                    <form method="post" action="{{ route('pay.with.zabeb',['slug' => $store->slug, 'order_amount' => $totalPrice]) }}" class="payment-method-form">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="">{{__('Email')}}</label>
+                                            <input type="text" name="email" placeholder="Enter Your Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="">{{__('Password')}}</label>
+                                            <input type="password" name="password" placeholder="Enter Your Password">
+                                        </div>
+                                        <div class="form-group text-right">
+                                            <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                                        </div>
+                                    </form>
+                                </div>
+                     @endif
                     @if(isset($store_payments['is_square_enabled']) && $store_payments['is_square_enabled'] == 'on')
                     <div class="payment-method">
                         <div class="payment-title d-flex align-items-center justify-content-between">
