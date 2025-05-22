@@ -480,6 +480,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
                                                 @if ($product->price == 0)
                                                     {{-- free product: trigger the modal --}}
                                                     <a href="javascript:;"
+                                                    data-id="{{ $product->id }}"
                                                     class="cart-btn open-free-modal"
                                                     data-chat-type="{{ $store->method }}"> <!-- sms or email -->
                                                     <i class="fas fa-shopping-basket"></i>
@@ -1083,10 +1084,10 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
     --swal-confirm-border: none;
     
     /* Cancel button */
-    --swal-cancel-bg: #f46a6a;
+    --swal-cancel-bg:var(--swal-text-color);
     --swal-cancel-text: #ffffff;
-    --swal-cancel-hover-bg: #e05d5d;
-    --swal-cancel-active-bg: #cc5151;
+    --swal-cancel-hover-bg: #ffffff;
+    --swal-cancel-active-bg: #ffffff;
     --swal-cancel-border: none;
     
     /* Popup settings */
@@ -1240,6 +1241,7 @@ $default =\App\Models\Utility::get_file('uploads/theme1/header/logo4.png');
 document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.open-free-modal').forEach(btn => {
     btn.addEventListener('click', async e => {
+      const id = btn.dataset.id; // product id
       const chatType = btn.dataset.chatType; // "sms" or "email"
       const isSms = chatType === 'sms';
 
@@ -1279,7 +1281,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // 2) ASK FOR OTP
       const { value: otp, isConfirmed: otpOk } = await Swal.fire({
         title: 'Enter verification code',
-        html: `We sent a 6-digit code to <strong>${destination}</strong>`,
+        html: `We sent a verification code to <strong>${destination}</strong>`,
         icon: 'info',
         input: 'text',
         inputPlaceholder: '123456',
@@ -1294,8 +1296,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         buttonsStyling: false,
         preConfirm: code => {
-          if (!/^\d{6}$/.test(code)) {
-            Swal.showValidationMessage('Please enter a 6-digit code');
+          if (!/^\d+$/.test(code)) {
+            Swal.showValidationMessage('Please enter a valid numeric code');
           }
           return code;
         }
@@ -1313,10 +1315,10 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Stub: verify it on your side
-      const valid = await verifyOtp(otp);
+      const result = await verifyOtp(otp, destination, id);
       Swal.close();
 
-      if (valid) {
+      if (result?.valid && result?.eligible) {
         Swal.fire({
           title: 'Success!',
           text: 'Your code has been verified successfully.',
@@ -1332,7 +1334,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         Swal.fire({
           title: 'Error',
-          text: 'Invalid or expired code. Please try again.',
+          text: result?.message,
           icon: 'error',
           confirmButtonText: 'OK',
           customClass: {
@@ -1348,14 +1350,90 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // === STUB FUNCTIONS ===
 async function sendOtp(destination) {
-  console.log('Sending OTP to', destination);
-  return new Promise(r => setTimeout(r, 1500)); // simulate delay
+    const chatType = destination.includes('@') ? 'email' : 'sms';
+
+    // Show loading indicator before sending
+    Swal.fire({
+        title: 'Sending code...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    // Return a promise so the next step waits for it
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "{{ route('otp.send') }}",
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                destination, 
+                type: chatType
+            },
+            success: function(response) {
+                Swal.close(); // Close loading when done
+                resolve(response); // Resolve promise for continuation
+            },
+            error: function (err) {
+                Swal.close();
+                console.error('Error sending OTP:', err.responseText);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Failed to send verification code. Please try again.',
+                    icon: 'error',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'my-swal-popup',
+                        confirmButton: 'my-swal-btn my-swal-confirm'
+                    },
+                    buttonsStyling: false
+                });
+                reject(err);
+            }
+        });
+    });
 }
 
-async function verifyOtp(code) {
-  console.log('Verifying code', code);
-  await new Promise(r => setTimeout(r, 1000));
-  return code === '123456'; // simulate a "correct" code for demo
+async function verifyOtp(code, destination, productId) {
+    // Show loading while verifying
+    Swal.fire({
+        title: 'Verifying...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: "{{ route('otp.verify') }}",
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: {
+                code,
+                destination,
+                productId
+            },
+            success: function(response) {
+                Swal.close();
+                resolve(response); // { valid, eligible, message }
+            },
+            error: function(err) {
+                Swal.close();
+                console.error('Error verifying OTP:', err.responseText);
+                resolve({
+                    valid: false,
+                    message: 'Verification failed. Please try again.'
+                });
+                reject(err);
+            }
+        });
+    });
 }
 </script>
 

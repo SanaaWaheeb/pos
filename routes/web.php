@@ -58,6 +58,7 @@ use App\Http\Controllers\TestimonialController;
 use App\Http\Controllers\YooKassaController;
 use App\Http\Controllers\EdfapayController;
 use App\Http\Controllers\ZabebController;
+use App\Http\Controllers\FreePaymentController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Artisan;
@@ -529,7 +530,6 @@ Route::get('/fetch-order', [OrderController::class, 'fetchOrder'])->name('order.
 
 // Route::get('testing', [PaymentController::class, 'statusTesting'])->name('testing')->middleware('SetLocale');
 
-
 Route::get('user-address/{slug?}/useraddress', [StoreController::class, 'userAddress'])->name('user-address.useraddress');
 Route::get('store-payment/{slug?}/userpayment', [StoreController::class, 'userPayment'])->name('store-payment.payment');
 Route::get('store/{slug?}/product/{id}', [StoreController::class, 'productView'])->name('store.product.product_view');
@@ -568,6 +568,9 @@ Route::get('/check-order-status', [EdfapayController::class, 'checkOrderStatus']
 
 Route::post('pay-with-zabeb/{slug?}/{order_amount}', [ZabebController::class, 'PayWithZabeb'])->name('pay.with.zabeb')->middleware(['XSS']);
 Route::get('zabeb-payment/callback{slug?}/{track?}/{order_id?}/{zz?}', [ZabebController::class, 'zabebPaymentCallback'])->name('zabeb.callback');
+
+Route::post('send-otp', [FreePaymentController::class, 'sendOtp'])->name('otp.send');
+Route::post('verify-otp', [FreePaymentController::class, 'verifyOtp'])->name('otp.verify');
 
 Route::get('{slug?}/customerorder/{id}', [StoreController::class, 'customerorder'])->name('customer.order')->middleware('customerauth');
 Route::get('{slug?}/order/{id}', [StoreController::class, 'userorder'])->name('user.order');
