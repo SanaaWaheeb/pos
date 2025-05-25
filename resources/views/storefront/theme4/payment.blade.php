@@ -74,19 +74,18 @@
                                         <img src="{{ asset('assets/theme1/images/skrill.png') }}" alt="">
                                     </div>
                                 </div>
-                                <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and
-                                    Skrill.') }}</p>
+                                <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and Skrill') }}</p>
                                 <form action="{{ route('stripe.post',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                     @csrf
-                                    <input type="hidden" name="product_id">
+                                    {{-- <input type="hidden" name="product_id">
                                     <div class="form-group">
                                         <label for="">{{__('Name on card')}}</label>
-                                        <input type="text" name="name" placeholder="Enter Your Name">
+                                        <input type="text" name="name" placeholder={{__("Enter Your Name")}}>
                                     </div>
                                     <div class="form-group">
                                         <div id="card-element"></div>
                                         <div id="card-errors" role="alert"></div>
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group text-right">
                                         <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                     </div>
@@ -496,7 +495,7 @@
                                 <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Edfapay to finish complete your purchase')}}.</p>
                                 <form method="post" action="{{ route('pay.with.edfapay',$store->slug) }}" class="payment-method-form">
                                     @csrf
-                                    <input type="hidden" name="order_amount" id="total-shipping-price" value="{{ $totalPrice }}" />
+                                    <input type="hidden" name="order_amount" value="{{ $totalPrice }}" />
                                     <div class="form-group text-right">
                                         <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                     </div>
@@ -557,10 +556,11 @@
                                     </div>
                                 </div>
                                 <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Square to finish complete your purchase')}}.</p>
-                                <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                                <form method="post" action="{{ route('pay.with.square',$store->slug) }}" class="payment-method-form">
                                     @csrf
+                                    <input type="hidden" name="order_amount" value="{{ $totalPrice }}" />
                                     <div class="form-group text-right">
-                                        <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                                        <button class="btn">{{__('Pay Now')}}</button>
                                     </div>
                                 </form>
                             </div>
@@ -1616,6 +1616,36 @@
                 }
             }
         });
-    })
+    }) 
 </script>
+{{-- <script src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+<script>
+    // ---------- Logic for square payment method --------------
+    document.addEventListener('DOMContentLoaded', async function() {
+        const store = @json($store);
+        const applicationId = store['square_appliction_id'];
+        const locationId = store['square_location_id'];
+
+        const payments = Square.payments(applicationId, locationId);
+        const card = await payments.card();
+        await card.attach("#card-container");
+
+        document.querySelector("#card-button").addEventListener("click", async function(evt) {
+            evt.preventDefault();
+            const result = await card.tokenize();
+            if (result.status === "OK") {
+                // put the nonce into a hidden field and submit your existing <form>
+                let input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "nonce";
+                input.value = result.token;
+                document.getElementById("square-form").appendChild(input);
+                document.getElementById("square-form").submit();
+            } else {
+                console.error(result);
+                alert("Payment failed to tokenize: " + result.errors[0].message);
+            }
+        });
+    })
+</script> --}}
 @endpush

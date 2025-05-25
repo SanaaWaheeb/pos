@@ -60,28 +60,28 @@
                                 </form>
                             </div>
                         @endif
-                         @if(isset($store_payments['is_stripe_enabled']) && $store_payments['is_stripe_enabled'] == 'on')
+                        @if(isset($store_payments['is_stripe_enabled']) && $store_payments['is_stripe_enabled'] == 'on')
                             <div class="payment-method">
                                 <div class="payment-title d-flex align-items-center justify-content-between">
                                     <h4>{{ __('Stripe') }}</h4>
                                     <div class="payment-image d-flex align-items-center">
-                                        <img src="{{ asset('assets/theme3/images/visa.png') }}" alt="">
-                                        <img src="{{ asset('assets/theme3/images/mastercard.png') }}" alt="">
-                                        <img src="{{ asset('assets/theme3/images/skrill.png') }}" alt="">
+                                        <img src="{{ asset('assets/theme1/images/visa.png') }}" alt="">
+                                        <img src="{{ asset('assets/theme1/images/mastercard.png') }}" alt="">
+                                        <img src="{{ asset('assets/theme1/images/skrill.png') }}" alt="">
                                     </div>
                                 </div>
-                                <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and
-                                    Skrill.') }}</p>
+                                <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and Skrill') }}</p>
                                 <form action="{{ route('stripe.post',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                     @csrf
+                                    {{-- <input type="hidden" name="product_id">
                                     <div class="form-group">
                                         <label for="">{{__('Name on card')}}</label>
-                                        <input type="text" name="name" placeholder="Enter Your Name">
+                                        <input type="text" name="name" placeholder={{__("Enter Your Name")}}>
                                     </div>
                                     <div class="form-group">
                                         <div id="card-element"></div>
                                         <div id="card-errors" role="alert"></div>
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group text-right">
                                         <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                     </div>
