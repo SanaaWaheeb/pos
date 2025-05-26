@@ -79,11 +79,8 @@ class ZabebController extends Controller
         $product_ids = [];
         $product_names = [];
         foreach($products as $item) {
-            $product = Product::find($item['product_id']);
-            if ($product) {
-                $product_ids[] = $item['product_id'];
-                $product_names[] = $item['product_name'];
-            }
+            $product_ids[] = $item['product_id'];
+            $product_names[] = $item['product_name'];
         }
         $productId = count($product_ids) > 1? 0 : $product_ids[0]; // Default id in case there exist multiple products
 
@@ -205,19 +202,22 @@ class ZabebController extends Controller
             }
 
             // Reduce products quantity
-            $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 1]);
-            $products = $cart['products'];
-            foreach ($products as $key => $product) {
-                if ($product['variant_id'] != 0) {
-                    $new_qty = $product['originalvariantquantity'] - $product['quantity'];
-                    $product_edit = ProductVariantOption::find($product['variant_id']);
-                    $product_edit->quantity = $new_qty;
-                    $product_edit->save();
-                } else {
-                    $new_qty = $product['originalquantity'] - $product['quantity'];
-                    $product_edit = Product::find($product['product_id']);
-                    $product_edit->quantity = $new_qty;
-                    $product_edit->save();
+            $store = Store::where('slug', $slug)->where('is_store_enabled', '1')->first();
+            if($store->theme_dir != 'theme5') {
+                $cart = session()->get($slug, ['products' => [], 'cart_item_count' => 1]);
+                $products = $cart['products'];
+                foreach ($products as $key => $product) {
+                    if ($product['variant_id'] != 0) {
+                        $new_qty = $product['originalvariantquantity'] - $product['quantity'];
+                        $product_edit = ProductVariantOption::find($product['variant_id']);
+                        $product_edit->quantity = $new_qty;
+                        $product_edit->save();
+                    } else {
+                        $new_qty = $product['originalquantity'] - $product['quantity'];
+                        $product_edit = Product::find($product['product_id']);
+                        $product_edit->quantity = $new_qty;
+                        $product_edit->save();
+                    }
                 }
             }
 

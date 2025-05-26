@@ -76,10 +76,7 @@ class EdfapayController extends Controller
         $product_ids = [];
         $products = $cart['products'];
         foreach($products as $item) {
-            $product = Product::find($item['product_id']);
-            if ($product) {
-                $product_ids[] = $item['product_id'];
-            }
+            $product_ids[] = $item['product_id'];
         }
 
         // Store order in DB
