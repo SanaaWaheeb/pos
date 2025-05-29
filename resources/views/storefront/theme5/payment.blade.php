@@ -15,6 +15,7 @@
             $storethemesetting=\App\Models\Utility::demoStoreThemeSetting($store->id,$store->theme_dir);
         @endphp
         @php
+            $totalPrice = !empty($totalPrice)?$totalPrice:0;
             $coupon_price = !empty($coupon_price)?$coupon_price:0;
             $shipping_price = !empty($shipping_price)?$shipping_price:0;
             $productImg = \App\Models\Utility::get_file('uploads/is_cover_image/');
@@ -29,13 +30,13 @@
                             <h2>{{ __('Payment') }}</h2>
                         </div>
                     </div>
-                    <div class="col-lg-9 col-md-12 col-12 justify-content-end">
+                    {{-- <div class="col-lg-9 col-md-12 col-12 justify-content-end">
                         <div class="cart-header-btn">
                             <a href="{{ route('store.cart', $store->slug) }}">1 - {{ __('My Cart') }}</a>
                             <a href="{{ route('user-address.useraddress', $store->slug) }}">2 -{{ __('Customer') }}</a>
                             <a href="{{ route('store-payment.payment', $store->slug) }}" class="active-btn">3 - {{ __('Payment') }}</a>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
                 <div class="row">
@@ -70,19 +71,18 @@
                                         <img src="{{ asset('assets/theme1/images/skrill.png') }}" alt="">
                                     </div>
                                 </div>
-                                <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and
-                                    Skrill.') }}</p>
+                                <p>{{ __('Safe money transfer using your bank account. We support Mastercard, Visa and Skrill') }}</p>
                                 <form action="{{ route('stripe.post',$store->slug) }}" method="post" class="payment-method-form" id="payment-form">
                                     @csrf
-                                    <input type="hidden" name="product_id">
+                                    {{-- <input type="hidden" name="product_id">
                                     <div class="form-group">
                                         <label for="">{{__('Name on card')}}</label>
-                                        <input type="text" name="name" placeholder="Enter Your Name">
+                                        <input type="text" name="name" placeholder={{__("Enter Your Name")}}>
                                     </div>
                                     <div class="form-group">
                                         <div id="card-element"></div>
                                         <div id="card-errors" role="alert"></div>
-                                    </div>
+                                    </div> --}}
                                     <div class="form-group text-right">
                                         <button type="submit" class="btn">{{__('Pay Now')}}</button>
                                     </div>
@@ -476,6 +476,88 @@
                                     <input type="hidden" name="desc" value="{{time()}}">
                                     <div class="form-group text-right">
                                         <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+                        {{-- Edfapay --}}
+                        @if(isset($store_payments['is_edfapay_enabled']) && $store_payments['is_edfapay_enabled'] == 'on')
+                            <div class="payment-method">
+                                <div class="payment-title d-flex align-items-center justify-content-between">
+                                    <h4>{{__('Edfapay')}}</h4>
+                                    <div class="payment-image extra-size d-flex align-items-center">
+                                        <img src="{{asset('assets/img/edfapay.png')}}" alt="">
+                                    </div>
+                                </div>
+                                <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Edfapay to finish complete your purchase')}}.</p>
+                                <form method="post" action="{{ route('pay.with.edfapay',$store->slug) }}" class="payment-method-form">
+                                    @csrf
+                                    <input type="hidden" name="order_amount" value="{{ $totalPrice }}" />
+                                    <div class="form-group text-right">
+                                        <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+                        {{-- Ipay88 --}}
+                        @if(isset($store_payments['is_ipay88_enabled']) && $store_payments['is_ipay88_enabled'] == 'on')
+                            <div class="payment-method">
+                                <div class="payment-title d-flex align-items-center justify-content-between">
+                                    <h4>{{__('Ipay88')}}</h4>
+                                    <div class="payment-image extra-size d-flex align-items-center">
+                                        <img src="{{asset('assets/img/ipay88.png')}}" alt="">
+                                    </div>
+                                </div>
+                                <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Ipay88 to finish complete your purchase')}}.</p>
+                                <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
+                                    @csrf
+                                    <div class="form-group text-right">
+                                        <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+                        {{-- Zabeb --}}
+                        @if(isset($store_payments['is_zabeb_enabled']) && $store_payments['is_zabeb_enabled'] == 'on')
+                            <div class="payment-method">
+                                <div class="payment-title d-flex align-items-center justify-content-between">
+                                    <h4>{{__('Zabeb')}}</h4>
+                                    <div class="payment-image extra-size d-flex align-items-center">
+                                        <img src="{{asset('assets/img/zabeb.png')}}" alt="">
+                                    </div>
+                                </div>
+                                <p>{{__('Pay your order using one of the most trusted and secure platforms for online money transfers. You will be redirected to Zabeb to complete your purchase using your rewards')}}.</p>
+                                <form method="post" action="{{ route('pay.with.zabeb',['slug' => $store->slug, 'order_amount' => $totalPrice]) }}" class="payment-method-form">
+                                    @csrf
+                                    <div class="form-group">
+                                        <label for="">{{__('Email')}}</label>
+                                        <input type="text" name="email" placeholder="Enter Your Email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="">{{__('Password')}}</label>
+                                        <input type="password" name="password" placeholder="Enter Your Password">
+                                    </div>
+                                    <div class="form-group text-right">
+                                        <button type="submit" class="btn">{{__('Pay Now')}}</button>
+                                    </div>
+                                </form>
+                            </div>
+                        @endif
+                        {{-- Square --}}
+                        @if(isset($store_payments['is_square_enabled']) && $store_payments['is_square_enabled'] == 'on')
+                            <div class="payment-method">
+                                <div class="payment-title d-flex align-items-center justify-content-between">
+                                    <h4>{{__('Square')}}</h4>
+                                    <div class="payment-image extra-size d-flex align-items-center">
+                                        <img src="{{asset('assets/img/square.png')}}" alt="">
+                                    </div>
+                                </div>
+                                <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Square to finish complete your purchase')}}.</p>
+                                <form method="post" action="{{ route('pay.with.square',$store->slug) }}" class="payment-method-form">
+                                    @csrf
+                                    <input type="hidden" name="order_amount" value="{{ $totalPrice }}" />
+                                    <div class="form-group text-right">
+                                        <button class="btn">{{__('Pay Now')}}</button>
                                     </div>
                                 </form>
                             </div>
@@ -921,7 +1003,7 @@
                     @endif
                     
                         <div class="pagination-btn d-flex align-items-center justify-content-center ">
-                            <a href="{{route('store.slug',$store->slug)}}" class="btn back-btn">{{__('Return to shop')}}</a>
+                            <a href="{{ route('self.payment', $store->slug) }}" class="btn back-btn">{{__('Return to Home')}}</a>
                         </div>
                     </div>
                     <div class="col-lg-4 col-12">
@@ -930,12 +1012,12 @@
                                 <h4>{{__('Summary')}}</h4>
                             </div>
                             <div id="cart-body" class="mini-cart-has-item">
-                                @if(!empty($products))
-                                    @php
-                                        $total = 0;
-                                        $sub_tax = 0;
-                                        $sub_total= 0;
-                                    @endphp
+                                @php
+                                    $total = 0;
+                                    $sub_tax = 0;
+                                    $sub_total= 0;
+                                @endphp
+                                {{-- @if(!empty($products))
                                     @foreach($products as $product)
                                         @if(isset($product['variant_id']) && !empty($product['variant_id']))
                                             <div class="mini-cart-body">
@@ -1031,47 +1113,24 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                           
+                                        
                                         @endif
                                     @endforeach
-                                    <div class="mini-cart-footer">
-                                        <div class="u-save d-flex justify-content-between">
-                                            <div class="cpn-lbl">{{ __('item') }}</div>
-                                            <div class="cpn-price">{{\App\Models\Utility::priceFormat( !empty($sub_total)?$sub_total:'0')}}</div>
+                                @endif --}}
+                                <div class="mini-cart-footer" style="margin-top: 10px">
+                                    <div
+                                        class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
+                                        <div class="mini-total-lbl">
+                                            {{__('Total')}}
                                         </div>
-                                        <div class="u-save d-flex justify-content-between">
-                                            <div class="cpn-lbl">{{ __('Coupan') }}</div>
-                                            <div class="cpn-price dicount_price">{{!empty($discount_price)?$discount_price:'0.00'}}</div>
-                                        </div>
-                                        @if($store->enable_shipping == "on")
-                                            <div class="u-save d-flex justify-content-between">
-                                                <div class="cpn-lbl">{{__('Shipping Price')}} </div>
-                                                <div class="cpn-price shipping_price" data-value="{{$shipping_price}}">{{\App\Models\Utility::priceFormat(!empty($shipping_price)?$shipping_price:0)}}</div>
-                                            </div>
-                                        @endif
-                                        @foreach($taxArr['tax'] as $k=>$tax)
-                                            <div class="u-save d-flex justify-content-between">
-                                                @php
-                                                    $rate = $taxArr['rate'][$k];
-                                                @endphp
-                                                <div class="cpn-lbl">{{$tax}}</div>
-                                                <div class="cpn-price">{{\App\Models\Utility::priceFormat($rate)}}</div>
-                                            </div>
-                                        @endforeach
-                                        <div
-                                            class="mini-cart-footer-total-row d-flex align-items-center justify-content-between">
-                                            <div class="mini-total-lbl">
-                                                {{__('Total')}}
-                                            </div>
-                                            
-                                            <div class="mini-total-price final_total_price" id="total_value" data-value="{{$total}}">
-                                                <input type="hidden" class="product_total" value="{{$total+$shipping_price-$coupon_price}}">
-                                                <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($total)}}">
-                                                <span class="pro_total_price" data-value="{{$total+$shipping_price-$coupon_price}}"> {{\App\Models\Utility::priceFormat(!empty($total)?$total+$shipping_price-$coupon_price:0)}}</span>
-                                            </div>
+                                        
+                                        <div class="mini-total-price final_total_price" id="total_value" data-value="{{$totalPrice}}">
+                                            <input type="hidden" class="product_total" value="{{$totalPrice}}">
+                                            <input type="hidden" class="total_pay_price" value="{{App\Models\Utility::priceFormat($totalPrice)}}">
+                                            <span class="pro_total_price" data-value="{{$totalPrice}}"> {{\App\Models\Utility::priceFormat(!empty($totalPrice)?$totalPrice:0)}}</span>
                                         </div>
                                     </div>
-                                @endif
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1462,7 +1521,7 @@
                         $('#get-payfast-inputs').append(data.inputs);
 
                     }else{
-                        show_toastr('Error', data.inputs, 'error')
+                        // show_toastr('Error', data.inputs, 'error')
                     }
                 }
             });

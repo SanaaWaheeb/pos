@@ -2046,6 +2046,45 @@ class StoreController extends Controller
         );
     }
 
+    /**
+     * Forward to payment methods page with static product info
+     */
+    public function selfPayMethodsForward(Request $request, $slug)
+    {
+        // Store total price in session
+        $totalPrice = $request->input('totalPrice', 0);
+        session()->put('totalPrice', $totalPrice);
+
+        // Add "hard-code" product details
+        $cart = session()->get($slug);
+        $time = time();
+        if (!$cart || !isset($cart['products'])) {
+            $cart['products'][$time] = [
+                "product_id" => 1,
+                "product_name" => 'Items',
+                "image" => '',
+                "quantity" => 1,
+                "price" => $totalPrice,
+                "id" => '1',
+                "downloadable_prodcut" => '',
+                "tax" => [],
+                "subtotal" => "",
+                "originalquantity" => 50,
+                'variant_id' => 0,
+            ];
+        }
+        $cart['cart_item_count'] = 1;
+        session()->put($slug, $cart);
+
+        // Build the actual payment‐page URL
+        $paymentUrl = route('store-payment.payment', $slug);
+
+        // Return it as JSON
+        return response()->json([
+            'url' => $paymentUrl
+        ]);
+    }
+
     public function userPayment(Request $request, $slug)
     {
     // Fetch the store by slug and ensure it is enabled

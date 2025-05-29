@@ -69,22 +69,22 @@
             return;
         }
 
-        const slug = "{{ $store->slug }}";
-        const checkoutUrl = `{{ url('payment-checkout') }}/${slug}/${parseFloat(currentInput).toFixed(2)}`;
+        // format to two decimals
+        const totalPrice = parseFloat(currentInput).toFixed(2);
+
+        // build the payment URL with totalPrice query
+        const checkoutUrl = `{{ route('selfpay.payment.forward', $store->slug) }}`;
 
         $.ajax({
             url: checkoutUrl,
-            type: 'GET',
+            type: 'POST',
+            data: { totalPrice },
             headers: {
                 'x-csrf-token': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (response) {
-                if (response.redirect_url) {
-                    // Redirect to the payment gateway
-                    window.location.href = response.redirect_url;
-                } else if (response.error) {
-                    show_toastr('Error', response.error, 'error');
-                }
+                // response.url now contains the payment page URL
+                window.location.href = response.url;
             },
             error: function (xhr) {
                 let errorMessage = 'Something went wrong. Please try again.';

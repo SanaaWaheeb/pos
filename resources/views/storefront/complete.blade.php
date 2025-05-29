@@ -99,19 +99,26 @@ if (!empty(session()->get('lang'))) {
                                     {{__('we\'ll be in touch shortly')}}!
                                 </p>
 
+                                @if ($store->theme_dir != 'theme5')
                                 <div class="input-group mb-3">
                                     <input type="text" value="{{route('user.order',[$store->slug,$order_id])}}" id="myInput" class="form-control d-inline-block" aria-label="Recipient's username" aria-describedby="button-addon2" readonly>
                                     <div class="input-group-append">
                                         <button class="btn btn-outline-primary" type="button" onclick="myFunction()" id="button-addon2"><i class="far fa-copy"></i> {{__('Copy Link')}}</button>
                                     </div>
                                 </div>
+                                @endif
 
-                               @if($store->theme_dir == 'theme2')
-                                <a href="{{ route('store.scanner', $store->slug) }}" class="btn btn-sm btn-primary btn-icon rounded-pill mt-5">
-                                    <span class="btn-inner--icon"><i class="fas fa-angle-left"></i></span>
-                                    <span class="btn-inner--text">{{ __('Return to scanner') }}</span>
-                                </a>
-                               @else
+                                @if($store->theme_dir == 'theme2')
+                                    <a href="{{ route('store.scanner', $store->slug) }}" class="btn btn-sm btn-primary btn-icon rounded-pill mt-5">
+                                        <span class="btn-inner--icon"><i class="fas fa-angle-left"></i></span>
+                                        <span class="btn-inner--text">{{ __('Return to scanner') }}</span>
+                                    </a>
+                                @elseif ($store->theme_dir == 'theme5')
+                                    <a href="{{ route('self.payment', $store->slug) }}" class="btn btn-sm btn-primary btn-icon rounded-pill mt-5">
+                                        <span class="btn-inner--icon"><i class="fas fa-angle-left"></i></span>
+                                        <span class="btn-inner--text">{{ __('Return to Home') }}</span>
+                                    </a>
+                                @else
                                     <a href="{{ route('store.slug', $store->slug) }}" class="btn btn-sm btn-primary btn-icon rounded-pill mt-5">
                                         <span class="btn-inner--icon"><i class="fas fa-angle-left"></i></span>
                                         <span class="btn-inner--text">{{ __('Return to shop') }}</span>

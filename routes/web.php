@@ -525,6 +525,7 @@ Route::get('{slug}/self-payment', function ($slug) {
     $store = Store::where('slug', $slug)->firstOrFail();
     return view('storefront.theme5.selfPayment', compact('store'));
 })->name('self.payment')->middleware('SetLocale');
+Route::post('selfpay-payment-forward/{slug}', [StoreController::class, 'selfPayMethodsForward'])->name('selfpay.payment.forward');
 Route::get('confirm-order/{order}', [OrderController::class, 'storeConfirmOrder'])->name('confirm.order');
 Route::get('/fetch-order', [OrderController::class, 'fetchOrder'])->name('order.fetch');
 
