@@ -3269,11 +3269,11 @@ class PaymentController extends Controller
             "order_currency" => $orderCurrency,
             "order_description" => $orderDescription,
             "req_token" => "N",
-            "payer_first_name" => "payer_first_name",
-            "payer_last_name" => "payer_last_name",
-            "payer_address" => "payer_address",
+            "payer_first_name" => "payerfirstname",
+            "payer_last_name" => "payerlastname",
+            "payer_address" => "payeraddress",
             "payer_country" => $payerCountry,
-            "payer_city" => "payer_city",
+            "payer_city" => "payercity",
             "payer_zip" => "12221",
             "payer_email" => "edfapayPayer@mailinator.com",
             "payer_phone" => "966565555555",
@@ -3370,17 +3370,19 @@ class PaymentController extends Controller
             //         $product->save();
             //     }
             // }
-            foreach ($products as $key => $product) {
-                if ($product['variant_id'] != 0) {
-                    $new_qty = $product['originalvariantquantity'] - $product['quantity'];
-                    $product_edit = ProductVariantOption::find($product['variant_id']);
-                    $product_edit->quantity = $new_qty;
-                    $product_edit->save();
-                } else {
-                    $new_qty = $product['originalquantity'] - $product['quantity'];
-                    $product_edit = Product::find($product['product_id']);
-                    $product_edit->quantity = $new_qty;
-                    $product_edit->save();
+            if($store->theme_dir != 'theme5') {
+                foreach ($products as $key => $product) {
+                    if ($product['variant_id'] != 0) {
+                        $new_qty = $product['originalvariantquantity'] - $product['quantity'];
+                        $product_edit = ProductVariantOption::find($product['variant_id']);
+                        $product_edit->quantity = $new_qty;
+                        $product_edit->save();
+                    } else {
+                        $new_qty = $product['originalquantity'] - $product['quantity'];
+                        $product_edit = Product::find($product['product_id']);
+                        $product_edit->quantity = $new_qty;
+                        $product_edit->save();
+                    }
                 }
             }
 

@@ -2106,9 +2106,6 @@ class StoreController extends Controller
         return redirect()->back()->with('error', __('Please add products to the cart.'));
     }
 
-    // Fetch custome total price in theme4 'hotel booking'
-    $totalPrice = session('totalPrice', 0);
-
     // Ensure customer details are available
     // if (!isset($cart['customer']) || empty($cart['customer'])) {
     //     return redirect()->back()->with('error', __('Please provide your information.'));
@@ -2116,6 +2113,36 @@ class StoreController extends Controller
 
     $products = $cart['products'];
     // $cust_details = $cart['customer'];
+
+    // Fetch custome total price in theme4 'hotel booking'
+    $totalPrice = session('totalPrice', 0);
+    if ($totalPrice == 0) { // For theme1 & 2
+        foreach ($cart['products'] as $key => $product) {
+            // Determine base price and field names
+            $price = $product['variant_id'] != 0 ? $product['variant_price'] : $product['price'];
+            $quantity = $product['quantity'];
+            $subtotal = $price * $quantity;
+        
+            // Calculate tax
+            $taxs = 0;
+            if (!empty($product['tax']) && is_array($product['tax'])) {
+                foreach ($product['tax'] as $tax) {
+                    $taxs += ($subtotal * $tax['tax']) / 100;
+                }
+            }
+        
+            // Add subtotal + tax to total
+            $lineTotal = $subtotal + $taxs;
+            $totalPrice += $lineTotal;
+        
+            // Save calculated subtotal with tax back to cart
+            if ($product['variant_id'] != 0) {
+                $cart['products'][$key]['variant_subtotal'] = $lineTotal;
+            } else {
+                $cart['products'][$key]['subtotal'] = $lineTotal;
+            }
+        }
+    }
 
     // Handle shipping details if enabled
     $shipping_price = 0;

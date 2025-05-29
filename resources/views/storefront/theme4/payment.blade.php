@@ -556,7 +556,7 @@
                                     </div>
                                 </div>
                                 <p>{{__('Pay your order using the most known and secure platform for online money transfers. You will be redirected to Square to finish complete your purchase')}}.</p>
-                                <form method="post" action="{{ route('pay.with.square',$store->slug) }}" class="payment-method-form">
+                                <form method="post" action="{{ route('order.with.tap',$store->slug) }}" class="payment-method-form">
                                     @csrf
                                     <input type="hidden" name="order_amount" value="{{ $totalPrice }}" />
                                     <div class="form-group text-right">
